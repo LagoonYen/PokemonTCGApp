@@ -1,0 +1,20 @@
+﻿@page
+@model PokemonTCGApp.Pages.PTCGS.IndexModel
+@{
+}
+<div class="container" id="app">
+    <div class="row">
+        <div>
+            <label>{{Title}}</label>
+        </div>
+    </div>
+</div>
+
+<script>
+    var appMain = new Vue({
+        el:'#app',
+        data:{
+            Title : 'Cyndaquil is cute!!!',
+        }
+    })
+</script>
