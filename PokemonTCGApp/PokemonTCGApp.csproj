@@ -11,6 +11,7 @@
     <Folder Include="Model\" />
     <Folder Include="Service\" />
     <Folder Include="Repository\" />
+    <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\plugins\" />
   </ItemGroup>
 

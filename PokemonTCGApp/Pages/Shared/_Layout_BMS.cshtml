@@ -8,12 +8,8 @@
     <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
 
-    @*<!-- semantic-ui -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>*@
-
-    <!-- Bootstrap CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
 
     <!-- Vue 2.6.14 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
@@ -27,10 +23,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css">
 
     <!-- AdminLTE App -->
-    <link rel="stylesheet" href="~/lib/AdminLTE/dist/css/AdminLTE.min.css" />
-    @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">*@
-    <!-- AdminLTE Skins. Choose a skin from the css/skins
-         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/lib/AdminLTE/dist/css/AdminLTE.css" />
+    <!-- AdminLTE Skins -->
     <link rel="stylesheet" href="~/css/skins/_all-skins.min.css">
 
     <!-- bootstrap wysihtml5 - text editor -->
@@ -38,7 +32,10 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.css" />
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- semantic-ui -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PokemonTCGApp.styles.css" asp-append-version="true" />
 
@@ -48,7 +45,7 @@
         }
     </style>
 </head>
-<body class="sidebar-mini wysihtml5-supported skin-yellow-light">
+<body class="sidebar-mini wysihtml5-supported skin-yellow">
         <div class="wrapper">
             <header class="main-header">
                 <!-- Logo -->
@@ -70,13 +67,13 @@
                             <!-- User Account: style can be found in dropdown.less -->
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    @*<img src="/images/blogo.png?<%=Guid.NewGuid().ToString("N") %>" class="user-image" alt="User Image" />*@
+                                    <img src="~/images/blogo.png" class="user-image" alt="User Image" />
                                     <span class="hidden-xs">管理員 </span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
-                                        @*<img src="/images/blogo.png?<%=Guid.NewGuid().ToString("N") %>" class="img-circle" alt="User Image" />*@
+                                        <img src="~/images/blogo.png" class="img-circle" alt="User Image" />
                                         <p>
                                             管理員
                                             <small></small>
@@ -105,67 +102,121 @@
                     <!-- /.search form -->
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu">
-                        <li class="header" id="MerchantPurchase">商戶採購</li>
+                        <li class="header" id="MerchantPurchase">卡牌區</li>
                         <li id="li_MPdelivery">
                             <a href="">
-                                <i class="fa fa-list-alt"></i><span>所有兌換單</span>
-                                <small class="label pull-right bg-yellow" id="voucherExchangeCount"></small>
+                                <i class="nintendo switch icon"></i><span>卡片列表</span>
+                                @*通知用*@
+                                @*<small class="label pull-right bg-yellow" id="voucherExchangeCount"></small>*@
                             </a>
                         </li>
                         <li id="li_MPproducts">
                             <a href="">
-                                <i class="fa  fa-briefcase"></i><span>兌換商品列表</span>
-                            </a>
-                        </li>
-                        <li id="li_MPcates">
-                            <a href="">
-                                <i class="fa  fa-bars"></i><span>兌換商品分類</span>
+                                <i class="fa  fa-cog"></i><span>卡片規格設定</span>
                             </a>
                         </li>
 
-                        <li class="header">訂單相關</li>
+                        <li class="header">卡組區</li>
                         <li id="li_orderlistall">
                             <a href="">
-                                <i class="fa fa-cart-arrow-down"></i><span>所有訂單</span>
+                                <i class="chart pie icon"></i><span>卡組清單</span>
                             </a>
                         </li>
                         <li id="li_refundlist">
                             <a href="">
-                                <i class="fa fa-cart-arrow-down"></i><span>待退訂單</span>
+                                <i class="fa fa-cog"></i><span>卡組規格設定</span>
                             </a>
                         </li>
-                       
+
+                        <li class="header">戰報區</li>
+                        <li id="li_orderlistall">
+                            <a href="">
+                                <i class="steam icon"></i><span>戰報列表</span>
+                            </a>
+                        </li>
+                        <li id="li_orderlistall">
+                            <a href="">
+                                <i class="fa fa-cog"></i><span>戰報規格設定</span>
+                            </a>
+                        </li>
+
+                        <li class="header">會員專區</li>
+                        <li id="li_orderlistall">
+                            <a href="">
+                                <i class="users icon"></i><span>會員列表</span>
+                            </a>
+                        </li>
+                        <li id="li_orderlistall">
+                            <a href="">
+                                <i class="fa fa-cog"></i><span>會員規格設定</span>
+                            </a>
+                        </li>
+
+                        <li class="header">管理員區</li>
+                        <li id="li_orderlistall">
+                            <a href="">
+                                <i class="user secret icon"></i><span>管理員列表</span>
+                            </a>
+                        </li>
+                        <li id="li_orderlistall">
+                            <a href="">
+                                <i class="fa fa-cog"></i><span>管理員規格設定</span>
+                            </a>
+                        </li>
                         
                     </ul>
                 </section>
                 <!-- /.sidebar  -->
             </aside>
-        <div class="container">
-            <main role="main" class="pb-3">
+        <div>
+            @*<main role="main" class="pb-3">*@
+            <main>
                 @RenderBody()
             </main>
          </div>
     </div>
 
-        <footer class="border-top footer text-muted">
+       @* <footer class="border-top footer text-muted">
             <div class="container">
                 &copy; 2022 - PokemonTCGApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
             </div>
-        </footer>
+        </footer>*@
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 1.0.0
+            </div>
+            <strong>Copyright &copy; <%= DateTime.Now.Year.ToString() %></strong>
+            &copy; 2022 - PokemonTCGApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            </footer>
 
+
+         <!-- jQuery UI 1.11.4 -->
+        <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+
+         <script>
+            $.widget.bridge('uibutton', $.ui.button);
+        </script>
 
         <!-- Bootstrap 3.3.5 -->
-        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+
+        <!-- cloudflare -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
 
         <!-- Bootstrap WYSIHTML5 -->
         <script src="~/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
 
         <!-- AdminLTE App -->
         <script src="~/lib/AdminLTE/dist/js/app.min.js"></script>
-        @*<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/js/adminlte.min.js"></script>*@
 
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
+        @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
         <script src="~/js/site.js" asp-append-version="true"></script>
+
+        <script>
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+        </script>
     </body>
 </html>
