@@ -1,6 +1,25 @@
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
+using PokemonTCGApp.Model;
+using PokemonTCGApp.Service;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Configure<PokemonTCGDatabaseSettings>(
+    builder.Configuration.GetSection(nameof(PokemonTCGDatabaseSettings)));
+
+builder.Services.AddSingleton<IPokemonTCGDatabaseSettings>(sp =>
+    sp.GetRequiredService<IOptions<PokemonTCGDatabaseSettings>>().Value);
+
+builder.Services.AddSingleton<IMongoClient>(s =>
+    new MongoClient(builder.Configuration.GetValue<string>("PokemonTCGDatabaseSettings:ConnectionStrings")));
+
+builder.Services.AddScoped<ICardService, CardService>();
+
+
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
@@ -18,6 +37,20 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddSwaggerGen(x =>
+{
+    x.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "PTCG卡牌商城 API",
+        Version = "v1",
+        Description = "提供各式各樣API串接"
+    });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    x.IncludeXmlComments(xmlPath);
+});
+
 
 
 var app = builder.Build();
@@ -29,6 +62,13 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI(x =>
+{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json", "PTCGSHOP API");
+    x.RoutePrefix = String.Empty;
+});
 
 app.UseHttpsRedirection(); //這樣的話，Controller、Action不必再加上[RequireHttps]屬性
 app.UseStaticFiles();  //用於尋找wroot下的資料夾css, js檔案
