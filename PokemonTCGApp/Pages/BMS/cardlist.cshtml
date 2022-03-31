@@ -1,0 +1,80 @@
+﻿@page
+@model PokemonTCGApp.Pages.BMS.cardlistModel
+@{
+    Layout = "_Layout_BMS";
+}
+<div class="content-wrapper" id="app">
+    <section class="content" style="min-height: 1140px;">
+        @*<h1>卡片清單</h1>*@
+        <section class="content-header">
+            <h1>卡牌列表
+                <small></small>
+            </h1>
+        </section>
+        <section class="content">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">卡牌查詢</h3>
+
+                </div>
+                <div class="box-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label for="Keyword" class="col-md-2 control-label">關鍵字搜尋</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="Keyword" placeholder="關鍵字搜尋" @*v-model="Keyword"*@ />
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="box-footer">
+                    <button type="button" class="btn btn-primary " @*v-onclick="setFilter"*@>
+                        搜尋
+                    </button>
+                    <button type="button" class="btn btn-warning " @*v-on:click="downloadFile"*@>
+                        下載
+                    </button>
+                </div>
+            </div>
+
+
+
+
+        </section>
+
+        @*<div class="row">
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-aqua">
+                    <div class="inner">
+                        <h3>00</h3>
+                        <p>未出貨訂單</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-eye"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">更多資訊 <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-green">
+                    <div class="inner">
+                        <h3>000</h3>
+                        <p>商品</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-cubes 5x"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">更多資訊 <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+        </div>*@
+    </section>
+</div>

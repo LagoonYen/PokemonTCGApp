@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using PokemonTCGApp.Model;
+using PokemonTCGApp.Repository;
 using PokemonTCGApp.Service;
 using System.Reflection;
 
@@ -18,6 +19,7 @@ builder.Services.AddSingleton<IMongoClient>(s =>
     new MongoClient(builder.Configuration.GetValue<string>("PokemonTCGDatabaseSettings:ConnectionStrings")));
 
 builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<ICardRepository, CardRepository>();
 
 
 builder.Services.AddRazorPages();

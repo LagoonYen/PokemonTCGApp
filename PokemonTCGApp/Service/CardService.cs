@@ -1,42 +1,43 @@
 ﻿using MongoDB.Driver;
 using PokemonTCGApp.Model;
+using PokemonTCGApp.Model.DataModel;
+using PokemonTCGApp.Repository;
 
 namespace PokemonTCGApp.Service
 {
     public class CardService : ICardService
     {
-        private readonly IMongoCollection<CardTest> _cardTests;
+        private readonly ICardRepository _cardRepository;
 
-        public CardService(IPokemonTCGDatabaseSettings settings, IMongoClient mongoClient)
+        public CardService(ICardRepository cardRepository)
         {
-            var database = mongoClient.GetDatabase(settings.DatabaseName);
-            _cardTests = database.GetCollection<CardTest>(settings.PokemonTCGCollectionName);
+            _cardRepository = cardRepository;
         }
 
-        public CardTest CreateCard(CardTest card)
+        public Card CreateCard(Card card)
         {
-            _cardTests.InsertOne(card);
+            _cardRepository.CreateCard(card);
             return card;
         }
 
         public void DeleteCard(string id)
         {
-            _cardTests.DeleteOne(cardTest => cardTest.Id == id);
+            _cardRepository.DeleteCard(id);
         }
 
-        public CardTest GetCard(string id)
+        public Card GetCard(string id)
         {
-            return _cardTests.Find(cardTest => cardTest.Id == id).FirstOrDefault();
+            return _cardRepository.GetCard(id);
         }
 
-        public List<CardTest> GetCards()
+        public List<Card> GetCards()
         {
-            return _cardTests.Find(CardTest => true).ToList();
+            return _cardRepository.GetCards();
         }
 
-        public void UpdateCard(string id, CardTest card)
+        public void UpdateCard(string id, Card card)
         {
-            _cardTests.ReplaceOne(cardTest => cardTest.Id == id, card);
+            _cardRepository.UpdateCard(id, card);
         }
     }
 }

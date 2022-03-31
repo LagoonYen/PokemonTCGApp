@@ -1,8 +1,8 @@
 ﻿using PokemonTCGApp.Model.DataModel;
 
-namespace PokemonTCGApp.Service
+namespace PokemonTCGApp.Repository
 {
-    public interface ICardService
+    public interface ICardRepository
     {
         List<Card> GetCards();
         Card GetCard(string id);

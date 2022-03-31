@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PokemonTCGApp.Model;
+using PokemonTCGApp.Model.DataModel;
 using PokemonTCGApp.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,7 +21,7 @@ namespace PokemonTCGApp.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        public ActionResult<List<CardTest>> GetCards()
+        public ActionResult<List<Card>> GetCards()
         {
             return cardService.GetCards();
         }
@@ -28,7 +29,7 @@ namespace PokemonTCGApp.Controllers
         // GET api/<CardController>/5
         [HttpGet]
         [Route("[action]")]
-        public ActionResult<CardTest> GetCard(string id)
+        public ActionResult<Card> GetCard(string id)
         {
             return cardService.GetCard(id);
         }
@@ -36,17 +37,17 @@ namespace PokemonTCGApp.Controllers
         // POST api/<CardController>
         [HttpPost]
         [Route("[action]")]
-        public ActionResult<CardTest> CreateCard([FromBody] CardTest cardTest)
+        public ActionResult<Card> CreateCard([FromBody] Card card)
         {
-            cardService.CreateCard(cardTest);
+            cardService.CreateCard(card);
 
-            return CreatedAtAction(nameof(GetCard), new { id = cardTest.Id }, cardTest);
+            return CreatedAtAction(nameof(GetCard), new { id = card.Id }, card);
         }
 
         // PUT api/<CardController>/5
         [HttpPut]
         [Route("[action]")]
-        public ActionResult UpdateCard(string id, [FromBody] CardTest cardTest)
+        public ActionResult UpdateCard(string id, [FromBody] Card card)
         {
             var existingCard = cardService.GetCard(id);
 
@@ -55,7 +56,7 @@ namespace PokemonTCGApp.Controllers
                 return NotFound($"Card with Id = {id} not found");
             }
 
-            cardService.UpdateCard(id, cardTest);
+            cardService.UpdateCard(id, card);
 
             return NoContent();
         }

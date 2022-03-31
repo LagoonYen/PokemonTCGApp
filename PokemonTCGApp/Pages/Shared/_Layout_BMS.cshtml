@@ -88,7 +88,8 @@
                                     <li class="user-footer">
 
                                         <div class="pull-right">
-                                            <button ID="btnLogout" CssClass="btn btn-default btn-flat">登出</button>
+                                            @*<button ID="btnLogout" CssClass="btn btn-default btn-flat">登出</button>*@
+                                            <button type="button" class="btn btn-primary" @*v-onclick="setFilter"*@>登出</button>
                                         </div>
                                     </li>
                                 </ul>
@@ -114,8 +115,8 @@
                     <ul class="sidebar-menu">
                         <li class="header" id="MerchantPurchase">卡牌區</li>
                         <li id="li_MPdelivery">
-                            <a href="">
-                                <i class="nintendo switch icon"></i><span>卡片列表</span>
+                            <a asp-page="/BMS/cardlist">
+                                <i class="nintendo switch icon"></i><span>卡牌列表</span>
                                 @*通知用*@
                                 @*<small class="label pull-right bg-yellow" id="voucherExchangeCount"></small>*@
                             </a>
@@ -224,5 +225,7 @@
                 $('[data-toggle="tooltip"]').tooltip()
             })
         </script>
+
+        @await RenderSectionAsync("Scripts", required: false)
     </body>
 </html>
