@@ -19,11 +19,22 @@ namespace PokemonTCGApp.Controllers
         }
         // GET: api/<CardController>
 
+        
         [HttpGet]
         [Route("[action]")]
         public ActionResult<List<Card>> GetCards()
         {
             return cardService.GetCards();
+            //try
+            //{
+
+            //    return cardService.GetCards();
+                
+            //}
+            //catch
+            //{
+                
+            //}
         }
 
         // GET api/<CardController>/5
