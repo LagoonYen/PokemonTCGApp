@@ -1,32 +1,50 @@
-﻿namespace PokemonTCGApp.Enums
+﻿using System.ComponentModel;
+
+namespace PokemonTCGApp.Enums
 {
     public enum SubtypesEnum
     {
         //BREAK,
         //Baby,
-        //Basic,
+        [Description("基礎")]
+        Basic = 1,
         //EX,
-        //GX,
+        [Description("GX")]
+        GX = 2,
         //Goldenrod Game Corner,
-        //Item,
+        [Description("物品")]
+        Item = 3,
         //LEGEND,
         //Level-Up,
         //MEGA,
         //Pokémon Tool,
         //Pokémon Tool F,
-        //Rapid Strike,
+        [Description("連擊")]
+        RapidStrike = 4,
         //Restored,
         //Rocket's Secret Machine,
-        //Single Strike,
-        //Special,
-        //Stadium,
-        //Stage 1,
-        //Stage 2,
-        //Supporter,
-        //TAG TEAM,
+        [Description("一擊")]
+        SingleStrike = 5,
+        Special,
+        Stadium,
+        [Description("進化一")]
+        Stage1,
+        [Description("進化二")]
+        Stage2,
+        [Description("支援者")]
+        Supporter,
+        [Description("TAGTEAM")]
+        TAGTEAM,
         //Technical Machine,
-        //V,
-        //VMAX,
-        //VSTAR
+        [Description("V")]
+        V,
+        [Description("VMAX")]
+        VMAX,
+        [Description("VUnion")]
+        VUnion,
+        [Description("VSTAR")]
+        VSTAR,
+        [Description("光輝寶可夢")]
+        Sparkling
     }
 }
