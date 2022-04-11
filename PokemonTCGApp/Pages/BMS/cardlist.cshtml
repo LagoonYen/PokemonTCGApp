@@ -3,78 +3,297 @@
 @{
     Layout = "_Layout_BMS";
 }
+<script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js"></script>
 <div class="content-wrapper" id="app">
-    <section class="content" style="min-height: 1140px;">
-        @*<h1>卡片清單</h1>*@
-        <section class="content-header">
-            <h1>卡牌列表
-                <small></small>
-            </h1>
-        </section>
-        <section class="content">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">卡牌查詢</h3>
 
+    <section class="content-header">
+        <h1>卡牌列表
+            <small>所有已存在Mongo內的卡片列表</small>
+        </h1>
+    </section>
+
+    <section class="content">
+        <div class="box box-primary">
+
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-fw fa-search"></i>搜尋卡牌</h3>
+                <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
-                <div class="box-body">
-                    <div class="form-horizontal">
-                        <div class="form-group">
-                            <label for="Keyword" class="col-md-2 control-label">關鍵字搜尋</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" id="Keyword" placeholder="關鍵字搜尋" @*v-model="Keyword"*@ />
-                            </div>
+            </div>
+            @*style="min-height: 1140px;*@
+            <div class="box-body">
+                <div class="form-horizontal">
 
-
+                   @* <div class="form-group">
+                        <label for="" class="col-md-2 control-label">關鍵字搜尋</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="" placeholder="關鍵字搜尋" v-model="" />
                         </div>
-                    </div>
-                </div>
+                    </div>*@
 
+                    <div class="form-group">
+                            <label for="lbl-purchaserPhone" class="col-md-2 control-label">訂購人電話</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="lbl-purchaserPhone" placeholder="訂購人電話" v-model="moreParams.filterQuery.Id" />
+                            </div>
+                        </div>
 
+                    @*搜索條件*@
 
-
-                <div class="box-footer">
-                    <button type="button" class="btn btn-primary " @*v-onclick="setFilter"*@>
-                        搜尋
-                    </button>
-                    <button type="button" class="btn btn-warning " @*v-on:click="downloadFile"*@>
-                        下載
-                    </button>
                 </div>
             </div>
 
-
-
-
-        </section>
-
-        @*<div class="row">
-            <div class="col-lg-3 col-xs-6">
-                <!-- small box -->
-                <div class="small-box bg-aqua">
-                    <div class="inner">
-                        <h3>00</h3>
-                        <p>未出貨訂單</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fa fa-eye"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">更多資訊 <i class="fa fa-arrow-circle-right"></i></a>
-                </div>
+            <div class="box-footer">
+                <button type="button" class="btn btn-primary " v-on:click="setFilter">搜尋</button>
+                <button type="button" class="btn btn-warning" v-on:click="downloadFile">下載</button>
             </div>
-            <div class="col-lg-3 col-xs-6">
-                <!-- small box -->
-                <div class="small-box bg-green">
-                    <div class="inner">
-                        <h3>000</h3>
-                        <p>商品</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fa fa-cubes 5x"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">更多資訊 <i class="fa fa-arrow-circle-right"></i></a>
-                </div>
+        </div>
+
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-fw fa-list"></i>卡牌列表<span></span></h3>
             </div>
-        </div>*@
+
+            <div v-loading="tableLoading">
+                <vuetable ref="vuetable"
+                    :api-url="apiUrl"
+                    :fields="fields"
+                    :per-page="perPage"
+                    pagination-path="pagination"
+                    data-path="mydata"
+                    :append-params="moreParams"
+                    class="table table-bordered"
+                    http-method="post"
+                    v-on:vuetable:pagination-data="onPaginationData"
+                    v-on:vuetable:loading="tableLoading = true"
+                    v-on:vuetable:loaded="tableLoading = false">
+
+                    <template slot="actions" slot-scope="props">
+                        <div class="table-button-container">
+                            @*<a href="userdetail.aspx?id={ID}" class="btn-xs btn-default btn">查看</a> *@
+                            @*<a :href="'userdetail.aspx?id='+props.rowData.UserId" class="btn-xs btn-default btn">查看</a> *@
+                            @*<a class="btn btn-primary btn-sm" v-on:click="startRow(props.rowData)">明細</a>*@
+                        </div>
+                    </template>
+
+                </vuetable>
+
+                <vuetable-pagination ref="pagination" v-on:vuetable-pagination:change-page="onChangePage"> </vuetable-pagination>
+
+            </div>
+        </div>
     </section>
 </div>
+
+<script>
+    //$('#li_userlist').attr('class', 'active');
+    Vue.use(Vuetable);
+
+    function getUrlAllParams() {
+        var url = decodeURI(window.location.href)
+        var res = {}
+        var url_data = _.split(url, '?').length > 1 ? _.split(url, '?')[1] : null;
+        if (!url_data) return null
+        var params_arr = _.split(url_data, '&')
+        _.forEach(params_arr, function (item) {
+            var key = _.split(item, '=')[0]
+            var value = _.split(item, '=')[1]
+            res[key] = value
+        });
+        return res
+    }
+
+    var tableColumns = [
+        // 完整Columns
+        //{
+        //name: 'gender',
+        //sortField: 'gender',
+        //title: "gender",
+        //titleClass: 'center aligned',
+        //dataClass: 'center aligned',
+        //width: '200px',
+        //visible: true
+        //callback:function()
+        //},
+        //checkBox 50px
+        {
+            name: 'id',
+            title: "卡片ID",
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            sortField: 'id',
+            width: '25%'
+        },
+        {
+            name: 'image',
+            title: '縮圖',
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            sortField: 'image',
+            width: '15%'
+        },
+        {
+            name: 'setId',
+            title: '卡牌系列',
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            sortField: 'setId',
+            width: '10%'
+        },
+        {
+            name: 'name',
+            title: '卡牌名稱',
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            sortField: 'name',
+            width: '20%'
+        },
+        {
+            name: 'updatetime',
+            title: '最後修改時間',
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            sortField: 'LastOrderDate',
+            callback:'updatetime',
+            width: '10%'
+        },
+        {
+            name: 'createtime',
+            title: '最後修改人',
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            sortField: 'createtime',
+            width: '10%'
+        },
+        {
+            name: '__slot:actions',
+            title: "編輯",
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            width: '10%'
+        }
+    ];
+
+    var appMain = new Vue({
+        el: '#app',
+        components: {
+            'vuetable-pagination': Vuetable.VuetablePagination
+        },
+        data: function () {
+            return {
+                tableLoading: true,
+                fields: tableColumns,
+                apiUrl: "/api/Card/GetCards",
+                perPage: 20,
+                moreParams: {
+                    filterQuery: { Id : "" },
+                    Keyword: ''
+                },
+                CleanerData: {
+                    "Id": null,
+                },
+                formLabelWidth: '160px',
+            }
+        },
+        mounted: function () {
+            $("#app").show();
+            //var paras = getUrlAllParams();
+        },
+        methods: {
+            showLoader: function () {
+                this.$loading();
+            },
+            hideLoader: function () {
+                this.$loading().close();
+            },
+            formatDate: function (value) {
+                if (value == null) return '';
+                return moment(value.replace("T", " ")).local().format('YYYY/MM/DD HH:mm:ss');
+            },
+            transform: function (data) {
+                var transformed = {}
+                transformed.pagination = {
+                    total: data.total,
+                    per_page: data.per_page,
+                    current_page: data.current_page,
+                    last_page: data.last_page,
+                    from: data.from,
+                    to: data.to
+                }
+
+                transformed.mydata = data;
+                return transformed;
+            },
+            setFilter: function () {
+                this.$nextTick(function () {
+                    this.$refs.vuetable.refresh();
+                });
+            },
+            resetFilter: function () {
+                this.searchFor = '';
+                this.setFilter();
+            },
+            onPaginationData: function (paginationData) {
+                if (paginationData.total <= 0) {
+                    this.open();
+                    this.$refs.pagination.setPaginationData(paginationData);
+                }
+                else {
+                    this.$refs.pagination.setPaginationData(paginationData);
+                }
+            },
+            onChangePage: function (page) {
+                this.$refs.vuetable.changePage(page);
+            },
+            startRow: function (model) {
+                model.Password = "";
+                this.CleanerData = model;
+                this.dialogFormVisible = true;
+                this.diagleType = true;
+            },
+            downloadFile() {
+                //this.$confirm('確定要匯出嗎？', '', { type: 'warning' })
+                //    .then(() => {
+                //        let url = `/CgpManager/v1/DownloadUserList`;
+                //        let data = {
+                //            "params": {
+                //                "sort": "",
+                //                "page": 0,
+                //                "per_page": 0,
+                //                "filterQuery": appMain.moreParams.filterQuery
+                //            }
+                //        };
+                //        fetch(url, {
+                //            headers: { 'content-type': 'application/json' },
+                //            method: 'post',
+                //            body: JSON.stringify(data),
+                //        })
+                //        .then(response => response.blob())
+                //        .then(function (myBlob) {
+                //            var objectURL = URL.createObjectURL(myBlob);
+                                
+                //            var fileLink = document.createElement('a');
+                //            fileLink.href = objectURL;
+
+                //            //用於取名
+                //            var today = new Date();
+                //            fileLink.download = (appMain.moreParams.filterQuery.OrderDateRange != null && appMain.moreParams.filterQuery.OrderDateRange != "") ?
+                //                `${appMain.moreParams.filterQuery.OrderDateRange[0].split(' ')[0]}to${appMain.moreParams.filterQuery.OrderDateRange[1].split(' ')[0]}`
+                //                : `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+
+                //            fileLink.click();
+                //        });
+                //    }).catch(() => {
+
+                //    });
+            },
+            open() {
+                this.$alert('請重新檢視篩選條件', '搜尋結果為0', {
+                    confirmButtonText: '確定'
+                });
+            },
+                
+        }
+    });
+</script>

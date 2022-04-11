@@ -6,6 +6,7 @@ namespace PokemonTCGApp.Model.DataModel
     [BsonIgnoreExtraElements]
     public class Card
     {
+        //MongoDB Id
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = String.Empty;

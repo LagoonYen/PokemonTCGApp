@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PokemonTCGApp.Model;
 using PokemonTCGApp.Model.DataModel;
+using PokemonTCGApp.Model.DTOModel;
 using PokemonTCGApp.Service;
 using System.Net;
 
@@ -23,14 +24,19 @@ namespace PokemonTCGApp.Controllers
         /// 取得全卡片清單
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<List<Card>> GetCards()
+        public ActionResult<List<Card>> GetCards(RequestVueTable req)
         {
             try
             {
+                if (req == null) { req = new RequestVueTable(); }
+                if (req.@params == null) { req.@params = new Params(); }
+                if (req.@params.filterQuery == null) { req.@params.filterQuery = new Dictionary<string, object>(); }
+
+                var Id = req.@params.filterQuery["Id"] as string;
                 return Ok(cardService.GetCards());
             }
             catch (Exception ex)
