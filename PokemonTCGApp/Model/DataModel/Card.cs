@@ -65,31 +65,31 @@ namespace PokemonTCGApp.Model.DataModel
         public List<string>? Rules { get; set; }
 
         /// <summary>
-        /// The ancient trait for a given card. An ancient trait has the following fields:
+        /// The ancient trait for a given card. An ancient trait has the following fields.
         /// </summary>
         [BsonElement("ancienttraits")] //古代特性?
         public List<AncientTrait>? AncientTraits { get; set; }
 
         /// <summary>
-        /// One or more abilities for a given card. An ability has the following fields:
+        /// One or more abilities for a given card. An ability has the following fields.
         /// </summary>
         [BsonElement("abilities")]  //特性
         public List<Ability>? Abilities { get; set; }
 
         /// <summary>
-        /// One or more attacks for a given card. An attack has the following fields:
+        /// One or more attacks for a given card. An attack has the following fields.
         /// </summary>
         [BsonElement("attacks")]  //攻擊招式
         public List<Attack>? Attacks { get; set; }
 
         /// <summary>
-        /// One or more weaknesses for a given card. A weakness has the following fields:
+        /// One or more weaknesses for a given card. A weakness has the following fields.
         /// </summary>
         [BsonElement("weaknesses")]  //弱點
         public List<Weakness>? Weaknesses { get; set; }
 
         /// <summary>
-        /// One or more resistances for a given card. A resistance has the following fields:
+        /// One or more resistances for a given card. A resistance has the following fields.
         /// </summary>
         [BsonElement("resistances")]  //抗性
         public List<Resistance>? Resistances { get; set; }

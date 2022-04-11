@@ -143,5 +143,89 @@ namespace PokemonTCGApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// 取得卡牌主分類
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<List<Card>> GetAllSupertypesEnum()
+        {
+            try
+            {
+                var result = cardService.GetAllSupertypesEnum();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 取得卡牌次分類
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<List<Card>> GetAllSubtypesEnum()
+        {
+            try
+            {
+                var result = cardService.GetAllSubtypesEnum();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 取得卡牌稀有度
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<List<Card>> GetAllRaritiesEnum()
+        {
+            try
+            {
+                var result = cardService.GetAllRaritiesEnum();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 取得卡牌寶可夢屬性
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<List<Card>> GetAllTypesEnum()
+        {
+            try
+            {
+                var result = cardService.GetAllTypesEnum();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

@@ -16,7 +16,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Model\DTOModel\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\plugins\" />
   </ItemGroup>
