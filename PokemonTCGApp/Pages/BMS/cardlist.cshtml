@@ -5,7 +5,7 @@
 }
 <script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js"></script>
 
-<style type="text/css">
+@*<style type="text/css">
         .ui.vertical.stripe h3 {
           font-size: 2em;
         }
@@ -68,7 +68,7 @@
         body {
             overflow-y: scroll;
         }
-    </style>
+</style>*@
 
 <div class="content-wrapper" id="app">
 
@@ -146,23 +146,13 @@
                         :append-params="moreParams"
                         class="table table-bordered"
                         http-method="post"
-                        :pagination-component="paginationComponent"
                         v-on:vuetable:pagination-data="onPaginationData"
                         v-on:vuetable:loading="tableLoading = true"
                         v-on:vuetable:loaded="tableLoading = false"
+                        v-on:vuetable:cell-clicked="onCellClicked"
                         detail-row-component="my-detail-row"
-                        detail-row-id="id"
-                        detail-row-transition="expand"
                         >
-
-                        @*<template slot="actions" slot-scope="props">
-                            <div class="table-button-container">
-                                <a href="userdetail.aspx?id={ID}" class="btn-xs btn-default btn">查看</a> 
-                                <a  class="btn-xs btn-default btn">查看</a> 
-                                <a :href="'userdetail.aspx?id='+props.rowData.UserId" class="btn-xs btn-default btn">查看</a> 
-                                <a class="btn btn-primary btn-sm" v-on:click="startRow(props.rowData)">明細</a>
-                            </div>
-                        </template>*@
+                        @*:pagination-component="paginationComponent"*@
 
                     </vuetable>
 
@@ -211,16 +201,7 @@
             title: "卡片ID",
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            callback:'showDetailRow',
-            visible: false
-        },
-        {
-            name: 'id',
-            sortField: 'id',
-            title: "卡片ID",
-            titleClass: 'center aligned',
-            dataClass: 'center aligned',
-            width: '25%'
+            width: '20%'
         },
         {
             name: 'image',
@@ -244,24 +225,31 @@
             title: '卡牌名稱',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            width: '30%'
+            width: '10%'
         },
         {
-            name: 'updatetime',
-            sortField: 'updatetime',
+            name: 'rarity',
+            sortField: 'rarity',
+            title: '卡牌稀有度',
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            width: '10%'
+        },
+        {
+            name: 'updateTime',
+            sortField: 'updateTime',
             title: '最後修改時間',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
             callback:'formatDate',
-            width: '10%'
+            width: '15%'
         },
         {
-            name: 'createtime',
-            sortField: 'createtime',
+            name: 'createTime',
+            sortField: 'createTime',
             title: '最後修改人',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            visible: false,
             width: '10%'
         },
         {
@@ -269,6 +257,7 @@
             title: "編輯",
             titleClass: 'center aligned',
             dataClass: 'custom-action center aligned',
+            width: '10%'
         },
     ];
 
@@ -308,41 +297,93 @@
 
     Vue.component('my-detail-row', {
         template: [
-            '<div class="detail-row ui form" v-on:click="onClick($event)">',
-                '<div class="inline field">',
-                    '<label>Name: </label>',
-                    '<span>{{rowData.name}}</span>',
-                '</div>',
-                '<div class="inline field">',
-                    '<label>Email: </label>',
-                    '<span>{{rowData.email}}</span>',
-                '</div>',
-                '<div class="inline field">',
-                    '<label>Nickname: </label>',
-                    '<span>{{rowData.nickname}}</span>',
-                '</div>',
-                '<div class="inline field">',
-                    '<label>Birthdate: </label>',
-                    '<span>{{rowData.birthdate}}</span>',
-                '</div>',
-                '<div class="inline field">',
-                    '<label>Gender: </label>',
-                    '<span>{{rowData.gender}}</span>',
-                '</div>',
+            '<div class="detail-row ui form" v-on:click="onClick($event)">'+
+                '<div class="">'+
+                    '<label>卡片名稱：</label>'+
+                    '<span>{{rowData.name}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>系列名稱：</label>'+
+                    '<span>{{rowData.setId}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>主分類：</label>'+
+                    '<span>{{rowData.supertype}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>次分類：</label>'+
+                    '<span v-for="(item, index) in rowData.subtypes">{{item}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>稀有度：</label>'+
+                    '<span>{{rowData.rarity}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>血量：</label>'+
+                    '<span>{{rowData.hp}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>屬性：</label>'+
+                    '<div v-for="(item, index) in rowData.types">'+
+                        '{{index}} - {{item}}'+
+                    '</div>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>進化自：</label>'+
+                    '<span>{{rowData.evolvesFrom}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>進化至：</label>'+
+                    '<div v-for="(item, index) in rowData.evolvesTo">'+
+                        '{{index}} - {{item}}'+
+                    '</div>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>規則：</label>'+
+                    '<div v-for="(item, index) in rowData.rules">'+
+                        '{{index}} - {{item}}'+
+                    '</div>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>特性：</label>'+
+                    '<div v-for="(item, index) in rowData.abilities">'+
+                        '{{index}} - {{item.name}} - {{item.text}} - {{item.type}}'+
+                    '</div>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>招式：</label>'+
+                    '<div v-for="(item, index) in rowData.attacks">'+
+                        '{{index}} - {{item.name}} - {{item.text}} - {{item.damage}}'+
+                    '</div>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>弱點：</label>'+
+                    '<div v-for="(item, index) in rowData.weaknesses">'+
+                        '{{index}} - {{item.type}} - {{item.value}}'+
+                    '</div>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>介紹：</label>'+
+                    '<span>{{rowData.flavorText}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>最後更新時間：</label>'+
+                    '<span>{{rowData.updateTime}}</span>'+
+                '</div>'+
             '</div>'
         ].join(''),
-         props: {
-            rowData: {
-                type: Object,
-                required: true
+        props: {
+        rowData: {
+            type: Object,
+            required: true
+        }
+        },
+        methods: {
+            CheckDetail (event) {
+                console.log('my-detail-row: on-click')
             }
-         },
-            methods: {
-                CheckDetail (event) {
-                  console.log('my-detail-row: on-click')
-                }
-            }
-        })
+        }
+    })
 
     Vue.config.debug = true
 
@@ -368,41 +409,15 @@
                     "Id": null,
                 },
                 formLabelWidth: '160px',
-                sortOrder: [{
-                    field: 'name',
-                    direction: 'asc',
-                }],
-                multiSort: true,
-                paginationComponent: 'vuetable-pagination',
-                //itemActions: [
-                //    { name: 'view-item', label: '', icon: 'zoom icon', class: 'ui teal button' },
-                //    { name: 'edit-item', label: '', icon: 'edit icon', class: 'ui orange button'},
-                //    { name: 'delete-item', label: '', icon: 'delete icon', class: 'ui red button' }
-                //]
+                
             }
         },
         mounted: function () {
             $("#app").show();
             //var paras = getUrlAllParams();
         },
-        watch: {
-            'perPage': function(val, oldVal) {
-                this.$broadcast('vuetable:refresh')
-            },
-            'paginationComponent': function(val, oldVal) {
-                this.$broadcast('vuetable:load-success', this.$refs.vuetable.tablePagination)
-            }
-        },
         methods: {
             //Callback functions
-            showDetailRow: function(value) {
-                var icon = this.$refs.vuetable.isVisibleDetailRow(value) ? 'down' : 'right'
-                return [
-                    '<a class="show-detail-row">',
-                        '<i class="chevron circle ' + icon + ' icon"></i>',
-                    '</a>'
-                ].join('')
-            },
             //allCap: function(value) {
             //    return value.toUpperCase()
             //},
@@ -414,6 +429,7 @@
             },
             formatDate: function (value) {
                 if (value == null) return '';
+                console.log("TIME:", value)
                 return moment(value.replace("T", " ")).local().format('YYYY/MM/DD HH:mm:ss');
             },
             transform: function (data) {
@@ -501,7 +517,11 @@
                 this.$alert('請重新檢視篩選條件', '搜尋結果為0', {
                     confirmButtonText: '確定'
                 });
-            }, 
+            },
+           onCellClicked (data, field, event) {
+                console.log('cellClicked: ', field.name)
+                this.$refs.vuetable.toggleDetailRow(data.id)
+           }
         },
     });
 </script>
