@@ -4,6 +4,72 @@
     Layout = "_Layout_BMS";
 }
 <script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js"></script>
+
+<style type="text/css">
+        .ui.vertical.stripe h3 {
+          font-size: 2em;
+        }
+
+        .secondary.pointing.menu .toc.item {
+          display: none;
+        }
+
+        .vuetable {
+            margin-top: 1em !important;
+        }
+        .vuetable-wrapper.ui.basic.segment {
+            padding: 0em;
+        }
+        .vuetable button.ui.button {
+            padding: .5em .5em;
+            font-weight: 400;
+        }
+        .vuetable button.ui.button i.icon {
+            margin: 0;
+        }
+        .vuetable th.sortable:hover {
+          color: #2185d0;
+          cursor: pointer;
+        }
+        .vuetable-actions, .custom-action {
+          width: 15%;
+          padding: 12px 0px;
+          text-align: center;
+        }
+        .vuetable-pagination {
+          background: #f9fafb !important;
+        }
+        .vuetable-pagination-info {
+          margin-top: auto;
+          margin-bottom: auto;
+        }
+        [v-cloak] {
+            display: none;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+        /*.vuetable-detail-row {
+            height: 200px;
+        }*/
+        .detail-row {
+            margin-left: 40px;
+        }
+        .expand-transition {
+            transition: all .3s ease;
+        }
+        .expand-enter, .expand-leave {
+            height: 0;
+            opacity: 0;
+        }
+        tr.odd {
+            background-color: #e6f5ff;
+        }
+        body {
+            overflow-y: scroll;
+        }
+    </style>
+
 <div class="content-wrapper" id="app">
 
     <section class="content-header">
@@ -33,11 +99,11 @@
                     </div>*@
 
                     <div class="form-group">
-                            <label for="lbl-purchaserPhone" class="col-md-2 control-label">訂購人電話</label>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" id="lbl-purchaserPhone" placeholder="訂購人電話" v-model="moreParams.filterQuery.Id" />
-                            </div>
+                        <label for="lbl-purchaserPhone" class="col-md-2 control-label">卡片ID</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="lbl-purchaserPhone" placeholder="卡片ID" v-model="moreParams.filterQuery.Id" />
                         </div>
+                    </div>
 
                     @*搜索條件*@
 
@@ -45,42 +111,64 @@
             </div>
 
             <div class="box-footer">
-                <button type="button" class="btn btn-primary " v-on:click="setFilter">搜尋</button>
+                @*<button type="button" class="btn btn-primary " v-on:click="setFilter">搜尋</button>*@
                 <button type="button" class="btn btn-warning" v-on:click="downloadFile">下載</button>
+                <a asp-page="/BMS/cardcreate" type="button" class="btn btn-danger" >新增</a>
             </div>
         </div>
 
         <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-fw fa-list"></i>卡牌列表<span></span></h3>
-            </div>
-
-            <div v-loading="tableLoading">
-                <vuetable ref="vuetable"
-                    :api-url="apiUrl"
-                    :fields="fields"
-                    :per-page="perPage"
-                    pagination-path="pagination"
-                    data-path="mydata"
-                    :append-params="moreParams"
-                    class="table table-bordered"
-                    http-method="post"
-                    v-on:vuetable:pagination-data="onPaginationData"
-                    v-on:vuetable:loading="tableLoading = true"
-                    v-on:vuetable:loaded="tableLoading = false">
-
-                    <template slot="actions" slot-scope="props">
-                        <div class="table-button-container">
-                            @*<a href="userdetail.aspx?id={ID}" class="btn-xs btn-default btn">查看</a> *@
-                            @*<a :href="'userdetail.aspx?id='+props.rowData.UserId" class="btn-xs btn-default btn">查看</a> *@
-                            @*<a class="btn btn-primary btn-sm" v-on:click="startRow(props.rowData)">明細</a>*@
+            <div id="content" class="ui basic segment">
+                <div class="ui grid">
+                    <div class="ui left aligned nine wide column">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-fw fa-list"></i>卡牌列表<span></span></h3>
                         </div>
-                    </template>
+                    </div>
 
-                </vuetable>
+                    <div class="ui right aligned seven wide column">
+                        <button class="ui basic button" id="settingsBtn">
+                            <i class="setting icon"></i>
+                            顯示設定
+                        </button>
+                    </div>
+                </div>
 
-                <vuetable-pagination ref="pagination" v-on:vuetable-pagination:change-page="onChangePage"> </vuetable-pagination>
+            
 
+                <div v-loading="tableLoading">
+                    <vuetable ref="vuetable"
+                        :api-url="apiUrl"
+                        :fields="fields"
+                        :per-page="perPage"
+                        pagination-path="pagination"
+                        data-path="mydata"
+                        :append-params="moreParams"
+                        class="table table-bordered"
+                        http-method="post"
+                        :pagination-component="paginationComponent"
+                        v-on:vuetable:pagination-data="onPaginationData"
+                        v-on:vuetable:loading="tableLoading = true"
+                        v-on:vuetable:loaded="tableLoading = false"
+                        detail-row-component="my-detail-row"
+                        detail-row-id="id"
+                        detail-row-transition="expand"
+                        >
+
+                        @*<template slot="actions" slot-scope="props">
+                            <div class="table-button-container">
+                                <a href="userdetail.aspx?id={ID}" class="btn-xs btn-default btn">查看</a> 
+                                <a  class="btn-xs btn-default btn">查看</a> 
+                                <a :href="'userdetail.aspx?id='+props.rowData.UserId" class="btn-xs btn-default btn">查看</a> 
+                                <a class="btn btn-primary btn-sm" v-on:click="startRow(props.rowData)">明細</a>
+                            </div>
+                        </template>*@
+
+                    </vuetable>
+
+                    <vuetable-pagination ref="pagination" v-on:vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+
+                </div>
             </div>
         </div>
     </section>
@@ -116,64 +204,149 @@
         //visible: true
         //callback:function()
         //},
-        //checkBox 50px
+        //checkBox 50px supertype
         {
             name: 'id',
+            sortField: 'id',
             title: "卡片ID",
             titleClass: 'center aligned',
             dataClass: 'center aligned',
+            callback:'showDetailRow',
+            visible: false
+        },
+        {
+            name: 'id',
             sortField: 'id',
+            title: "卡片ID",
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
             width: '25%'
         },
         {
             name: 'image',
+            sortField: 'image',
             title: '縮圖',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            sortField: 'image',
             width: '15%'
         },
         {
             name: 'setId',
+            sortField: 'setId',
             title: '卡牌系列',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            sortField: 'setId',
             width: '10%'
         },
         {
             name: 'name',
+            sortField: 'name',
             title: '卡牌名稱',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            sortField: 'name',
-            width: '20%'
+            width: '30%'
         },
         {
             name: 'updatetime',
+            sortField: 'updatetime',
             title: '最後修改時間',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            sortField: 'LastOrderDate',
-            callback:'updatetime',
+            callback:'formatDate',
             width: '10%'
         },
         {
             name: 'createtime',
+            sortField: 'createtime',
             title: '最後修改人',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            sortField: 'createtime',
+            visible: false,
             width: '10%'
         },
         {
-            name: '__slot:actions',
+            name: '__component:custom-action',
             title: "編輯",
             titleClass: 'center aligned',
-            dataClass: 'center aligned',
-            width: '10%'
-        }
+            dataClass: 'custom-action center aligned',
+        },
     ];
+
+    Vue.component('custom-action', {
+        template: [
+            '<div>',
+                //'<button class="ui red button" v-on:click="itemAction(\'view-item\', rowData)"><i class="zoom icon"></i></button>',
+                //'<button class="ui blue button" v-on:click="itemAction(\'edit-item\', rowData)"><i class="edit icon"></i></button>',
+                //'<button class="ui green button" v-on:click="itemAction(\'delete-item\', rowData)"><i class="delete icon"></i></button>',
+                //'<button class="ui red button"><i class="zoom icon"></i></button>',
+                //'<button class="ui blue button"><i class="edit icon"></i></button>',
+                //'<button class="ui green button"><i class="delete icon"></i></button>',
+                //'<a href="userdetail.aspx?id={ID}" class="btn btn-primary btn-sm">查看</a>', 
+                '<a class="btn btn-primary btn-sm">查看</a>',
+                //'<a :href="'userdetail.aspx?id='+props.rowData.UserId" class="btn-xs btn-default btn">查看</a>',
+                '<a class="btn btn-primary btn-sm" v-on:click="startRow(props.rowData)">明細</a>',
+            '</div>'
+        ].join(''),
+        props: {
+            rowData: {
+                type: Object,
+                required: true
+            }
+        },
+        methods: {
+            itemAction: function(action, data) {
+                sweetAlert('custom-action: ' + action, data.name)
+            },
+            onClick: function(event) {
+                console.log('custom-action: on-click', event.target)
+            },
+            onDoubleClick: function(event) {
+                console.log('custom-action: on-dblclick', event.target)
+            }
+        }
+    })
+
+    Vue.component('my-detail-row', {
+        template: [
+            '<div class="detail-row ui form" v-on:click="onClick($event)">',
+                '<div class="inline field">',
+                    '<label>Name: </label>',
+                    '<span>{{rowData.name}}</span>',
+                '</div>',
+                '<div class="inline field">',
+                    '<label>Email: </label>',
+                    '<span>{{rowData.email}}</span>',
+                '</div>',
+                '<div class="inline field">',
+                    '<label>Nickname: </label>',
+                    '<span>{{rowData.nickname}}</span>',
+                '</div>',
+                '<div class="inline field">',
+                    '<label>Birthdate: </label>',
+                    '<span>{{rowData.birthdate}}</span>',
+                '</div>',
+                '<div class="inline field">',
+                    '<label>Gender: </label>',
+                    '<span>{{rowData.gender}}</span>',
+                '</div>',
+            '</div>'
+        ].join(''),
+         props: {
+            rowData: {
+                type: Object,
+                required: true
+            }
+         },
+            methods: {
+                CheckDetail (event) {
+                  console.log('my-detail-row: on-click')
+                }
+            }
+        })
+
+    Vue.config.debug = true
+
+    var E_SERVER_ERROR = 'Error communicating with the server'
 
     var appMain = new Vue({
         el: '#app',
@@ -182,10 +355,11 @@
         },
         data: function () {
             return {
+                searchFor: '',
                 tableLoading: true,
                 fields: tableColumns,
                 apiUrl: "/api/Card/GetCards",
-                perPage: 20,
+                perPage: 10,
                 moreParams: {
                     filterQuery: { Id : "" },
                     Keyword: ''
@@ -194,13 +368,44 @@
                     "Id": null,
                 },
                 formLabelWidth: '160px',
+                sortOrder: [{
+                    field: 'name',
+                    direction: 'asc',
+                }],
+                multiSort: true,
+                paginationComponent: 'vuetable-pagination',
+                //itemActions: [
+                //    { name: 'view-item', label: '', icon: 'zoom icon', class: 'ui teal button' },
+                //    { name: 'edit-item', label: '', icon: 'edit icon', class: 'ui orange button'},
+                //    { name: 'delete-item', label: '', icon: 'delete icon', class: 'ui red button' }
+                //]
             }
         },
         mounted: function () {
             $("#app").show();
             //var paras = getUrlAllParams();
         },
+        watch: {
+            'perPage': function(val, oldVal) {
+                this.$broadcast('vuetable:refresh')
+            },
+            'paginationComponent': function(val, oldVal) {
+                this.$broadcast('vuetable:load-success', this.$refs.vuetable.tablePagination)
+            }
+        },
         methods: {
+            //Callback functions
+            showDetailRow: function(value) {
+                var icon = this.$refs.vuetable.isVisibleDetailRow(value) ? 'down' : 'right'
+                return [
+                    '<a class="show-detail-row">',
+                        '<i class="chevron circle ' + icon + ' icon"></i>',
+                    '</a>'
+                ].join('')
+            },
+            //allCap: function(value) {
+            //    return value.toUpperCase()
+            //},
             showLoader: function () {
                 this.$loading();
             },
@@ -234,6 +439,7 @@
                 this.searchFor = '';
                 this.setFilter();
             },
+           
             onPaginationData: function (paginationData) {
                 if (paginationData.total <= 0) {
                     this.open();
@@ -251,6 +457,9 @@
                 this.CleanerData = model;
                 this.dialogFormVisible = true;
                 this.diagleType = true;
+            },
+            changePaginationComponent: function() {
+                this.$broadcast('vuetable:load-success', this.$refs.vuetable.tablePagination)
             },
             downloadFile() {
                 //this.$confirm('確定要匯出嗎？', '', { type: 'warning' })
@@ -292,8 +501,7 @@
                 this.$alert('請重新檢視篩選條件', '搜尋結果為0', {
                     confirmButtonText: '確定'
                 });
-            },
-                
-        }
+            }, 
+        },
     });
 </script>
