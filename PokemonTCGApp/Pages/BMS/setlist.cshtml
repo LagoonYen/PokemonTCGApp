@@ -1,80 +1,41 @@
 ﻿@page
-@model PokemonTCGApp.Pages.BMS.cardlistModel
+@model PokemonTCGApp.Pages.BMS.setlistModel
 @{
     Layout = "_Layout_BMS";
 }
 <script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js"></script>
 
-@*<style type="text/css">
-        .ui.vertical.stripe h3 {
-          font-size: 2em;
-        }
-
-        .secondary.pointing.menu .toc.item {
-          display: none;
-        }
-
-        .vuetable {
-            margin-top: 1em !important;
-        }
-        .vuetable-wrapper.ui.basic.segment {
-            padding: 0em;
-        }
-        .vuetable button.ui.button {
-            padding: .5em .5em;
-            font-weight: 400;
-        }
-        .vuetable button.ui.button i.icon {
-            margin: 0;
-        }
-        .vuetable th.sortable:hover {
-          color: #2185d0;
-          cursor: pointer;
-        }
-        .vuetable-actions, .custom-action {
-          width: 15%;
-          padding: 12px 0px;
-          text-align: center;
-        }
-        .vuetable-pagination {
-          background: #f9fafb !important;
-        }
-        .vuetable-pagination-info {
-          margin-top: auto;
-          margin-bottom: auto;
-        }
-        [v-cloak] {
-            display: none;
-        }
-        .highlight {
-            background-color: yellow;
-        }
-        /*.vuetable-detail-row {
-            height: 200px;
-        }*/
-        .detail-row {
-            margin-left: 40px;
-        }
-        .expand-transition {
-            transition: all .3s ease;
-        }
-        .expand-enter, .expand-leave {
-            height: 0;
-            opacity: 0;
-        }
-        tr.odd {
-            background-color: #e6f5ff;
-        }
-        body {
-            overflow-y: scroll;
-        }
-</style>*@
+<style>
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 100px;
+        height: 100px;
+        line-height: 100px;
+        text-align: center;
+    }
+    .avatar {
+        width: 100px;
+        height: 100px;
+        display: block;
+    }
+</style>
 
 <div class="content-wrapper" id="app">
 
     <section class="content-header">
         <h1>卡牌列表
-            <small>所有已存在Mongo內的卡片列表</small>
+            <small>所有已存在Mongo內的卡牌系列列表</small>
         </h1>
     </section>
 
@@ -82,7 +43,7 @@
         <div class="box box-primary">
 
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="fa fa-fw fa-search"></i>搜尋卡牌</h3>
+                <h3 class="box-title"><i class="fa fa-newspaper-o"></i>新增卡牌系列</h3>
                 <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
@@ -90,20 +51,66 @@
             @*style="min-height: 1140px;*@
             <div class="box-body">
                 <div class="form-horizontal">
-
-                   @* <div class="form-group">
-                        <label for="" class="col-md-2 control-label">關鍵字搜尋</label>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control" id="" placeholder="關鍵字搜尋" v-model="" />
+                    @*左半邊*@
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="lbl-seriesId" class="col-md-2 control-label">系列ID</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="lbl-seriesId" placeholder="系列ID"  />
+                            </div>
                         </div>
-                    </div>*@
 
-                    <div class="form-group">
-                        <label for="lbl-purchaserPhone" class="col-md-2 control-label">卡片ID</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="lbl-purchaserPhone" placeholder="卡片ID" v-model="moreParams.filterQuery.Id" />
+                        <div class="form-group">
+                            <label for="lbl-series" class="col-md-2 control-label">主標題名稱</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="lbl-series" placeholder="主標題名稱"  />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lbl-name" class="col-md-2 control-label">副標題名稱</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="lbl-name" placeholder="副標題名稱"  />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lbl-purchaserName" class="col-md-2 control-label">上市日期</label>
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <el-date-picker 
+                                        v-model="releasetime"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                        type="date"
+                                        placeholder="上市日期"
+                                        align="right">
+                                    </el-date-picker>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    @*右半邊*@
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <el-upload
+                                action="https://jsonplaceholder.typicode.com/posts/"
+                                :on-success="handleAvatarSuccess"
+                                :on-preview="handlePictureCardPreview"
+                                :on-remove="handleRemove">
+                                @*:before-upload="beforeAvatarUpload"*@
+                                @*:show-file-list="false"*@
+                                @*class="avatar-uploader"*@
+                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                            <el-dialog :visible.sync="dialogVisible">
+                                <img style="width:100%" :src="imageUrl" alt="">
+                            </el-dialog>
                         </div>
                     </div>
+
 
                     @*搜索條件*@
 
@@ -112,14 +119,15 @@
 
             <div class="box-footer">
                 @*<button type="button" class="btn btn-primary " v-on:click="setFilter">搜尋</button>*@
-                <button type="button" class="btn btn-warning" v-on:click="downloadFile">下載</button>
-                <a asp-page="/BMS/cardcreate" type="button" class="btn btn-danger" >新增</a>
+                @*<button type="button" class="btn btn-warning" v-on:click="downloadFile">下載</button>*@
+                <button type="button" class="btn btn-danger" >新增</button>
             </div>
         </div>
 
         <div class="box box-primary">
             <div id="content" class="ui basic segment">
                 <div class="ui grid">
+
                     <div class="ui left aligned nine wide column">
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="fa fa-fw fa-list"></i>卡牌列表<span></span></h3>
@@ -132,9 +140,16 @@
                             顯示設定
                         </button>
                     </div>
-                </div>
 
-            
+                </div>
+                @*<div class="ui grid">
+                    <div class="ui left aligned nine wide column">
+                        <label for="lbl-keyword" class="col-md-2 control-label">關鍵字</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="lbl-keyword" placeholder="關鍵字" v-model="moreParams.filterQuery.Id" />
+                        </div>
+                    </div>
+                </div>*@
 
                 <div v-loading="tableLoading">
                     <vuetable ref="vuetable"
@@ -152,7 +167,7 @@
                         v-on:vuetable:cell-clicked="onCellClicked"
                         detail-row-component="my-detail-row"
                         >
-                        @*:pagination-component="paginationComponent"*@
+                        :pagination-component="paginationComponent"
 
                     </vuetable>
 
@@ -165,36 +180,9 @@
 </div>
 
 <script>
-    //$('#li_userlist').attr('class', 'active');
     Vue.use(Vuetable);
 
-    function getUrlAllParams() {
-        var url = decodeURI(window.location.href)
-        var res = {}
-        var url_data = _.split(url, '?').length > 1 ? _.split(url, '?')[1] : null;
-        if (!url_data) return null
-        var params_arr = _.split(url_data, '&')
-        _.forEach(params_arr, function (item) {
-            var key = _.split(item, '=')[0]
-            var value = _.split(item, '=')[1]
-            res[key] = value
-        });
-        return res
-    }
-
     var tableColumns = [
-        // 完整Columns
-        //{
-        //name: 'gender',
-        //sortField: 'gender',
-        //title: "gender",
-        //titleClass: 'center aligned',
-        //dataClass: 'center aligned',
-        //width: '200px',
-        //visible: true
-        //callback:function()
-        //},
-        //checkBox 50px supertype
         {
             name: 'id',
             sortField: 'id',
@@ -204,17 +192,17 @@
             width: '20%'
         },
         {
-            name: 'image',
-            sortField: 'image',
-            title: '縮圖',
+            name: 'seriesId',
+            sortField: 'seriesId',
+            title: '系列ID',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            width: '15%'
+            width: '10%'
         },
         {
-            name: 'setId',
-            sortField: 'setId',
-            title: '卡牌系列',
+            name: 'series',
+            sortField: 'series',
+            title: '主標題名稱',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
             width: '10%'
@@ -222,18 +210,18 @@
         {
             name: 'name',
             sortField: 'name',
-            title: '卡牌名稱',
+            title: '副標題名稱',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
             width: '10%'
         },
         {
-            name: 'rarity',
-            sortField: 'rarity',
-            title: '卡牌稀有度',
+            name: 'image',
+            sortField: 'image',
+            title: '縮圖',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            width: '10%'
+            width: '15%'
         },
         {
             name: 'updateTime',
@@ -245,8 +233,8 @@
             width: '15%'
         },
         {
-            name: 'createTime',
-            sortField: 'createTime',
+            name: 'updateAdmin',
+            sortField: 'updateAdmin',
             title: '最後修改人',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
@@ -254,7 +242,7 @@
         },
         {
             name: '__component:custom-action',
-            title: "編輯",
+            title: "操作",
             titleClass: 'center aligned',
             dataClass: 'custom-action center aligned',
             width: '10%'
@@ -264,16 +252,10 @@
     Vue.component('custom-action', {
         template: [
             '<div>',
-                //'<button class="ui red button" v-on:click="itemAction(\'view-item\', rowData)"><i class="zoom icon"></i></button>',
-                //'<button class="ui blue button" v-on:click="itemAction(\'edit-item\', rowData)"><i class="edit icon"></i></button>',
-                //'<button class="ui green button" v-on:click="itemAction(\'delete-item\', rowData)"><i class="delete icon"></i></button>',
-                //'<button class="ui red button"><i class="zoom icon"></i></button>',
-                //'<button class="ui blue button"><i class="edit icon"></i></button>',
-                //'<button class="ui green button"><i class="delete icon"></i></button>',
                 //'<a href="userdetail.aspx?id={ID}" class="btn btn-primary btn-sm">查看</a>', 
-                '<a class="btn btn-primary btn-sm">查看</a>',
+                '<a class="btn btn-primary btn-sm">編輯</a>',
+                '<a class="btn btn-primary btn-sm">刪除</a>',
                 //'<a :href="'userdetail.aspx?id='+props.rowData.UserId" class="btn-xs btn-default btn">查看</a>',
-                '<a class="btn btn-primary btn-sm" v-on:click="startRow(props.rowData)">明細</a>',
             '</div>'
         ].join(''),
         props: {
@@ -299,76 +281,28 @@
         template: [
             '<div class="detail-row ui form" v-on:click="onClick($event)">'+
                 '<div class="">'+
-                    '<label>卡片名稱：</label>'+
+                    '<label>系列ID：</label>'+
+                    '<span>{{rowData.seriesId}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>副標題名稱：</label>'+
                     '<span>{{rowData.name}}</span>'+
                 '</div>'+
                 '<div class="">'+
-                    '<label>系列名稱：</label>'+
-                    '<span>{{rowData.setId}}</span>'+
+                    '<label>主標題名稱：</label>'+
+                    '<span>{{rowData.series}}</span>'+
                 '</div>'+
                 '<div class="">'+
-                    '<label>主分類：</label>'+
-                    '<span>{{rowData.supertype}}</span>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>次分類：</label>'+
-                    '<span v-for="(item, index) in rowData.subtypes">{{item}}</span>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>稀有度：</label>'+
-                    '<span>{{rowData.rarity}}</span>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>血量：</label>'+
-                    '<span>{{rowData.hp}}</span>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>屬性：</label>'+
-                    '<div v-for="(item, index) in rowData.types">'+
-                        '{{index}} - {{item}}'+
-                    '</div>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>進化自：</label>'+
-                    '<span>{{rowData.evolvesFrom}}</span>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>進化至：</label>'+
-                    '<div v-for="(item, index) in rowData.evolvesTo">'+
-                        '{{index}} - {{item}}'+
-                    '</div>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>規則：</label>'+
-                    '<div v-for="(item, index) in rowData.rules">'+
-                        '{{index}} - {{item}}'+
-                    '</div>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>特性：</label>'+
-                    '<div v-for="(item, index) in rowData.abilities">'+
-                        '{{index}} - {{item.name}} - {{item.text}} - {{item.type}}'+
-                    '</div>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>招式：</label>'+
-                    '<div v-for="(item, index) in rowData.attacks">'+
-                        '{{index}} - {{item.name}} - {{item.text}} - {{item.damage}}'+
-                    '</div>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>弱點：</label>'+
-                    '<div v-for="(item, index) in rowData.weaknesses">'+
-                        '{{index}} - {{item.type}} - {{item.value}}'+
-                    '</div>'+
-                '</div>'+
-                '<div class="">'+
-                    '<label>介紹：</label>'+
-                    '<span>{{rowData.flavorText}}</span>'+
+                    '<label>上市時間：</label>'+
+                    '<span>{{rowData.releasetime}}</span>'+
                 '</div>'+
                 '<div class="">'+
                     '<label>最後更新時間：</label>'+
                     '<span>{{rowData.updateTime}}</span>'+
+                '</div>'+
+                '<div class="">'+
+                    '<label>最後更新人：</label>'+
+                    '<span>{{rowData.updateAdmin}}</span>'+
                 '</div>'+
             '</div>'
         ].join(''),
@@ -396,10 +330,15 @@
         },
         data: function () {
             return {
+                imageUrl: '',
+                dialogImageUrl: '',
+                dialogVisible: false,
+
                 searchFor: '',
                 tableLoading: true,
+                releasetime: '',
                 fields: tableColumns,
-                apiUrl: "/api/Card/GetCards",
+                apiUrl: "/api/Card/GetSets",
                 perPage: 10,
                 moreParams: {
                     filterQuery: { Id : "" },
@@ -518,10 +457,22 @@
                     confirmButtonText: '確定'
                 });
             },
-           onCellClicked (data, field, event) {
+            onCellClicked (data, field, event) {
                 console.log('cellClicked: ', field.name)
                 this.$refs.vuetable.toggleDetailRow(data.id)
-           }
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            handlePictureCardPreview(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            
         },
     });
+
 </script>

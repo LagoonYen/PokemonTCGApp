@@ -40,6 +40,28 @@ namespace PokemonTCGApp.Service
         {
             _cardRepository.UpdateCard(id, card);
         }
+        public Set CreateSet(RequestCreateSet req)
+        {
+            Set set = new Set()
+            {
+                Series = req.Series,
+                Name = req.Name,
+                SeriesId = req.SeriesId,
+                Image = req.Image,
+                ReleaseTime = req.ReleaseTime,
+                CreateTime = DateTime.Now,
+                UpdateTime = DateTime.Now,
+                UpdateAdmin = "小焰"
+            };
+
+            _cardRepository.CreateSet(set);
+            return set;
+        }
+
+        public List<Set> GetSets()
+        {
+            return _cardRepository.GetSets();
+        }
 
         public List<SupertypesEnumViewModel> GetAllSupertypesEnum()
         {

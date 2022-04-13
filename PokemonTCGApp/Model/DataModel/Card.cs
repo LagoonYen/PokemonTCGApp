@@ -20,13 +20,13 @@ namespace PokemonTCGApp.Model.DataModel
         /// <summary>
         /// The supertype of the card, such as Pokémon, Energy, or Trainer.
         /// </summary>
-        [BsonElement("supertype")] //卡片種類
+        [BsonElement("supertype")] //卡牌種類
         public string Supertype { get; set; } = String.Empty;
 
         /// <summary>
         /// A list of subtypes, such as Basic, EX, Mega, Rapid Strike, etc.
         /// </summary>
-        [BsonElement("subtypes")] //卡片特殊規則 如GX V Vmax VStar
+        [BsonElement("subtypes")] //卡牌特殊規則 如GX V Vmax VStar
         public List<string>? Subtypes { get; set; }
 
         ///// <summary>
@@ -68,8 +68,8 @@ namespace PokemonTCGApp.Model.DataModel
         /// <summary>
         /// The ancient trait for a given card. An ancient trait has the following fields.
         /// </summary>
-        [BsonElement("ancienttraits")] //古代特性?
-        public List<AncientTrait>? AncientTraits { get; set; }
+        //[BsonElement("ancienttraits")] //古代特性?
+        //public List<AncientTrait>? AncientTraits { get; set; }
 
         /// <summary>
         /// One or more abilities for a given card. An ability has the following fields.
@@ -110,7 +110,7 @@ namespace PokemonTCGApp.Model.DataModel
         /// <summary>
         /// The rarity of the card, such as "Common" or "Rare Rainbow".
         /// </summary>
-        [BsonElement("rarity")]  //卡片等級
+        [BsonElement("rarity")]  //卡牌等級
         public String? Rarity { get; set; }
 
         /// <summary>
@@ -124,6 +124,9 @@ namespace PokemonTCGApp.Model.DataModel
         /// </summary>
         [BsonElement("image")]  //圖片
         public String? Image { get; set; }
+
+        [BsonElement("updateAdmin")] //更新的管理員
+        public string? UpdateAdmin { get; set; }
 
         [BsonElement("createtime")] //初次編輯時間
         public DateTime CreateTime { get; set; }

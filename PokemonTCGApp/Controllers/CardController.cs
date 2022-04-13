@@ -151,6 +151,54 @@ namespace PokemonTCGApp.Controllers
         }
 
         /// <summary>
+        /// 新建卡牌系列
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Set> CreateSet([FromForm] RequestCreateSet req)
+        {
+            try
+            {
+                var result = cardService.CreateSet(req);
+
+                return CreatedAtAction(nameof(CreateSet), new { id = result.Id }, result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 取得全卡片清單
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<List<Set>> GetSets(RequestVueTable req)
+        {
+            try
+            {
+                if (req == null) { req = new RequestVueTable(); }
+                if (req.@params == null) { req.@params = new Params(); }
+                if (req.@params.filterQuery == null) { req.@params.filterQuery = new Dictionary<string, object>(); }
+
+                var Id = req.@params.filterQuery["Id"] as string;
+                return Ok(cardService.GetSets());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// 取得卡牌主分類
         /// </summary>
         /// <returns></returns>

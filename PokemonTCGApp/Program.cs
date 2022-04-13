@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IPokemonTCGDatabaseSettings>(sp =>
 builder.Services.AddSingleton<IMongoClient>(s =>
     new MongoClient(builder.Configuration.GetValue<string>("PokemonTCGDatabaseSettings:ConnectionStrings")));
 
+
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
 
