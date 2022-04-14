@@ -17,16 +17,16 @@ namespace PokemonTCGApp.Model.DataModel
         public string? SeriesId { get; set; }
 
         /// <summary>
-        /// The name of the set.
-        /// </summary>
-        [BsonElement("name")] //副標題 星星誕生
-        public string? Name { get; set; }
-
-        /// <summary>
         /// The series the set belongs to, like Sword and Shield or Base.
         /// </summary>
-        [BsonElement("series")] //主標題 劍 & 盾 / 預組
+        [BsonElement("series")] //主標題 劍 & 盾
         public string? Series { get; set; }
+
+        /// <summary>
+        /// The name of the set.
+        /// </summary>
+        [BsonElement("name")] //星星誕生 / 預組
+        public string? Name { get; set; }
 
         /// <summary>
         /// Any images associated with the set, such as symbol and logo. This is a hash with the following fields:

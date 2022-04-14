@@ -159,7 +159,7 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Set> CreateSet([FromForm]RequestCreateSet req)  //Did this
+        public ActionResult<Set> CreateSet([FromBody]RequestCreateSet req)  //Did this
         {
             try
             {

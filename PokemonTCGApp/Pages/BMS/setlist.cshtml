@@ -78,12 +78,12 @@ import { parseJSON } from "jquery";
                               action="#"
                               list-type="picture-card"
                               :auto-upload="false">
+
                                 <i slot="default" class="el-icon-plus"></i>
                                 <div slot="file" slot-scope="{file}">
                                   <img
                                     class="el-upload-list__item-thumbnail"
-                                    :src="file.url" alt=""
-                                  >
+                                    :src="file.url" alt="">
                                   <span class="el-upload-list__item-actions">
                                     <span
                                       class="el-upload-list__item-preview"
@@ -126,7 +126,7 @@ import { parseJSON } from "jquery";
 
                     <div class="ui left aligned nine wide column">
                         <div class="box-header with-border">
-                            <h3 class="box-title"><i class="fa fa-fw fa-list"></i>卡牌列表<span></span></h3>
+                            <h3 class="box-title"><i class="fa fa-fw fa-list"></i>系列列表<span></span></h3>
                         </div>
                     </div>
 
@@ -220,9 +220,9 @@ import { parseJSON } from "jquery";
             width: '15%'
         },
         {
-            name: 'updateTime',
-            sortField: 'updateTime',
-            title: '最後修改時間',
+            name: 'releaseTime',
+            sortField: 'releaseTime',
+            title: '上市時間',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
             callback:'formatDate',
@@ -290,14 +290,14 @@ import { parseJSON } from "jquery";
                 '</div>'+
                 '<div class="">'+
                     '<label>上市時間：</label>'+
-                    '<span>{{rowData.releasetime}}</span>'+
+                    '<span>{{rowData.releaseTime}}</span>'+
                 '</div>'+
                 '<div class="">'+
                     '<label>最後更新時間：</label>'+
                     '<span>{{rowData.updateTime}}</span>'+
                 '</div>'+
                 '<div class="">'+
-                    '<label>最後更新人：</label>'+
+                    '<label>最後修改人：</label>'+
                     '<span>{{rowData.updateAdmin}}</span>'+
                 '</div>'+
             '</div>'
@@ -368,43 +368,45 @@ import { parseJSON } from "jquery";
                 this.dialogVisible = true;
             },
 
+            //新增新系列API
             addNewSet() {
-                let data = {
+                let url = "/api/Card/CreateSet";
+                var data = {
                     "SeriesId" : appMain.seriesId,
                     "Name" : appMain.name,
                     "Series" : appMain.series,
-                    "Image" : appMain.image,
-                    "ReleaseTime" : appMain.releasetime,
-                }
-                let url = `/api/Card/CreateSet`;
+                    //"Image" : appMain.image,
+                    "ReleaseTime" : moment(appMain.releasetime).format(),  //DateTime 方法 moment(xxx).formate()
+                };
+                console.log("APIData", data);
                 fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data),
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
                 }).then((response) => {
                     if (response.status === 200) {
-                        appMain.$notify({ title: '成功', message: '更新成功', type: 'success' });
+                        //appMain.$notify({ title: '成功', message: '更新成功', type: 'success' });
                     }
                     return response.json();
                 }).then((data) => {
-                   
+                    appMain.setFilter();
                 }).catch((err) => {
                     console.log('錯誤:', err);
                 });
             },
 
+            
             showLoader: function () {
                 this.$loading();
             },
             hideLoader: function () {
                 this.$loading().close();
             },
+            //Callback - 時間轉換
             formatDate: function (value) {
                 if (value == null) return '';
                 console.log("TIME:", value)
-                return moment(value.replace("T", " ")).local().format('YYYY/MM/DD HH:mm:ss');
+                return moment(value.replace("T", " ")).local().format('YYYY/MM/DD');
             },
             transform: function (data) {
                 var transformed = {}

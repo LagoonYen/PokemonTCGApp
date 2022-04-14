@@ -40,14 +40,15 @@ namespace PokemonTCGApp.Service
         {
             _cardRepository.UpdateCard(id, card);
         }
+
         public Set CreateSet(RequestCreateSet req)
         {
-            Set set = new Set()
+            Set set = new()
             {
                 Series = req.Series,
                 Name = req.Name,
                 SeriesId = req.SeriesId,
-                Image = req.Image,
+                //Image = req.Image,
                 ReleaseTime = req.ReleaseTime,
                 CreateTime = DateTime.Now,
                 UpdateTime = DateTime.Now,
@@ -60,7 +61,14 @@ namespace PokemonTCGApp.Service
 
         public List<Set> GetSets()
         {
-            return _cardRepository.GetSets();
+            try
+            {
+                return _cardRepository.GetSets().OrderBy(x => x.ReleaseTime).OrderBy(x => x.SeriesId).ToList();
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public List<SupertypesEnumViewModel> GetAllSupertypesEnum()

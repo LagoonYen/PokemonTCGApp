@@ -78,6 +78,10 @@ app.UseStaticFiles();  //用於尋找wroot下的資料夾css, js檔案
 
 app.UseRouting();
 
+//app.UseCors(
+//    options => options.WithOrigins("http://localhost:7285").AllowAnyMethod().AllowAnyHeader()
+//);
+
 //使用Session
 app.UseSession();
 

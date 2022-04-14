@@ -21,8 +21,8 @@
 
         public string? Series { get; set; }
 
-        public string? Image { get; set; }
+        //public string? Image { get; set; }
 
-        public DateTime? ReleaseTime { get; set; } = DateTime.Now;
+        public DateTime ReleaseTime { get; set; }
     }
 }
