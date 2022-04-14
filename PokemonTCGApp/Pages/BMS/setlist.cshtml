@@ -3,9 +3,7 @@
 @{
     Layout = "_Layout_BMS";
 }
-<script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js">
-import { parseJSON } from "jquery";
-</script>
+<script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js"></script>
 
 <style>
     
@@ -75,9 +73,12 @@ import { parseJSON } from "jquery";
                         <div class="form-group">
 
                             <el-upload
-                              action="#"
-                              list-type="picture-card"
-                              :auto-upload="false">
+                                action="#"
+                                list-type="picture-card"
+                                :auto-upload="false"
+                                :file-list="fileList"
+                                :on-change="aaa"
+                                >
 
                                 <i slot="default" class="el-icon-plus"></i>
                                 <div slot="file" slot-scope="{file}">
@@ -326,6 +327,7 @@ import { parseJSON } from "jquery";
         },
         data: function () {
             return {
+                display: true,
                 fileList: [],
                 limitCount:1,
                 hideUpload:false,
@@ -360,6 +362,10 @@ import { parseJSON } from "jquery";
             //var paras = getUrlAllParams();
         },
         methods: {
+            aaa(file, fileList) {
+                console.log(fileList.length);
+                this.display = fileList.length == 0;
+            },
             handleRemove(file) {
                 console.log(file);
             },
