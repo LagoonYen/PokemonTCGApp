@@ -13,36 +13,69 @@ namespace PokemonTCGApp.Repository
         public CardRepository(IPokemonTCGDatabaseSettings settings, IMongoClient mongoClient)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
-            //_cardDatabase = database.GetCollection<Card>(settings.PokemonTCGCollectionName);
-            //_setDatabase = database.GetCollection<Set>(settings.PokemonTCGCollectionName);
             _cardDatabase = database.GetCollection<Card>(settings.CardCollectionName);
             _setDatabase = database.GetCollection<Set>(settings.SetCollectionName);
         }
 
         public Card CreateCard(Card card)
         {
-            _cardDatabase.InsertOne(card);
-            return card;
+            try
+            {
+                _cardDatabase.InsertOne(card);
+                return card;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public void DeleteCard(string id)
         {
-            _cardDatabase.DeleteOne(card => card.Id == id);
+            try
+            {
+                _cardDatabase.DeleteOne(card => card.Id == id);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public Card GetCard(string id)
         {
-            return _cardDatabase.Find(card => card.Id == id).FirstOrDefault();
+            try
+            {
+                return _cardDatabase.Find(card => card.Id == id).FirstOrDefault();
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public List<Card> GetCards()
         {
-            return _cardDatabase.Find(card => true).ToList();
+            try
+            {
+                return _cardDatabase.Find(card => true).ToList();
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public void UpdateCard(string id, Card card)
         {
-            _cardDatabase.ReplaceOne(card => card.Id == id, card);
+            try
+            {
+                _cardDatabase.ReplaceOne(card => card.Id == id, card);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public Set CreateSet(Set set)

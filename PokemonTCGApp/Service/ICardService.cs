@@ -12,8 +12,8 @@ namespace PokemonTCGApp.Service
         void UpdateCard(string id, Card card);
         void DeleteCard(string id);
 
-        Set CreateSet(RequestCreateSet set);
         List<Set> GetSets();
+        Set CreateSet(RequestCreateSet set);
 
         List<SupertypesEnumViewModel> GetAllSupertypesEnum();
         List<SubtypesEnumViewModel> GetAllSubtypesEnum();

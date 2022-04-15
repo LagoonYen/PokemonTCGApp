@@ -17,28 +17,63 @@ namespace PokemonTCGApp.Service
 
         public Card CreateCard(Card card)
         {
-            _cardRepository.CreateCard(card);
-            return card;
+            try
+            {
+                _cardRepository.CreateCard(card);
+                return card;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public void DeleteCard(string id)
         {
-            _cardRepository.DeleteCard(id);
+            try
+            {
+                _cardRepository.DeleteCard(id);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public Card GetCard(string id)
         {
-            return _cardRepository.GetCard(id);
+            try
+            {
+                return _cardRepository.GetCard(id);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public List<Card> GetCards()
         {
-            return _cardRepository.GetCards();
+            try
+            {
+                return _cardRepository.GetCards();
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public void UpdateCard(string id, Card card)
         {
-            _cardRepository.UpdateCard(id, card);
+            try
+            {
+                _cardRepository.UpdateCard(id, card);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public Set CreateSet(RequestCreateSet req)
@@ -63,7 +98,8 @@ namespace PokemonTCGApp.Service
         {
             try
             {
-                return _cardRepository.GetSets().OrderBy(x => x.ReleaseTime).OrderBy(x => x.SeriesId).ToList();
+                var result = _cardRepository.GetSets();
+                return result.OrderBy(x => x.ReleaseTime).OrderBy(x => x.SeriesId).ToList();
             }
             catch
             {

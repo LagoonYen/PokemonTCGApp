@@ -184,7 +184,7 @@
                         v-on:vuetable:cell-clicked="onCellClicked"
                         detail-row-component="my-detail-row"
                         >
-                        :pagination-component="paginationComponent"
+                        @*:pagination-component="paginationComponent"*@
 
                     </vuetable>
 
@@ -353,7 +353,6 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 disabled: false,
-                //fileList:[],
 
                 seriesId:"",
                 name:"",
@@ -413,7 +412,7 @@
                     "SeriesId" : appMain.seriesId,
                     "Name" : appMain.name,
                     "Series" : appMain.series,
-                    //"image" : appMain.image,
+                    "image" : appMain.image,
                     "ReleaseTime" : moment(appMain.releasetime).format(),  //DateTime 方法 moment(xxx).formate()
                 };
                 console.log("APIData", data);
@@ -457,7 +456,7 @@
                     to: data.to
                 }
 
-                transformed.mydata = data;
+                transformed.mydata = data.data;
                 return transformed;
             },
             setFilter: function () {

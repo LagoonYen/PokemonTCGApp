@@ -13,11 +13,11 @@ namespace PokemonTCGApp.Controllers
     [ApiController]
     public class CardController : ControllerBase
     {
-        private readonly ICardService cardService;
+        private readonly ICardService _cardService;
 
         public CardController(ICardService cardService)
         {
-            this.cardService = cardService;
+            _cardService = cardService;
         }
 
         /// <summary>
@@ -37,7 +37,9 @@ namespace PokemonTCGApp.Controllers
                 if (req.@params.filterQuery == null) { req.@params.filterQuery = new Dictionary<string, object>(); }
 
                 var Id = req.@params.filterQuery["Id"] as string;
-                return Ok(cardService.GetCards());
+                var result = _cardService.GetCards();
+                var cVueTableList = new VueTableList<Card>(result, req.@params.sort, req.@params.per_page, req.@params.page);
+                return Ok(cVueTableList);
             }
             catch (Exception ex)
             {
@@ -58,7 +60,7 @@ namespace PokemonTCGApp.Controllers
         {
             try
             {
-                return Ok(cardService.GetCard(id));
+                return Ok(_cardService.GetCard(id));
             }
             catch (Exception ex)
             {
@@ -79,7 +81,7 @@ namespace PokemonTCGApp.Controllers
         {
             try
             {
-                cardService.CreateCard(card);
+                _cardService.CreateCard(card);
 
                 return CreatedAtAction(nameof(GetCard), new { id = card.Id }, card);
             }
@@ -103,14 +105,14 @@ namespace PokemonTCGApp.Controllers
         {
             try
             {
-                var existingCard = cardService.GetCard(id);
+                var existingCard = _cardService.GetCard(id);
 
                 if(existingCard == null)
                 {
                     return NotFound($"Card with Id = {id} not found");
                 }
 
-                cardService.UpdateCard(id, card);
+                _cardService.UpdateCard(id, card);
 
                 return NoContent();
             }
@@ -133,14 +135,14 @@ namespace PokemonTCGApp.Controllers
         {
             try
             {
-                var card = cardService.GetCard(id);
+                var card = _cardService.GetCard(id);
 
                 if(card == null)
                 {
                     return NotFound($"Card with Id = {id} not found");
                 }
 
-                cardService.DeleteCard(id);
+                _cardService.DeleteCard(id);
 
                 return Accepted($"Card with Id = {id} deleted");
             }
@@ -163,8 +165,7 @@ namespace PokemonTCGApp.Controllers
         {
             try
             {
-                var result = cardService.CreateSet(req);
-
+                var result = _cardService.CreateSet(req);
                 return CreatedAtAction(nameof(CreateSet), new { id = result.Id }, result);
             }
             catch (Exception ex)
@@ -174,7 +175,7 @@ namespace PokemonTCGApp.Controllers
         }
 
         /// <summary>
-        /// 取得全卡片清單
+        /// 取得全系列清單
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -190,7 +191,14 @@ namespace PokemonTCGApp.Controllers
                 if (req.@params.filterQuery == null) { req.@params.filterQuery = new Dictionary<string, object>(); }
 
                 var Id = req.@params.filterQuery["Id"] as string;
-                return Ok(cardService.GetSets());
+
+                //To Do List<Set>? result
+                var result = _cardService.GetSets();
+
+                if (result.Count == 0) throw new Exception("查無系列");
+                
+                var cVueTableList = new VueTableList<Set>(result, req.@params.sort, req.@params.per_page, req.@params.page);
+                return Ok(cVueTableList);
             }
             catch (Exception ex)
             {
@@ -210,7 +218,7 @@ namespace PokemonTCGApp.Controllers
         {
             try
             {
-                var result = cardService.GetAllSupertypesEnum();
+                var result = _cardService.GetAllSupertypesEnum();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -231,7 +239,7 @@ namespace PokemonTCGApp.Controllers
         {
             try
             {
-                var result = cardService.GetAllSubtypesEnum();
+                var result = _cardService.GetAllSubtypesEnum();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -252,7 +260,7 @@ namespace PokemonTCGApp.Controllers
         {
             try
             {
-                var result = cardService.GetAllRaritiesEnum();
+                var result = _cardService.GetAllRaritiesEnum();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -273,7 +281,7 @@ namespace PokemonTCGApp.Controllers
         {
             try
             {
-                var result = cardService.GetAllTypesEnum();
+                var result = _cardService.GetAllTypesEnum();
                 return Ok(result);
             }
             catch (Exception ex)

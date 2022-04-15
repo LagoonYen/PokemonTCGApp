@@ -35,15 +35,15 @@ namespace PokemonTCGApp.Model.DataModel
         public string? Image { get; set; }
 
         [BsonElement("releasetime")]  //上市時間
-        public DateTime? ReleaseTime { get; set; }
+        public DateTime ReleaseTime { get; set; }
 
         [BsonElement("updateAdmin")] //更新的管理員
         public string? UpdateAdmin { get; set; }
 
         [BsonElement("createtime")] //初次編輯時間
-        public DateTime? CreateTime { get; set; }
+        public DateTime CreateTime { get; set; }
 
         [BsonElement("updatetime")] //更新編輯時間
-        public DateTime? UpdateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
     }
 }
