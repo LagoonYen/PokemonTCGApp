@@ -32,7 +32,7 @@ namespace PokemonTCGApp.Model.DataModel
         /// Any images associated with the set, such as symbol and logo. This is a hash with the following fields:
         /// </summary>
         [BsonElement("image")]  //圖片
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
 
         [BsonElement("releasetime")]  //上市時間
         public DateTime ReleaseTime { get; set; }

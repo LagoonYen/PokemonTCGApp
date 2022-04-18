@@ -10,7 +10,7 @@ namespace PokemonTCGApp.Repository
         void UpdateCard(string id, Card card);
         void DeleteCard(string id);
 
-        Set CreateSet(Set set);
+        Set SaveSet(Set set);
         List<Set> GetSets();
     }
 }

@@ -8,7 +8,12 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
+
+builder.Services.AddControllersWithViews();
+
+//Db Setting
 builder.Services.Configure<PokemonTCGDatabaseSettings>(
     builder.Configuration.GetSection(nameof(PokemonTCGDatabaseSettings)));
 
@@ -18,10 +23,16 @@ builder.Services.AddSingleton<IPokemonTCGDatabaseSettings>(sp =>
 builder.Services.AddSingleton<IMongoClient>(s =>
     new MongoClient(builder.Configuration.GetValue<string>("PokemonTCGDatabaseSettings:ConnectionStrings")));
 
-
+//Service Repository Setting
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
 
+//Image Upload Setting
+builder.Services.AddControllersWithViews().AddJsonOptions(o =>
+{
+    o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    o.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
 
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();

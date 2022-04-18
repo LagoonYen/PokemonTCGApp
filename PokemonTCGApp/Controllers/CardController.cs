@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PokemonTCGApp.Model;
 using PokemonTCGApp.Model.DataModel;
 using PokemonTCGApp.Model.DTOModel;
@@ -161,12 +162,12 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Set> CreateSet([FromBody]RequestCreateSet req)  //Did this
+        public ActionResult<string> SaveSet(RequestSaveSet req)
         {
             try
             {
-                var result = _cardService.CreateSet(req);
-                return CreatedAtAction(nameof(CreateSet), new { id = result.Id }, result);
+                var result = _cardService.SaveSet(req);
+                return result;
             }
             catch (Exception ex)
             {

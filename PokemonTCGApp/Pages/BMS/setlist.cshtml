@@ -95,8 +95,9 @@
                                 list-type="picture-card"
                                 :auto-upload="false"
                                 :on-change="handleChange"
+                                :file-list="fileList"
+                                :before-upload="beforeAvatarUpload"
                                 >
-                                @*:file-list="fileList"*@
                                 @*<i class="el-icon-upload"></i>*@
 
                                 <i slot="default" class="el-icon-plus"></i>
@@ -182,8 +183,10 @@
                         v-on:vuetable:loading="tableLoading = true"
                         v-on:vuetable:loaded="tableLoading = false"
                         v-on:vuetable:cell-clicked="onCellClicked"
+                        track-by="Id"
                         detail-row-component="my-detail-row"
                         >
+
                         @*:pagination-component="paginationComponent"*@
 
                     </vuetable>
@@ -201,15 +204,15 @@
 
     var tableColumns = [
         {
-            name: 'id',
-            sortField: 'id',
+            name: 'Id',
+            sortField: 'Id',
             title: "MongoID",
             titleClass: 'center aligned',
             dataClass: 'center aligned',
             width: '20%'
         },
         {
-            name: 'seriesId',
+            name: 'SeriesId',
             sortField: 'SeriesId',
             title: '系列ID',
             titleClass: 'center aligned',
@@ -217,7 +220,7 @@
             width: '10%'
         },
         {
-            name: 'series',
+            name: 'Series',
             sortField: 'Series',
             title: '主標題名稱',
             titleClass: 'center aligned',
@@ -225,7 +228,7 @@
             width: '10%'
         },
         {
-            name: 'name',
+            name: 'Name',
             sortField: 'Name',
             title: '副標題名稱',
             titleClass: 'center aligned',
@@ -233,7 +236,7 @@
             width: '10%'
         },
         {
-            name: 'image',
+            name: 'Image',
             sortField: 'Image',
             title: '縮圖',
             titleClass: 'center aligned',
@@ -241,7 +244,7 @@
             width: '15%'
         },
         {
-            name: 'releaseTime',
+            name: 'ReleaseTime',
             sortField: 'ReleaseTime',
             title: '上市時間',
             titleClass: 'center aligned',
@@ -250,7 +253,7 @@
             width: '15%'
         },
         {
-            name: 'updateAdmin',
+            name: 'UpdateAdmin',
             sortField: 'UpdateAdmin',
             title: '最後修改人',
             titleClass: 'center aligned',
@@ -299,35 +302,35 @@
             '<div class="detail-row ui form" v-on:click="onClick($event)">'+
                 '<div class="">'+
                     '<label>系列ID：</label>'+
-                    '<span>{{rowData.seriesId}}</span>'+
+                    '<span>{{rowData.SeriesId}}</span>'+
                 '</div>'+
                 '<div class="">'+
                     '<label>副標題名稱：</label>'+
-                    '<span>{{rowData.name}}</span>'+
+                    '<span>{{rowData.Name}}</span>'+
                 '</div>'+
                 '<div class="">'+
                     '<label>主標題名稱：</label>'+
-                    '<span>{{rowData.series}}</span>'+
+                    '<span>{{rowData.Series}}</span>'+
                 '</div>'+
                 '<div class="">'+
                     '<label>上市時間：</label>'+
-                    '<span>{{rowData.releaseTime}}</span>'+
+                    '<span>{{rowData.ReleaseTime}}</span>'+
                 '</div>'+
                 '<div class="">'+
                     '<label>最後更新時間：</label>'+
-                    '<span>{{rowData.updateTime}}</span>'+
+                    '<span>{{rowData.UpdateTime}}</span>'+
                 '</div>'+
                 '<div class="">'+
                     '<label>最後修改人：</label>'+
-                    '<span>{{rowData.updateAdmin}}</span>'+
+                    '<span>{{rowData.UpdateAdmin}}</span>'+
                 '</div>'+
             '</div>'
         ].join(''),
         props: {
-        rowData: {
-            type: Object,
-            required: true
-        }
+            rowData: {
+                type: Object,
+                required: true
+            }
         },
         methods: {
             CheckDetail (event) {
@@ -353,6 +356,7 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 disabled: false,
+                fileList:[],
 
                 seriesId:"",
                 name:"",
@@ -382,11 +386,10 @@
         methods: {
             //縮圖上傳 強制取最新的
             handleChange(file, fileList) {
+                //修改el-upload style
                 this.hideUpload = fileList.length >= this.limitCountImg
-                //if(fileList.length > 1){
-                //    //強制取最新的
-                //    fileList.splice(0,1);
-                //}
+
+                //roots上的image blob物件
                 appMain.image = URL.createObjectURL(file.raw)
             },
             handleRemove(file) {
@@ -404,22 +407,53 @@
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
+            beforeAvatarUpload (file) {
+                const isJPG = file.type === 'image/jpeg'
+                const isLt2M = file.size / 1024 / 1024 < 2
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!')
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!')
+                }
+                return isJPG && isLt2M
+            },
 
             //新增新系列API
             addNewSet() {
-                let url = "/api/Card/CreateSet";
-                var data = {
-                    "SeriesId" : appMain.seriesId,
-                    "Name" : appMain.name,
-                    "Series" : appMain.series,
-                    "image" : appMain.image,
-                    "ReleaseTime" : moment(appMain.releasetime).format(),  //DateTime 方法 moment(xxx).formate()
-                };
-                console.log("APIData", data);
+                let url = "/api/Card/SaveSet";
+                var formData = new FormData();
+                
+                console.log(this.$refs.elupload.uploadFiles[0].raw);
+                console.log(appMain.image);
+
+                formData.append("SeriesId", JSON.stringify(appMain.seriesId));
+                formData.append("Name", JSON.stringify(appMain.name));
+                formData.append("Series", JSON.stringify(appMain.series));
+                formData.append("ReleaseTime", moment(appMain.releasetime).format());
+                //formData.append("File", appMain.image);
+                formData.append("File", appMain.imageUrl);
+                //formData.append("File", this.$refs.elupload.uploadFiles[0]);
+                
+                //formData = JSON.stringify({
+                //    "SeriesId" : appMain.seriesId,
+                //    "Name" : appMain.name,
+                //    "Series" : appMain.series,
+                //    "ReleaseTime" : moment(appMain.releasetime).format(),  //DateTime 方法 moment(xxx).formate()
+                //});
+                //formData.append("File", appMain.image);
+
+                console.log("APIData", formData);
+
                 fetch(url, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
+                    headers: { 
+                        //'Authorization': 'Bearer',
+                        'Accept': "application/json, */*",
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    data: formData,
+                    //body: formData
                 }).then((response) => {
                     if (response.status === 200) {
                         //appMain.$notify({ title: '成功', message: '更新成功', type: 'success' });
@@ -532,7 +566,7 @@
             },
             onCellClicked (data, field, event) {
                 console.log('cellClicked: ', field.name)
-                this.$refs.vuetable.toggleDetailRow(data.id)
+                this.$refs.vuetable.toggleDetailRow(data.Id)
             },
         },
     });

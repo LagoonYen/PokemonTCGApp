@@ -33,7 +33,6 @@ namespace PokemonTCGApp.Model.DTOModel
 
             var dataClass = typeof(T);
 
-            //To do 未實體化?
             if (!string.IsNullOrEmpty(sortPara))
             {
                 var dItem = sortPara.Split('|');
@@ -200,7 +199,7 @@ namespace PokemonTCGApp.Model.DTOModel
         public Dictionary<string, object> filterQuery { get; set; }
     }
 
-    public class RequestCreateSet
+    public class  RequestSaveSet
     {
         public string? SeriesId { get; set; }
 
@@ -208,9 +207,8 @@ namespace PokemonTCGApp.Model.DTOModel
 
         public string? Series { get; set; }
 
-        //public string? Image { get; set; }
-        public IFormFile? Image { get; set; }
-
         public DateTime ReleaseTime { get; set; }
+
+        public IFormFile? File { get; set; }
     }
 }

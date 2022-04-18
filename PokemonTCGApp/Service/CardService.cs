@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Newtonsoft.Json;
 using PokemonTCGApp.Model;
 using PokemonTCGApp.Model.DataModel;
 using PokemonTCGApp.Model.DTOModel;
@@ -76,22 +77,66 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public Set CreateSet(RequestCreateSet req)
+        public string SaveSet( RequestSaveSet req)
         {
-            Set set = new()
+            try
             {
-                Series = req.Series,
-                Name = req.Name,
-                SeriesId = req.SeriesId,
-                //Image = req.Image,
-                ReleaseTime = req.ReleaseTime,
-                CreateTime = DateTime.Now,
-                UpdateTime = DateTime.Now,
-                UpdateAdmin = "小焰"
-            };
+                if(req.SeriesId == null || req.Name == null || req.Series == null)
+                {
+                    throw new Exception("請填寫基本系列資料");
+                }
 
-            _cardRepository.CreateSet(set);
-            return set;
+                Set setobject = new()
+                {
+                    Series = req.Series,
+                    Name = req.Name,
+                    SeriesId = req.SeriesId,
+                    //Image = req.Image,
+                    ReleaseTime = req.ReleaseTime,
+                    CreateTime = DateTime.Now,
+                    UpdateTime = DateTime.Now,
+                    UpdateAdmin = "小焰"
+                };
+
+                if (req.File?.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        req.File.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+
+                        setobject.Image = fileBytes;
+                        setobject = _cardRepository.SaveSet(setobject);
+
+                        if (setobject.Id?.Trim() != "")
+                        {
+                            return "系列儲存更新成功";
+                        }
+                    }
+                }
+                return "系列儲存更新失敗";
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public byte[] GetImage(string sBase64String)
+        {
+            try
+            {
+                byte[] bytes = null;
+                if (!string.IsNullOrEmpty(sBase64String))
+                {
+                    bytes = Convert.FromBase64String(sBase64String);
+                }
+                return bytes;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public List<Set> GetSets()
@@ -99,6 +144,25 @@ namespace PokemonTCGApp.Service
             try
             {
                 var result = _cardRepository.GetSets();
+                foreach(var set in result)
+                {
+                    if(set.Image != null)
+                    {
+                        set.Image = GetImage(Convert.ToBase64String(set.Image));
+                    }
+                }
+                //result = result(s =>
+                //{
+                //    Id = s.Id,
+                //    Name = s.Name,
+                //    //Image = GetImage(Convert.ToBase64String(s.Image)),
+                //    UpdateAdmin = s.UpdateAdmin,
+                //    UpdateTime = s.UpdateTime,
+                //    CreateTime = s.CreateTime,
+                //    ReleaseTime = s.ReleaseTime,
+                //    Series = s.Series,
+                //    SeriesId = s.SeriesId,
+                //});
                 return result.OrderBy(x => x.ReleaseTime).OrderBy(x => x.SeriesId).ToList();
             }
             catch
