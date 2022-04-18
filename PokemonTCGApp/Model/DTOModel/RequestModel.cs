@@ -45,11 +45,11 @@ namespace PokemonTCGApp.Model.DTOModel
 
                 if (dItem[1] == "asc")
                 {
-                    list = list.OrderBy(c => c.GetType().GetProperty(dItem[0]).GetValue(c)).ToList();
+                    list = list.OrderBy(c => c?.GetType().GetProperty(dItem[0])?.GetValue(c)).ToList();
                 }
                 else if (dItem[1] == "desc")
                 {
-                    list = list.OrderByDescending(c => c.GetType().GetProperty(dItem[0]).GetValue(c)).ToList();
+                    list = list.OrderByDescending(c => c?.GetType().GetProperty(dItem[0])?.GetValue(c)).ToList();
                 }
             }
 
