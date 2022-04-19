@@ -13,7 +13,7 @@ namespace PokemonTCGApp.Service
         void DeleteCard(string id);
 
         List<Set> GetSets();
-        string SaveSet( RequestSaveSet set);
+        string UpsertSet( RequestSaveSet set);
 
         List<SupertypesEnumViewModel> GetAllSupertypesEnum();
         List<SubtypesEnumViewModel> GetAllSubtypesEnum();

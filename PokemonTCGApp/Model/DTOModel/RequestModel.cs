@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 
 namespace PokemonTCGApp.Model.DTOModel
 {
@@ -201,14 +201,18 @@ namespace PokemonTCGApp.Model.DTOModel
 
     public class  RequestSaveSet
     {
+        public string? Id { get; set; }
+
         public string? SeriesId { get; set; }
 
         public string? Name { get; set; }
 
         public string? Series { get; set; }
 
+        public DateTime CreateTime { get; set; }
+
         public DateTime ReleaseTime { get; set; }
 
-        public IFormFile? File { get; set; }
+        public string? File { get; set; }
     }
 }

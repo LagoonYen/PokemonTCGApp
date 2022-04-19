@@ -4,6 +4,7 @@ using PokemonTCGApp.Model;
 using PokemonTCGApp.Model.DataModel;
 using PokemonTCGApp.Model.DTOModel;
 using PokemonTCGApp.Repository;
+using System.Text;
 
 namespace PokemonTCGApp.Service
 {
@@ -77,7 +78,7 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public string SaveSet( RequestSaveSet req)
+        public string UpsertSet(RequestSaveSet req)
         {
             try
             {
@@ -88,33 +89,32 @@ namespace PokemonTCGApp.Service
 
                 Set setobject = new()
                 {
+                    Id = req.Id,
                     Series = req.Series,
                     Name = req.Name,
                     SeriesId = req.SeriesId,
-                    //Image = req.Image,
                     ReleaseTime = req.ReleaseTime,
-                    CreateTime = DateTime.Now,
+                    CreateTime = req.Id == null ? DateTime.Now : req.CreateTime,
                     UpdateTime = DateTime.Now,
+                    //To do
                     UpdateAdmin = "小焰"
                 };
 
                 if (req.File?.Length > 0)
                 {
-                    using (var ms = new MemoryStream())
+                    string image = JsonConvert.SerializeObject(req.File);
+
+                    string base64EncodedExternalImage = Convert.ToBase64String(Encoding.UTF8.GetBytes(image));
+                    byte[] fileBytes = Convert.FromBase64String(base64EncodedExternalImage);
+                    setobject.Image = fileBytes;
+                    setobject = _cardRepository.UpsertSet(setobject);
+
+                    if (setobject.Id?.Trim() != "")
                     {
-                        req.File.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-
-                        setobject.Image = fileBytes;
-                        setobject = _cardRepository.SaveSet(setobject);
-
-                        if (setobject.Id?.Trim() != "")
-                        {
-                            return "系列儲存更新成功";
-                        }
+                        return "圖片更新成功";
                     }
                 }
-                return "系列儲存更新失敗";
+                return "圖片更新失敗";
             }
             catch
             {
@@ -149,6 +149,7 @@ namespace PokemonTCGApp.Service
                     if(set.Image != null)
                     {
                         set.Image = GetImage(Convert.ToBase64String(set.Image));
+                        set.Imgbase64 = Encoding.UTF8.GetString(set.Image);
                     }
                 }
                 //result = result(s =>

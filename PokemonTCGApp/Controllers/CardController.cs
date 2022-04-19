@@ -162,11 +162,11 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<string> SaveSet(RequestSaveSet req)
+        public ActionResult<string> UpsertSet([FromBody]RequestSaveSet req)
         {
             try
             {
-                var result = _cardService.SaveSet(req);
+                var result = _cardService.UpsertSet(req);
                 return result;
             }
             catch (Exception ex)

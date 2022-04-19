@@ -1,4 +1,6 @@
-﻿namespace PokemonTCGApp.Model.DTOModel
+﻿using PokemonTCGApp.Model.DataModel;
+
+namespace PokemonTCGApp.Model.DTOModel
 {
     public class EnumViewModel
     {
@@ -22,10 +24,4 @@
     public class TypesEnumViewModel : EnumViewModel
     {
     }
-
-
-
-
-
-
 }

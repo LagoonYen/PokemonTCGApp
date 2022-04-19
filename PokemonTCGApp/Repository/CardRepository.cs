@@ -78,12 +78,12 @@ namespace PokemonTCGApp.Repository
             }
         }
 
-        public Set SaveSet(Set set)
+        public Set UpsertSet(Set set)
         {
             try
             {
-                var setObj = _setDatabase.Find(set => set.Id == set.Id).FirstOrDefault();
-                if(setObj == null)
+                var setObj = _setDatabase.Find(x => x.Id == set.Id).FirstOrDefault();
+                if (setObj == null)
                 {
                     _setDatabase.InsertOne(set);
                 }

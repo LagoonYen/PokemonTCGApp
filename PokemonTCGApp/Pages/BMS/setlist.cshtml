@@ -15,10 +15,10 @@
         display:none;
     }
 
-    /*Need Desc*/
-    /*.el-upload__input {
-        display: none !important;
-    }*/
+    .setLogo{
+        max-width:150px;
+        max-height:150px;
+    }
 
     input.el-upload__input {
         display: none;
@@ -53,7 +53,7 @@
                                 <input type="text" class="form-control" id="lbl-seriesId" placeholder="系列ID" v-model="seriesId" />
                             </div>
                         </div>
-
+                        
                         <div class="form-group">
                             <label for="lbl-series" class="col-md-2 control-label">主標題名稱</label>
                             <div class="col-md-4">
@@ -98,10 +98,8 @@
                                 :file-list="fileList"
                                 :before-upload="beforeAvatarUpload"
                                 >
-                                @*<i class="el-icon-upload"></i>*@
 
                                 <i slot="default" class="el-icon-plus"></i>
-                                @*<div class="el-upload__text">拖曳至此或<em>點這裡</em></div>*@
                                 <div slot="file" slot-scope="{file}">
                                     <img
                                         class="el-upload-list__item-thumbnail"
@@ -136,9 +134,7 @@
             </div>
 
             <div class="box-footer">
-                @*<button type="button" class="btn btn-primary " v-on:click="setFilter">搜尋</button>*@
-                @*<button type="button" class="btn btn-warning" v-on:click="downloadFile">下載</button>*@
-                <button type="button" class="btn btn-danger" v-on:click="addNewSet">新增</button>
+                <button type="button" class="btn btn-danger" v-on:click="UpsertSet">UpSert</button>
             </div>
         </div>
 
@@ -160,14 +156,6 @@
                     </div>
 
                 </div>
-                @*<div class="ui grid">
-                    <div class="ui left aligned nine wide column">
-                        <label for="lbl-keyword" class="col-md-2 control-label">關鍵字</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="lbl-keyword" placeholder="關鍵字" v-model="moreParams.filterQuery.Id" />
-                        </div>
-                    </div>
-                </div>*@
 
                 <div v-loading="tableLoading">
                     <vuetable ref="vuetable"
@@ -188,6 +176,12 @@
                         >
 
                         @*:pagination-component="paginationComponent"*@
+                        <template slot="actions" slot-scope="props">
+                            <div class="table-button-container">
+                                <a v-on:click="editSet(props.rowData)" class="btn-xs btn-default btn">編輯</a>
+                                <a v-on:click="delSet(props.rowData.id)" class="btn-xs btn-default btn">刪除</a>
+                            </div>
+                        </template>
 
                     </vuetable>
 
@@ -236,11 +230,12 @@
             width: '10%'
         },
         {
-            name: 'Image',
-            sortField: 'Image',
+            name: 'Imgbase64',
+            sortField: 'Imgbase64',
             title: '縮圖',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
+             callback:'formatImage',
             width: '15%'
         },
         {
@@ -261,41 +256,13 @@
             width: '10%'
         },
         {
-            name: '__component:custom-action',
+            name: '__slot:actions',
             title: "操作",
             titleClass: 'center aligned',
             dataClass: 'custom-action center aligned',
             width: '10%'
-        },
-    ];
-
-    Vue.component('custom-action', {
-        template: [
-            '<div>',
-                //'<a href="userdetail.aspx?id={ID}" class="btn btn-primary btn-sm">查看</a>', 
-                '<a class="btn btn-primary btn-sm">編輯</a>',
-                '<a class="btn btn-primary btn-sm">刪除</a>',
-                //'<a :href="'userdetail.aspx?id='+props.rowData.UserId" class="btn-xs btn-default btn">查看</a>',
-            '</div>'
-        ].join(''),
-        props: {
-            rowData: {
-                type: Object,
-                required: true
-            }
-        },
-        methods: {
-            itemAction: function(action, data) {
-                sweetAlert('custom-action: ' + action, data.name)
-            },
-            onClick: function(event) {
-                console.log('custom-action: on-click', event.target)
-            },
-            onDoubleClick: function(event) {
-                console.log('custom-action: on-dblclick', event.target)
-            }
         }
-    })
+    ];
 
     Vue.component('my-detail-row', {
         template: [
@@ -350,6 +317,7 @@
         },
         data: function () {
             return {
+                //el-upload 相關係數
                 showUpload:true,
                 hideUpload:false,
                 limitCountImg : 1,
@@ -358,11 +326,17 @@
                 disabled: false,
                 fileList:[],
 
+                //formData相關係數
+                formData : new FormData(),
+                imageURL:"",
+                image:"",
+
+                id:"",
                 seriesId:"",
                 name:"",
                 series:"",
-                image:"",
                 releasetime:"",
+                createTime:"",
 
                 searchFor: '',
                 tableLoading: true,
@@ -384,16 +358,16 @@
             //var paras = getUrlAllParams();
         },
         methods: {
-            //縮圖上傳 強制取最新的
+            //el-upload部分
             handleChange(file, fileList) {
                 //修改el-upload style
                 this.hideUpload = fileList.length >= this.limitCountImg
 
-                //roots上的image blob物件
-                appMain.image = URL.createObjectURL(file.raw)
+                this.getBase64(file.raw).then(data => {
+                    appMain.imageURL = data
+                })
             },
             handleRemove(file) {
-                //手動移除列表上的file
                 let fileList = this.$refs.elupload.uploadFiles;
                 let index = fileList.findIndex( fileItem => {
                     return fileItem.uid === file.uid
@@ -401,7 +375,7 @@
                 fileList.splice(index, 1)
 
                 this.hideUpload = fileList.length >= this.limitCountImg
-                this.image = null
+                this.imageURL = null
             },
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
@@ -411,74 +385,42 @@
                 const isJPG = file.type === 'image/jpeg'
                 const isLt2M = file.size / 1024 / 1024 < 2
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!')
+                    this.$message.error('格式錯誤!')
                 }
                 if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!')
+                    this.$message.error('圖片不能大於 2MB!')
                 }
                 return isJPG && isLt2M
             },
-
-            //新增新系列API
-            addNewSet() {
-                let url = "/api/Card/SaveSet";
-                var formData = new FormData();
-                
-                console.log(this.$refs.elupload.uploadFiles[0].raw);
-                console.log(appMain.image);
-
-                formData.append("SeriesId", JSON.stringify(appMain.seriesId));
-                formData.append("Name", JSON.stringify(appMain.name));
-                formData.append("Series", JSON.stringify(appMain.series));
-                formData.append("ReleaseTime", moment(appMain.releasetime).format());
-                //formData.append("File", appMain.image);
-                formData.append("File", appMain.imageUrl);
-                //formData.append("File", this.$refs.elupload.uploadFiles[0]);
-                
-                //formData = JSON.stringify({
-                //    "SeriesId" : appMain.seriesId,
-                //    "Name" : appMain.name,
-                //    "Series" : appMain.series,
-                //    "ReleaseTime" : moment(appMain.releasetime).format(),  //DateTime 方法 moment(xxx).formate()
-                //});
-                //formData.append("File", appMain.image);
-
-                console.log("APIData", formData);
-
-                fetch(url, {
-                    method: "POST",
-                    headers: { 
-                        //'Authorization': 'Bearer',
-                        'Accept': "application/json, */*",
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    data: formData,
-                    //body: formData
-                }).then((response) => {
-                    if (response.status === 200) {
-                        //appMain.$notify({ title: '成功', message: '更新成功', type: 'success' });
+            getBase64(data){
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        resolve(e.target.result);
+                    };
+                    reader.readAsDataURL(data);
+                    reader.onerror = () => {
+                        reject(new Error("文件異常"));
                     }
-                    return response.json();
-                }).then((data) => {
-                    appMain.setFilter();
-                }).catch((err) => {
-                    console.log('錯誤:', err);
-                });
+                })
             },
 
-            
+            //vuetable顯示
             showLoader: function () {
                 this.$loading();
             },
             hideLoader: function () {
                 this.$loading().close();
             },
-            //Callback - 時間轉換
             formatDate: function (value) {
                 if (value == null) return '';
-                console.log("TIME:", value)
                 return moment(value.replace("T", " ")).local().format('YYYY/MM/DD');
             },
+            formatImage: function (value) {
+                if (value == null) return '';
+                return `<img class="setLogo" src=${value} />`
+            },
+
             transform: function (data) {
                 var transformed = {}
                 transformed.pagination = {
@@ -559,6 +501,39 @@
 
                 //    });
             },
+            
+            //新增/修改新系列API 傳送可能包含空Id 空createtime
+            UpsertSet() {
+                let url = "/api/Card/UpsertSet";
+                let formData = {
+                    'Id': appMain.id,
+                    'SeriesId':appMain.seriesId,
+                    'Name':appMain.name,
+                    'Series':appMain.series,
+                    'CreateTime':appMain.createTime,
+                    'ReleaseTime':moment(appMain.releasetime).format(),
+                    'File':appMain.imageURL,
+                }
+
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                }).then((response) => {
+                    if (response.status === 200) {
+                        //appMain.$notify({ title: '成功', message: '更新成功', type: 'success' });
+                    }
+                    return response;
+                }).then((data) => {
+                    appMain.setFilter();
+                }).catch((err) => {
+                    console.log('錯誤:', err);
+                });
+            },
+
+            //vuetable 操作
             open() {
                 this.$alert('請重新檢視篩選條件', '搜尋結果為0', {
                     confirmButtonText: '確定'
@@ -567,6 +542,34 @@
             onCellClicked (data, field, event) {
                 console.log('cellClicked: ', field.name)
                 this.$refs.vuetable.toggleDetailRow(data.Id)
+            },
+            editSet: function (data) {
+                console.log(data)
+                appMain.id = data.Id;
+                appMain.seriesId = data.SeriesId;
+                appMain.name = data.Name;
+                appMain.series = data.Series;
+                appMain.releasetime = data.ReleaseTime;
+                appMain.createTime = data.CreateTime;
+
+                //appMain.imageURL = data.Imgbase64;
+                //appMain.fileList.push(data.Imgbase64);
+            },
+            delSet: function (id) {
+                this.$confirm('確認是否刪除?', '注意', {
+                    confirmButtonText: '確認',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                // .then(() => {
+                //    let url = "/api/Card/DelSet";
+                //    fetch
+                //        .done(function (data) {
+                //            appMain.$notify({ title: '成功', message: '成功', type: 'success' });
+                //        }).fail(function (data, textStatus, xhr) {
+                //        });
+                //}).catch(() => {
+                //});
             },
         },
     });

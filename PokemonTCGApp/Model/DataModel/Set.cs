@@ -45,5 +45,7 @@ namespace PokemonTCGApp.Model.DataModel
 
         [BsonElement("updatetime")] //更新編輯時間
         public DateTime UpdateTime { get; set; }
+
+        public string? Imgbase64 { get; set; }
     }
 }
