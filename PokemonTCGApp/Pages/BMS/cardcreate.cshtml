@@ -7,22 +7,50 @@
     <section class="content" style="min-height: 1140px;">
         
         <section class="content-header">
-            <h1>卡牌列表
-                <small></small>
+            <h1>新增卡牌
+                <small>新增至MongoDB</small>
             </h1>
         </section>
+
+         <section class="content">
+            <div class="row">
+                @*左半邊*@
+                <div class="col-12 col-lg-6">
+                    <div class="box box-primary">
+                        
+                        <div class="box-header with-border">
+                            <h3 class="box-title">卡牌資料</h3>
+                            @*<a v-on:click="#" calss="btn-xl btn-danger btn">刪除單卡</a>*@
+                        </div>
+
+                        <div class="box-body">
+
+                            <div class="form-group row">
+                                <label for="txtCardName" class="col-sm-3 control-label">卡片名稱</label>
+                                <input class="form-control" v-model="Name" placeholder="卡片名稱，上限為15個字"/>
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+         </section>
+
+
         <section class="content">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">新增卡牌</h3>
+                    <h3 class="box-title"></h3>
 
                 </div>
-                <div class="box-body">
-                    <div class="form-horizontal">
-                        
-                        
-                    </div>
-                </div>
+
+                
+
+
 
 
 
@@ -39,3 +67,118 @@
         </section>
     </section>
 </div>
+
+<script>
+    var appMain = new Vue({
+        el: '#app',
+        data:function () {
+            return {
+                Id :"",
+                Name:"",
+
+                //留存參數
+                AllTypesEnum:[],
+                AllRaritiesEnum:[],
+                AllSubtypesEnum:[],
+                AllSupertypesEnum:[],
+
+            }
+        },
+        mounted: function () {
+            $("#app").show();
+            //var paras = getUrlAllParams();
+
+            fetch("/api/Card/GetAllTypesEnum",{
+                method : "GET",
+            }).then(function(response){
+                return response.json()
+            }).then(function(data){
+                appMain.AllTypesEnum = data;
+            }).catch(function(response){
+                    
+            });
+
+            fetch("/api/Card/GetAllRaritiesEnum",{
+                method : "GET",
+            }).then(function(response){
+                return response.json()
+            }).then(function(data){
+                appMain.AllRaritiesEnum = data;
+            }).catch(function(response){
+                    
+            });
+
+            fetch("/api/Card/GetAllSubtypesEnum",{
+                method : "GET",
+            }).then(function(response){
+                return response.json()
+            }).then(function(data){
+                appMain.AllSubtypesEnum = data;
+            }).catch(function(response){
+                    
+            });
+
+            
+            const Mission = async () => {
+                appMain.AllSupertypesEnum = await appMain.GetEnums("GetAllSupertypesEnum")
+            }
+
+            //this.GetEnums("GetAllSupertypesEnum").then((data) => {
+            //   this.AllSupertypesEnum = data;
+            //})        
+        },
+        methods: {
+            GetEnums(EnumType){
+                let api = "/api/Card/" + EnumType
+                
+                fetch(api,{
+                    method : "GET",
+                }).then(function(response){
+                    return response.json()
+                }).then(function(data){
+                    console.log(EnumType, "Test", data);
+                    return data;
+                }).catch(function(response){
+                    
+                });
+                
+            }
+
+            // UpsertSet() {
+            //    let url = "/api/Card/UpsertSet";
+            //    let formData = {
+            //        'Id': appMain.id,
+            //        'SeriesId':appMain.seriesId,
+            //        'Name':appMain.name,
+            //        'Series':appMain.series,
+            //        'CreateTime':appMain.createTime != "" ? 
+            //            appMain.createTime : dayjs().format(),
+            //        'ReleaseTime': moment(appMain.releasetime).format(),
+            //        'File':appMain.imageURL,
+            //    }
+
+            //    fetch(url, {
+            //        method: "POST",
+            //        headers: {
+            //            'Content-Type': 'application/json',
+            //        },
+            //        body: JSON.stringify(formData)
+            //    }).then((response) => {
+            //        (response.status === 200) ? 
+            //            appMain.$notify({ title: '成功', message : "新增成功", type: 'success' }) 
+            //            :appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });
+            //        return response;
+            //    }).then((data) => {
+            //        appMain.cleanData();
+            //        appMain.$refs.vuetable.refresh();
+            //    }).catch((err) => {
+            //        appMain.$notify({ title: '失敗', message : "response.status : " + response.status, type: 'error' });
+            //    });
+            //},
+        
+        }
+     
+     
+     })
+
+</script>

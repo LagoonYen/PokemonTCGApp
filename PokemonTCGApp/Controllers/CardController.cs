@@ -330,7 +330,7 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<List<Card>> GetAllTypesEnum()
+        public ActionResult<List<TypesEnumViewModel>> GetAllTypesEnum()
         {
             try
             {

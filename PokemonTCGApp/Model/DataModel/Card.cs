@@ -6,22 +6,24 @@ namespace PokemonTCGApp.Model.DataModel
     [BsonIgnoreExtraElements]
     public class Card
     {
-        //MongoDB Id
+        /// <summary>
+        /// The Id of card in MongoDB
+        /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } = String.Empty;
+        public string? Id { get; set; }
         
         /// <summary>
         /// The name of the card.
         /// </summary>
         [BsonElement("name")]
-        public string Name { get; set; } = String.Empty;
+        public string? Name { get; set; }
 
         /// <summary>
         /// The supertype of the card, such as Pokémon, Energy, or Trainer.
         /// </summary>
         [BsonElement("supertype")] //卡牌種類
-        public string Supertype { get; set; } = String.Empty;
+        public string? Supertype { get; set; }
 
         /// <summary>
         /// A list of subtypes, such as Basic, EX, Mega, Rapid Strike, etc.
@@ -99,7 +101,7 @@ namespace PokemonTCGApp.Model.DataModel
         /// The set details embedded into the card. See the set object for more details.
         /// </summary>
         [BsonElement("setId")]  //系列
-        public String? SetId { get; set; }
+        public string? SetId { get; set; }
 
         /// <summary>
         /// The number of the card.
@@ -111,19 +113,19 @@ namespace PokemonTCGApp.Model.DataModel
         /// The rarity of the card, such as "Common" or "Rare Rainbow".
         /// </summary>
         [BsonElement("rarity")]  //卡牌等級
-        public String? Rarity { get; set; }
+        public string? Rarity { get; set; }
 
         /// <summary>
         /// The flavor text of the card. This is the text that can be found on some Pokémon cards that is usually italicized near the bottom of the card.
         /// </summary>
         [BsonElement("flavorText")]  //介紹
-        public String? FlavorText { get; set; }
+        public string? FlavorText { get; set; }
 
         /// <summary>
         /// The flavor text of the card. This is the text that can be found on some Pokémon cards that is usually italicized near the bottom of the card.
         /// </summary>
         [BsonElement("image")]  //圖片
-        public String? Image { get; set; }
+        public string? Image { get; set; }
 
         [BsonElement("updateAdmin")] //更新的管理員
         public string? UpdateAdmin { get; set; }
@@ -146,7 +148,6 @@ namespace PokemonTCGApp.Model.DataModel
         public string? Name { get; set; }
         public string? Text { get; set; }
         public string? Type { get; set; }
-
     }
 
     public class Attack
