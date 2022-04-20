@@ -5,71 +5,6 @@
 }
 <script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js"></script>
 
-@*<style type="text/css">
-        .ui.vertical.stripe h3 {
-          font-size: 2em;
-        }
-
-        .secondary.pointing.menu .toc.item {
-          display: none;
-        }
-
-        .vuetable {
-            margin-top: 1em !important;
-        }
-        .vuetable-wrapper.ui.basic.segment {
-            padding: 0em;
-        }
-        .vuetable button.ui.button {
-            padding: .5em .5em;
-            font-weight: 400;
-        }
-        .vuetable button.ui.button i.icon {
-            margin: 0;
-        }
-        .vuetable th.sortable:hover {
-          color: #2185d0;
-          cursor: pointer;
-        }
-        .vuetable-actions, .custom-action {
-          width: 15%;
-          padding: 12px 0px;
-          text-align: center;
-        }
-        .vuetable-pagination {
-          background: #f9fafb !important;
-        }
-        .vuetable-pagination-info {
-          margin-top: auto;
-          margin-bottom: auto;
-        }
-        [v-cloak] {
-            display: none;
-        }
-        .highlight {
-            background-color: yellow;
-        }
-        /*.vuetable-detail-row {
-            height: 200px;
-        }*/
-        .detail-row {
-            margin-left: 40px;
-        }
-        .expand-transition {
-            transition: all .3s ease;
-        }
-        .expand-enter, .expand-leave {
-            height: 0;
-            opacity: 0;
-        }
-        tr.odd {
-            background-color: #e6f5ff;
-        }
-        body {
-            overflow-y: scroll;
-        }
-</style>*@
-
 <div class="content-wrapper" id="app">
 
     <section class="content-header">
@@ -91,7 +26,7 @@
             <div class="box-body">
                 <div class="form-horizontal">
 
-                   @* <div class="form-group">
+                   @*<div class="form-group">
                         <label for="" class="col-md-2 control-label">關鍵字搜尋</label>
                         <div class="col-md-3">
                             <input type="text" class="form-control" id="" placeholder="關鍵字搜尋" v-model="" />
@@ -111,8 +46,8 @@
             </div>
 
             <div class="box-footer">
-                @*<button type="button" class="btn btn-primary " v-on:click="setFilter">搜尋</button>*@
-                <button type="button" class="btn btn-warning" v-on:click="downloadFile">下載</button>
+                <button type="button" class="btn btn-primary " v-on:click="setFilter">搜尋</button>
+                @*<button type="button" class="btn btn-warning" v-on:click="downloadFile">下載</button>*@
                 <a asp-page="/BMS/cardcreate" type="button" class="btn btn-danger" >新增</a>
             </div>
         </div>

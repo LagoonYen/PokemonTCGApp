@@ -110,5 +110,29 @@ namespace PokemonTCGApp.Repository
                 throw;
             }
         }
+
+        public Set GetSet(string id)
+        {
+            try
+            {
+                return _setDatabase.Find(set => set.Id == id).FirstOrDefault();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public void DeleteSet(string id)
+        {
+            try
+            {
+                _setDatabase.DeleteOne(set => set.Id == id);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

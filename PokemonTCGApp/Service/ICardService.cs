@@ -19,5 +19,7 @@ namespace PokemonTCGApp.Service
         List<SubtypesEnumViewModel> GetAllSubtypesEnum();
         List<RaritiesEnumViewModel> GetAllRaritiesEnum();
         List<TypesEnumViewModel> GetAllTypesEnum();
+        Set GetSet(string id);
+        void DeleteSet(string id);
     }
 }

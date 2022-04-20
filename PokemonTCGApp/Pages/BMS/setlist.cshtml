@@ -179,7 +179,7 @@
                         <template slot="actions" slot-scope="props">
                             <div class="table-button-container">
                                 <a v-on:click="editSet(props.rowData)" class="btn-xs btn-default btn">編輯</a>
-                                <a v-on:click="delSet(props.rowData.id)" class="btn-xs btn-default btn">刪除</a>
+                                <a v-on:click="delSet(props.rowData)" class="btn-xs btn-default btn">刪除</a>
                             </div>
                         </template>
 
@@ -306,9 +306,7 @@
         }
     })
 
-    Vue.config.debug = true
-
-    var E_SERVER_ERROR = 'Error communicating with the server'
+    
 
     var appMain = new Vue({
         el: '#app',
@@ -328,15 +326,13 @@
 
                 //formData相關係數
                 formData : new FormData(),
-                imageURL:"",
-                image:"",
-
                 id:"",
                 seriesId:"",
                 name:"",
                 series:"",
-                releasetime:"",
+                releasetime : new Date(),
                 createTime:"",
+                imageURL:"",
 
                 searchFor: '',
                 tableLoading: true,
@@ -446,7 +442,7 @@
             },
             onPaginationData: function (paginationData) {
                 if (paginationData.total <= 0) {
-                    this.open();
+                    this.searchZero();
                     this.$refs.pagination.setPaginationData(paginationData);
                 }
                 else {
@@ -510,8 +506,9 @@
                     'SeriesId':appMain.seriesId,
                     'Name':appMain.name,
                     'Series':appMain.series,
-                    'CreateTime':appMain.createTime,
-                    'ReleaseTime':moment(appMain.releasetime).format(),
+                    'CreateTime':appMain.createTime != "" ? 
+                        appMain.createTime : dayjs().format(),
+                    'ReleaseTime': moment(appMain.releasetime).format(),
                     'File':appMain.imageURL,
                 }
 
@@ -522,19 +519,37 @@
                     },
                     body: JSON.stringify(formData)
                 }).then((response) => {
-                    if (response.status === 200) {
-                        //appMain.$notify({ title: '成功', message: '更新成功', type: 'success' });
-                    }
+                    (response.status === 200) ? 
+                        appMain.$notify({ title: '成功', message : "新增成功", type: 'success' }) 
+                        :appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });
+                    
                     return response;
                 }).then((data) => {
-                    appMain.setFilter();
+                    appMain.cleanData();
+                    appMain.$refs.vuetable.refresh();
                 }).catch((err) => {
-                    console.log('錯誤:', err);
+                    appMain.$notify({ title: '失敗', message : "response.status : " + response.status, type: 'error' });
                 });
             },
+            cleanData(){
+                appMain.id = "";
+                appMain.seriesId = "";
+                appMain.name = "";
+                appMain.series = "";
+                appMain.releasetime = new Date();
+                appMain.createTime = "";
+
+                let fileList = this.$refs.elupload.uploadFiles;
+                if(fileList.length > 0){
+                    fileList.splice(0, 1)
+                }
+
+                this.hideUpload = fileList.length >= this.limitCountImg
+                this.imageURL = null
+            }, 
 
             //vuetable 操作
-            open() {
+            searchZero() {
                 this.$alert('請重新檢視篩選條件', '搜尋結果為0', {
                     confirmButtonText: '確定'
                 });
@@ -544,32 +559,35 @@
                 this.$refs.vuetable.toggleDetailRow(data.Id)
             },
             editSet: function (data) {
-                console.log(data)
                 appMain.id = data.Id;
                 appMain.seriesId = data.SeriesId;
                 appMain.name = data.Name;
                 appMain.series = data.Series;
-                appMain.releasetime = data.ReleaseTime;
-                appMain.createTime = data.CreateTime;
-
+                appMain.releasetime = new Date(data.ReleaseTime);
+                appMain.createTime = new Date(data.CreateTime);
                 //appMain.imageURL = data.Imgbase64;
                 //appMain.fileList.push(data.Imgbase64);
             },
-            delSet: function (id) {
+            delSet: function (data) {
                 this.$confirm('確認是否刪除?', '注意', {
                     confirmButtonText: '確認',
                     cancelButtonText: '取消',
                     type: 'warning'
-                })
-                // .then(() => {
-                //    let url = "/api/Card/DelSet";
-                //    fetch
-                //        .done(function (data) {
-                //            appMain.$notify({ title: '成功', message: '成功', type: 'success' });
-                //        }).fail(function (data, textStatus, xhr) {
-                //        });
-                //}).catch(() => {
-                //});
+                }).then(() => {
+                    let url = "/api/Card/DeleteSet?id=" + data.Id;
+                    
+                    console.log(url)
+                    fetch(url, {
+                        method: "DELETE",
+                    }).then(function (data) {
+                        appMain.$notify({ title: '成功', message: '成功', type: 'success' });
+                        appMain.$refs.vuetable.refresh();
+                    }).catch(function (data) {
+
+                    });
+                }).catch(() => {
+
+                });
             },
         },
     });
