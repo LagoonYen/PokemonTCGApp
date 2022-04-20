@@ -88,62 +88,40 @@
             $("#app").show();
             //var paras = getUrlAllParams();
 
-            fetch("/api/Card/GetAllTypesEnum",{
-                method : "GET",
-            }).then(function(response){
-                return response.json()
-            }).then(function(data){
-                appMain.AllTypesEnum = data;
-            }).catch(function(response){
-                    
+
+            this.GetEnums("GetAllTypesEnum").then((data) => {
+                this.AllTypesEnum = data;
             });
 
-            fetch("/api/Card/GetAllRaritiesEnum",{
-                method : "GET",
-            }).then(function(response){
-                return response.json()
-            }).then(function(data){
-                appMain.AllRaritiesEnum = data;
-            }).catch(function(response){
-                    
+            this.GetEnums("GetAllRaritiesEnum").then((data) => {
+                this.AllRaritiesEnum = data;
             });
 
-            fetch("/api/Card/GetAllSubtypesEnum",{
-                method : "GET",
-            }).then(function(response){
-                return response.json()
-            }).then(function(data){
-                appMain.AllSubtypesEnum = data;
-            }).catch(function(response){
-                    
+            this.GetEnums("GetAllSubtypesEnum").then((data) => {
+                this.AllSubtypesEnum = data;
             });
-
-            
-            const Mission = async () => {
-                appMain.AllSupertypesEnum = await appMain.GetEnums("GetAllSupertypesEnum")
-            }
-
-            //this.GetEnums("GetAllSupertypesEnum").then((data) => {
-            //   this.AllSupertypesEnum = data;
-            //})        
+              
+            this.GetEnums("GetAllSupertypesEnum").then((data) => {
+                this.AllSupertypesEnum = data;
+            });
+  
         },
         methods: {
-            GetEnums(EnumType){
-                let api = "/api/Card/" + EnumType
-                
-                fetch(api,{
+            GetEnums(enumType) {
+                let api = "/api/Card/" + enumType
+                return fetch(api, {
                     method : "GET",
-                }).then(function(response){
-                    return response.json()
-                }).then(function(data){
-                    console.log(EnumType, "Test", data);
-                    return data;
-                }).catch(function(response){
-                    
+                })
+                .then((response) => { 
+                    return response.json().then((data) => {
+                        console.log(data);
+                        return data;
+                    }).catch((err) => {
+                        console.log(err);
+                    }) 
                 });
+            },
                 
-            }
-
             // UpsertSet() {
             //    let url = "/api/Card/UpsertSet";
             //    let formData = {
