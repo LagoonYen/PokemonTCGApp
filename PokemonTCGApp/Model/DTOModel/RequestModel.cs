@@ -1,5 +1,7 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations;
+
 namespace PokemonTCGApp.Model.DTOModel
 {
     public class VueTableList<T>
@@ -201,12 +203,15 @@ namespace PokemonTCGApp.Model.DTOModel
 
     public class  RequestSaveSet
     {
-        public string? Id { get; set; }
+        public string? Id { get; set; } = null;
 
+        [Required]
         public string? SeriesId { get; set; }
 
+        [Required]
         public string? Name { get; set; }
 
+        [Required]
         public string? Series { get; set; }
 
         public DateTime CreateTime { get; set; }

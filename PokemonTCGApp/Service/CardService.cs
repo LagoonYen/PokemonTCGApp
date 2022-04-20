@@ -87,14 +87,14 @@ namespace PokemonTCGApp.Service
                     throw new Exception("請填寫基本系列資料");
                 }
 
-                Set setobject = new()
+                Set setobject = new Set()
                 {
-                    Id = req.Id,
+                    Id = req.Id == "" ? null : req.Id,
                     Series = req.Series,
                     Name = req.Name,
                     SeriesId = req.SeriesId,
                     ReleaseTime = req.ReleaseTime,
-                    CreateTime = req.Id == null ? DateTime.Now : req.CreateTime,
+                    CreateTime = req.Id == "" ? DateTime.Now : req.CreateTime,
                     UpdateTime = DateTime.Now,
                     //To do
                     UpdateAdmin = "小焰"
@@ -109,12 +109,14 @@ namespace PokemonTCGApp.Service
                     setobject.Image = fileBytes;
                     setobject = _cardRepository.UpsertSet(setobject);
 
-                    if (setobject.Id?.Trim() != "")
-                    {
-                        return "圖片更新成功";
-                    }
+                    //if (setobject.Id?.Trim() != "")
+                    //{
+                        return "Upsert並上傳新圖片";
+                    //}
                 }
-                return "圖片更新失敗";
+
+                setobject = _cardRepository.UpsertSet(setobject);
+                return "Upsert無上傳新圖片";
             }
             catch
             {
@@ -257,6 +259,30 @@ namespace PokemonTCGApp.Service
                     throw new Exception("未取得正確稀有度列表");
                 }
                 return result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public Set GetSet(string id)
+        {
+            try
+            {
+                return _cardRepository.GetSet(id);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public void DeleteSet(string id)
+        {
+            try
+            {
+                _cardRepository.DeleteSet(id);
             }
             catch
             {

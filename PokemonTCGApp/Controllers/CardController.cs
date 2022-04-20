@@ -208,6 +208,58 @@ namespace PokemonTCGApp.Controllers
         }
 
         /// <summary>
+        /// 取得單一卡片
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Card> GetSet(string id)
+        {
+            try
+            {
+                return Ok(_cardService.GetSet(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// 刪除系列
+        /// </summary>
+        /// <param name="id">原系列Id</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult DeleteSet(string id)
+        {
+            try
+            {
+                var card = _cardService.GetSet(id);
+
+                if (card == null)
+                {
+                    return NotFound($"Set with Id = {id} not found");
+                }
+
+                _cardService.DeleteSet(id);
+
+                return Accepted($"Set with Id = {id} deleted");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// 取得卡牌主分類
         /// </summary>
         /// <returns></returns>
@@ -278,7 +330,7 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<List<Card>> GetAllTypesEnum()
+        public ActionResult<List<TypesEnumViewModel>> GetAllTypesEnum()
         {
             try
             {
