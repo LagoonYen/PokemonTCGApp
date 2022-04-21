@@ -8,12 +8,12 @@ namespace PokemonTCGApp.Service
     {
         List<Card> GetCards();
         Card GetCard(string id);
-        Card CreateCard(Card card);
+        string CreateCard(RequestCreateCard req);
         void UpdateCard(string id, Card card);
         void DeleteCard(string id);
 
         List<Set> GetSets();
-        string UpsertSet( RequestSaveSet set);
+        string UpsertSet(RequestUpsertSet req);
 
         List<SupertypesEnumViewModel> GetAllSupertypesEnum();
         List<SubtypesEnumViewModel> GetAllSubtypesEnum();

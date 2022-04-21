@@ -17,12 +17,55 @@ namespace PokemonTCGApp.Service
             _cardRepository = cardRepository;
         }
 
-        public Card CreateCard(Card card)
+        public string CreateCard(RequestCreateCard req)
         {
             try
             {
-                _cardRepository.CreateCard(card);
-                return card;
+                if (req.Supertype == null || req.Name == null || req.Subtypes == null || req.Rarity == null)
+                {
+                    throw new Exception("請填寫基本系列資料");
+                }
+
+                Card cardobject = new Card()
+                {
+                    //Id = req.Id == "" ? null : req.Id,
+                    SetId = req.SetId,
+                    Number = req.Number,
+                    Name = req.Name,
+                    Supertype = req.Supertype,
+                    Subtypes = req.Subtypes,
+                    Rarity = req.Rarity,
+                    Types = req.Types,
+                    Hp = req.Hp,
+                    EvolvesFrom = req.EvolvesFrom,
+                    EvolvesTo = req.EvolvesTo,
+                    FlavorText = req.FlavorText,
+                
+                    //CreateTime = req.Id == "" ? DateTime.Now : req.CreateTime,
+                    CreateTime = DateTime.Now,
+                    UpdateTime = DateTime.Now,
+                    //To do
+                    UpdateAdmin = "小焰"
+                };
+
+                //if (req.File?.Length > 0)
+                //{
+                //    string image = JsonConvert.SerializeObject(req.File);
+
+                //    string base64EncodedExternalImage = Convert.ToBase64String(Encoding.UTF8.GetBytes(image));
+                //    byte[] fileBytes = Convert.FromBase64String(base64EncodedExternalImage);
+                //    setobject.Image = fileBytes;
+                //    setobject = _cardRepository.UpsertSet(setobject);
+
+                //    //if (setobject.Id?.Trim() != "")
+                //    //{
+                //    return "Upsert並上傳新圖片";
+                //    //}
+                //}
+
+                cardobject = _cardRepository.CreateCard(cardobject);
+                return "Upsert無上傳新圖片";
+                //_cardRepository.CreateCard(req);
             }
             catch
             {
@@ -78,7 +121,7 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public string UpsertSet(RequestSaveSet req)
+        public string UpsertSet(RequestUpsertSet req)
         {
             try
             {
@@ -180,7 +223,7 @@ namespace PokemonTCGApp.Service
             {
                 var result = Enum.GetValues<SupertypesEnum>().Select(x => new SupertypesEnumViewModel
                 {
-                    Value = (int)x,
+                    //Value = (int)x,
                     Name = x.ToString(),
                     Desc = x.GetDescription()
                 }).ToList();
@@ -203,7 +246,7 @@ namespace PokemonTCGApp.Service
             {
                 var result = Enum.GetValues<SubtypesEnum>().Select(x => new SubtypesEnumViewModel
                 {
-                    Value = (int)x,
+                    //Value = (int)x,
                     Name = x.ToString(),
                     Desc = x.GetDescription()
                 }).ToList();
@@ -226,7 +269,7 @@ namespace PokemonTCGApp.Service
             {
                 var result = Enum.GetValues<RaritiesEnum>().Select(x => new RaritiesEnumViewModel
                 {
-                    Value = (int)x,
+                    //Value = (int)x,
                     Name = x.ToString(),
                     Desc = x.GetDescription()
                 }).ToList();
@@ -249,7 +292,7 @@ namespace PokemonTCGApp.Service
             {
                 var result = Enum.GetValues<TypesEnum>().Select(x => new TypesEnumViewModel
                 {
-                    Value = (int)x,
+                    //Value = (int)x,
                     Name = x.ToString(),
                     Desc = x.GetDescription()
                 }).ToList();

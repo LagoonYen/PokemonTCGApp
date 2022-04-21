@@ -3,6 +3,18 @@
 @{
     Layout = "_Layout_BMS";
 }
+
+<style>
+    .control-label{
+        text-align: left;
+        vertical-align:middle;
+        line-height: 30px; 
+    }
+
+    .inputStyle{
+        width:100%;
+    }
+</style>
 <div class="content-wrapper" id="app">
     <section class="content" style="min-height: 1140px;">
         
@@ -26,18 +38,215 @@
                         <div class="box-body">
 
                             <div class="form-group row">
-                                <label for="txtCardName" class="col-sm-3 control-label">卡片名稱</label>
-                                <input class="form-control" v-model="Name" placeholder="卡片名稱，上限為15個字"/>
+                                <label for="" class="col-sm-3 control-label">系列選擇</label>
+                                <div class="col-sm-9">
+                                    <el-select v-model="SetId" placeholder="請選擇" class="inputStyle" filterable>
+                                        <el-option
+                                            v-for="item in AllSets"
+                                            :key="item.Id"
+                                            :label="`${item.SeriesId} - ${item.Series} - ${item.Name}`"
+                                            :value="item.Id">
+                                        </el-option>
+                                    </el-select>
+                                </div>
                             </div>
 
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">編號</label>
+                                <div class="col-sm-9">
+                                    <el-input-number v-model="Number" :step="1" :max="500" step-strictly class="inputStyle"></el-input-number>
+                                </div>
+                            </div>
 
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">卡片名稱</label>
+                                <div class="col-sm-9">
+                                    <el-input 
+                                        type="text" 
+                                        placeholder="卡片名稱，上限為25個字" 
+                                        v-model="Name" 
+                                        maxlength="25"
+                                        show-word-limit>
+                                    </el-input>
+                                </div>
+                            </div>
 
+                            @*Did this*@
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">主分類</label>
+                                <div class="col-sm-9">
+                                    <el-select v-model="Supertypes" placeholder="請選擇" class="inputStyle" onchange="Open">
+                                        <el-option
+                                            v-for="item in AllSupertypesEnum"
+                                            :key="item.Name"
+                                            :label="item.Name"
+                                            :value="item.Name">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </div>
 
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">次分類</label>
+                                <div class="col-sm-9">
+                                    <el-select v-model="Subtypes" multiple placeholder="請選擇" class="inputStyle" filterable>
+                                        <el-option
+                                            v-for="item in AllSubtypesEnum"
+                                            :key="item.Name"
+                                            :label="item.Name"
+                                            :value="item.Name">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </div>
+
+                            @*Did this*@
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">稀有度等級</label>
+                                <div class="col-sm-9">
+                                    <el-select v-model="RaritiesEnum" placeholder="請選擇" class="inputStyle" filterable>
+                                        <el-option
+                                            v-for="item in AllRaritiesEnum"
+                                            :key="item.Name"
+                                            :label="item.Name"
+                                            :value="item.Name">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </div>
+                           
                         </div>
 
                     </div>
                 </div>
+
+                @*圖片上傳區*@
+                <div class="col-12 col-lg-6">
+                    <div class="box box-primary">
+                        
+                        <div class="box-header with-border">
+                            <h3 class="box-title">圖片上傳區</h3>
+                        </div>
+
+                        <div class="box-body">
+
+                        </div>
+                    </div>
+                </div>
+
+                @*寶可夢卡資料輸入區*@
+                <div class="col-12 col-lg-6">
+                    <div class="box box-primary">
+                        
+                        <div class="box-header with-border">
+                            <h3 class="box-title">寶可夢卡資料輸入區</h3>
+                        </div>
+
+                        <div class="box-body">
+
+                            @*Did this*@
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">屬性</label>
+                                <div class="col-sm-9">
+                                    <el-select v-model="TypesEnum" multiple placeholder="請選擇" class="inputStyle" filterable>
+                                        <el-option
+                                            v-for="item in AllTypesEnum"
+                                            :key="item.Name"
+                                            :label="item.Name"
+                                            :value="item.Name">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">HP</label>
+                                <div class="col-sm-9">
+                                    <el-input-number v-model="Hp" :step="10" :max="500" step-strictly class="inputStyle"></el-input-number>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">進化自</label>
+                                <div class="col-sm-9">
+                                    <el-tooltip class="item" effect="dark" content="只會有單隻" placement="right">
+                                    <el-select v-model="EvolvesFrom "
+                                        filterable
+                                        allow-create
+                                        cleanable
+                                        class="inputStyle"
+                                        no-data-text="請輸入"
+                                        placeholder="請輸入"
+                                        clearable>
+                                    </el-select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">進化至</label>
+                                <div class="col-sm-9">
+                                    <el-tooltip class="item" effect="dark" content="(可能複數，如：伊布)" placement="right">
+                                    <el-select v-model="EvolvesTo"
+                                        filterable
+                                        multiple
+                                        allow-create
+                                        class="inputStyle"
+                                        no-data-text="請輸入"
+                                        placeholder="請輸入">
+                                    </el-select>
+                                </div>
+                            </div>
+
+                             <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">習性介紹</label>
+                                <div class="col-sm-9">
+                                    <el-input 
+                                        type="text" 
+                                        placeholder="習性介紹，上限為25個字" 
+                                        v-model="FlavorText" 
+                                        maxlength="25"
+                                        show-word-limit>
+                                    </el-input>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                
+                @*訓練家卡資料輸入區*@
+                <div class="col-12 col-lg-6">
+                    <div class="box box-primary">
+                        
+                        <div class="box-header with-border">
+                            <h3 class="box-title">訓練家卡資料輸入區</h3>
+                        </div>
+
+                        <div class="box-body">
+
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">訓鍊家卡效果</label>
+                                <div class="col-sm-9">
+                                    <el-input
+                                        type="textarea"
+                                        :rows="8"
+                                        placeholder="請輸入文字敘述"
+                                        v-model="TrainEffect"
+                                        maxlength="200"
+                                        resize="none">
+                                    </el-input>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
+
+
          </section>
 
 
@@ -56,8 +265,8 @@
 
 
                 <div class="box-footer">
-                    <button type="button" class="btn btn-primary " @*v-onclick="setFilter"*@>
-                        搜尋
+                    <button type="button" class="btn btn-primary " v-on:click="CreateCard">
+                        新增卡片
                     </button>
                     <button type="button" class="btn btn-warning " @*v-on:click="downloadFile"*@>
                         下載
@@ -73,38 +282,50 @@
         el: '#app',
         data:function () {
             return {
+                //From表單送出資料
                 Id :"",
                 Name:"",
+                Supertypes:"",
+                Subtypes:[],
+                RaritiesEnum:"",
+                TypesEnum:[],
+                Hp:"",
+                EvolvesFrom:"",
+                EvolvesTo:[],
+                SetId:"",
+                Number:"",
+                TrainEffect:"",
+                FlavorText:"",
 
-                //留存參數
+
+
+                //預先取得數據
                 AllTypesEnum:[],
                 AllRaritiesEnum:[],
                 AllSubtypesEnum:[],
                 AllSupertypesEnum:[],
-
+                AllSets:[],
             }
         },
         mounted: function () {
             $("#app").show();
             //var paras = getUrlAllParams();
 
-
             this.GetEnums("GetAllTypesEnum").then((data) => {
                 this.AllTypesEnum = data;
             });
-
             this.GetEnums("GetAllRaritiesEnum").then((data) => {
                 this.AllRaritiesEnum = data;
             });
-
             this.GetEnums("GetAllSubtypesEnum").then((data) => {
                 this.AllSubtypesEnum = data;
             });
-              
             this.GetEnums("GetAllSupertypesEnum").then((data) => {
                 this.AllSupertypesEnum = data;
             });
-  
+            this.GetAllSets().then((data) => {
+                this.AllSets = data
+            });
         },
         methods: {
             GetEnums(enumType) {
@@ -121,38 +342,61 @@
                     }) 
                 });
             },
+            GetAllSets(){
+                let api = "/api/Card/GetAllSets"
+                return fetch(api, {
+                    method : "GET",
+                })
+                .then((response) => { 
+                    return response.json().then((data) => {
+                        console.log(data);
+                        return data;
+                    }).catch((err) => {
+                        console.log(err);
+                    }) 
+                });
+            },
+            
+            
                 
-            // UpsertSet() {
-            //    let url = "/api/Card/UpsertSet";
-            //    let formData = {
-            //        'Id': appMain.id,
-            //        'SeriesId':appMain.seriesId,
-            //        'Name':appMain.name,
-            //        'Series':appMain.series,
-            //        'CreateTime':appMain.createTime != "" ? 
-            //            appMain.createTime : dayjs().format(),
-            //        'ReleaseTime': moment(appMain.releasetime).format(),
-            //        'File':appMain.imageURL,
-            //    }
+             CreateCard() {
+                let url = "/api/Card/CreateCard";
+                let formData = {
+                    'Id': appMain.id,
+                    'SetId':appMain.SetId,
+                    'Name':appMain.Name,
+                    'Supertype':appMain.Supertypes,
+                    'Subtypes':appMain.Subtypes,
+                    'Rarity':appMain.RaritiesEnum,
+                    'Types':appMain.TypesEnum,
+                    'Hp':appMain.Hp,
+                    'EvolvesFrom':appMain.EvolvesFrom,
+                    'EvolvesTo':appMain.EvolvesTo,
+                    'Set':appMain.Set,
+                    'Number':appMain.Number,
+                    'TrainEffect':appMain.TrainEffect,
+                    'FlavorText':appMain.FlavorText,
+                    //'File':appMain.imageURL,
+                }
+                console.log("formData", formData)
 
-            //    fetch(url, {
-            //        method: "POST",
-            //        headers: {
-            //            'Content-Type': 'application/json',
-            //        },
-            //        body: JSON.stringify(formData)
-            //    }).then((response) => {
-            //        (response.status === 200) ? 
-            //            appMain.$notify({ title: '成功', message : "新增成功", type: 'success' }) 
-            //            :appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });
-            //        return response;
-            //    }).then((data) => {
-            //        appMain.cleanData();
-            //        appMain.$refs.vuetable.refresh();
-            //    }).catch((err) => {
-            //        appMain.$notify({ title: '失敗', message : "response.status : " + response.status, type: 'error' });
-            //    });
-            //},
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                }).then((response) => {
+                    (response.status === 200) ? 
+                        appMain.$notify({ title: '成功', message : "新增成功", type: 'success' }) 
+                        :appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });
+                    return response;
+                }).then((data) => {
+                    
+                }).catch((err) => {
+                    appMain.$notify({ title: '失敗', message : "response.status : " + response.status, type: 'error' });
+                });
+            },
         
         }
      

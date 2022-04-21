@@ -1,5 +1,6 @@
 ﻿
 
+using PokemonTCGApp.Model.DataModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace PokemonTCGApp.Model.DTOModel
@@ -201,7 +202,7 @@ namespace PokemonTCGApp.Model.DTOModel
         public Dictionary<string, object> filterQuery { get; set; }
     }
 
-    public class  RequestSaveSet
+    public class  RequestUpsertSet
     {
         public string? Id { get; set; } = null;
 
@@ -219,5 +220,55 @@ namespace PokemonTCGApp.Model.DTOModel
         public DateTime ReleaseTime { get; set; }
 
         public string? File { get; set; }
+    }
+
+    public class RequestCreateCard
+    {
+        public string? Id { get; set; } = null;
+
+        [Required]
+        public string? SetId { get; set; }
+
+
+        public int? Number { get; set; }
+
+        [Required]
+        public string? Name { get; set; }
+
+        [Required]
+        public string? Supertype { get; set; }
+
+        [Required]
+        public List<string>? Subtypes { get; set; }
+
+        [Required]
+        public string? Rarity { get; set; }
+
+        public List<string>? Types { get; set; }
+
+        public int? Hp { get; set; }
+
+        public string? EvolvesFrom { get; set; }
+
+        public List<string>? EvolvesTo { get; set; }
+
+        public string? FlavorText { get; set; }
+
+
+        //public List<Ability>? Abilities { get; set; }
+
+        
+        //public List<Attack>? Attacks { get; set; }
+
+       
+        //public List<Weakness>? Weaknesses { get; set; }
+
+        
+        //public List<Resistance>? Resistances { get; set; }
+        public string? TrainerEffect { get; set; }
+
+        
+
+        //public string? Image { get; set; }
     }
 }

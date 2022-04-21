@@ -42,7 +42,7 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            @*style="min-height: 1140px;*@
+           
             <div class="box-body">
                 <div class="form-horizontal">
                     @*左半邊*@
@@ -87,7 +87,7 @@
                     @*右半邊*@
                     <div class="col-md-6">
                         <div class="form-group">
-
+                            @*上傳圖片*@
                             <el-upload
                                 ref="elupload"
                                 action="#"
@@ -98,7 +98,7 @@
                                 :file-list="fileList"
                                 :before-upload="beforeAvatarUpload"
                                 >
-
+                                @*縮圖放大*@
                                 <i slot="default" class="el-icon-plus"></i>
                                 <div slot="file" slot-scope="{file}">
                                     <img
@@ -305,8 +305,6 @@
             }
         }
     })
-
-    
 
     var appMain = new Vue({
         el: '#app',

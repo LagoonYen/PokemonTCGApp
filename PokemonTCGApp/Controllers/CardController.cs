@@ -72,19 +72,20 @@ namespace PokemonTCGApp.Controllers
         /// <summary>
         /// 新建卡片
         /// </summary>
-        /// <param name="card"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Card> CreateCard([FromBody] Card card)
+        public ActionResult<Card> CreateCard([FromBody]RequestCreateCard req)
         {
             try
             {
-                _cardService.CreateCard(card);
+                var result = _cardService.CreateCard(req);
 
-                return CreatedAtAction(nameof(GetCard), new { id = card.Id }, card);
+                //return CreatedAtAction(nameof(GetCard), new { id = req.Id }, req);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -162,7 +163,7 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<string> UpsertSet([FromBody]RequestSaveSet req)
+        public ActionResult<string> UpsertSet([FromBody]RequestUpsertSet req)
         {
             try
             {
@@ -208,7 +209,7 @@ namespace PokemonTCGApp.Controllers
         }
 
         /// <summary>
-        /// 取得單一卡片
+        /// 取得單一系列
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -221,6 +222,27 @@ namespace PokemonTCGApp.Controllers
             try
             {
                 return Ok(_cardService.GetSet(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 取得全系列列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Card> GetAllSets()
+        {
+            try
+            {
+                var result = _cardService.GetSets();
+                return Ok(result);
             }
             catch (Exception ex)
             {

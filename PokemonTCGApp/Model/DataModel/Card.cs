@@ -31,6 +31,18 @@ namespace PokemonTCGApp.Model.DataModel
         [BsonElement("subtypes")] //卡牌特殊規則 如GX V Vmax VStar
         public List<string>? Subtypes { get; set; }
 
+        /// <summary>
+        /// The rarity of the card, such as "Common" or "Rare Rainbow".
+        /// </summary>
+        [BsonElement("rarity")]  //卡牌等級
+        public string? Rarity { get; set; }
+
+        /// <summary>
+        /// The energy types for a card, such as Fire, Water, Grass, etc.
+        /// </summary>
+        [BsonElement("types")] //屬性
+        public List<string>? Types { get; set; }
+
         ///// <summary>
         ///// The level of the card. This only pertains to cards from older sets and those of supertype Pokémon.
         ///// </summary>
@@ -41,13 +53,7 @@ namespace PokemonTCGApp.Model.DataModel
         /// The hit points of the card.
         /// </summary>
         [BsonElement("hp")] //血量
-        public string? Hp { get; set; }
-
-        /// <summary>
-        /// The energy types for a card, such as Fire, Water, Grass, etc.
-        /// </summary>
-        [BsonElement("types")] //屬性
-        public List<string>? Types { get; set; }
+        public int? Hp { get; set; }
 
         /// <summary>
         /// Which Pokémon this card evolves from.
@@ -64,8 +70,8 @@ namespace PokemonTCGApp.Model.DataModel
         /// <summary>
         /// Any rules associated with the card. For example, VMAX rules, Mega rules, or various trainer rules.
         /// </summary>
-        [BsonElement("rules")] //規則 Vmax Vtar等
-        public List<string>? Rules { get; set; }
+        [BsonElement("trainerEffect")] //訓練家卡效果
+        public string? TrainerEffect { get; set; }
 
         /// <summary>
         /// The ancient trait for a given card. An ancient trait has the following fields.
@@ -110,19 +116,13 @@ namespace PokemonTCGApp.Model.DataModel
         public int? Number { get; set; }
 
         /// <summary>
-        /// The rarity of the card, such as "Common" or "Rare Rainbow".
-        /// </summary>
-        [BsonElement("rarity")]  //卡牌等級
-        public string? Rarity { get; set; }
-
-        /// <summary>
         /// The flavor text of the card. This is the text that can be found on some Pokémon cards that is usually italicized near the bottom of the card.
         /// </summary>
         [BsonElement("flavorText")]  //介紹
         public string? FlavorText { get; set; }
 
         /// <summary>
-        /// The flavor text of the card. This is the text that can be found on some Pokémon cards that is usually italicized near the bottom of the card.
+        /// The Image of the card.
         /// </summary>
         [BsonElement("image")]  //圖片
         public string? Image { get; set; }
@@ -137,18 +137,19 @@ namespace PokemonTCGApp.Model.DataModel
         public DateTime UpdateTime { get; set; }
     }
 
-    public class AncientTrait
-    {
-        public string? Name { get; set; }
-        public string? Text { get; set; }
-    }
+    //public class AncientTrait
+    //{
+    //    public string? Name { get; set; }
+    //    public string? Text { get; set; }
+    //}
 
     public class Ability
     {
         public string? Name { get; set; }
         public string? Text { get; set; }
-        public string? Type { get; set; }
     }
+
+    
 
     public class Attack
     {
