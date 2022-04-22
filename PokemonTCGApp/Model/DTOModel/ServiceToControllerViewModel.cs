@@ -24,4 +24,51 @@ namespace PokemonTCGApp.Model.DTOModel
     public class TypesEnumViewModel : EnumViewModel
     {
     }
+
+    public class CardViewModel
+    {
+        public string? Id { get; set; }
+
+        public string? Name { get; set; }
+
+        public string? Supertype { get; set; }
+
+        public List<string>? Subtypes { get; set; }
+
+        public string? Rarity { get; set; }
+
+        public List<string>? Types { get; set; }
+
+        public int? Hp { get; set; }
+
+        public string? EvolvesFrom { get; set; }
+
+        public List<string>? EvolvesTo { get; set; }
+
+        public string? TrainerEffect { get; set; }
+
+        public List<Ability>? Abilities { get; set; }
+
+        public List<Attack>? Attacks { get; set; }
+
+        public List<Weakness>? Weaknesses { get; set; }
+
+        public List<Resistance>? Resistances { get; set; }
+
+        public string? SetId { get; set; }
+
+        public Set? SetInfo { get; set; }
+
+        public int? Number { get; set; }
+
+        public string? FlavorText { get; set; }
+
+        public string? Image { get; set; }
+
+        public string? UpdateAdmin { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        public DateTime UpdateTime { get; set; }
+    }
 }

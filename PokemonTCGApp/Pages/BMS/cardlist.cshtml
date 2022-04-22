@@ -5,6 +5,9 @@
 }
 <script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js"></script>
 
+<style>
+    
+</style>
 <div class="content-wrapper" id="app">
 
     <section class="content-header">
@@ -69,8 +72,6 @@
                     </div>
                 </div>
 
-            
-
                 <div v-loading="tableLoading">
                     <vuetable ref="vuetable"
                         :api-url="apiUrl"
@@ -85,9 +86,17 @@
                         v-on:vuetable:loading="tableLoading = true"
                         v-on:vuetable:loaded="tableLoading = false"
                         v-on:vuetable:cell-clicked="onCellClicked"
+                        track-by="Id"
                         detail-row-component="my-detail-row"
                         >
+
                         @*:pagination-component="paginationComponent"*@
+                        <template slot="actions" slot-scope="props">
+                            <div class="table-button-container">
+                                <a v-on:click="editSet(props.rowData)" class="btn-xs btn-default btn">編輯</a>
+                                <a v-on:click="delSet(props.rowData)" class="btn-xs btn-default btn">刪除</a>
+                            </div>
+                        </template>
 
                     </vuetable>
 
@@ -131,7 +140,7 @@
         //},
         //checkBox 50px supertype
         {
-            name: 'id',
+            name: 'Id',
             sortField: 'Id',
             title: "MongoID",
             titleClass: 'center aligned',
@@ -139,15 +148,16 @@
             width: '20%'
         },
         {
-            name: 'image',
-            sortField: 'Image',
+            name: 'Imgbase64',
+            sortField: 'Imgbase64',
             title: '縮圖',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
+            //callback:'formatImage',
             width: '15%'
         },
         {
-            name: 'setId',
+            name: 'SetInfo.Name',
             sortField: 'SetId',
             title: '卡牌系列',
             titleClass: 'center aligned',
@@ -155,7 +165,7 @@
             width: '10%'
         },
         {
-            name: 'name',
+            name: 'Name',
             sortField: 'Name',
             title: '卡牌名稱',
             titleClass: 'center aligned',
@@ -163,7 +173,7 @@
             width: '10%'
         },
         {
-            name: 'rarity',
+            name: 'Rarity',
             sortField: 'Rarity',
             title: '卡牌稀有度',
             titleClass: 'center aligned',
@@ -171,7 +181,7 @@
             width: '10%'
         },
         {
-            name: 'updateTime',
+            name: 'UpdateTime',
             sortField: 'UpdateTime',
             title: '最後修改時間',
             titleClass: 'center aligned',
@@ -180,7 +190,7 @@
             width: '15%'
         },
         {
-            name: 'createTime',
+            name: 'CreateTime',
             sortField: 'CreateTime',
             title: '最後修改人',
             titleClass: 'center aligned',
@@ -188,122 +198,86 @@
             width: '10%'
         },
         {
-            name: '__component:custom-action',
-            title: "編輯",
+            name: '__slot:actions',
+            title: "操作",
             titleClass: 'center aligned',
             dataClass: 'custom-action center aligned',
             width: '10%'
         },
     ];
 
-    Vue.component('custom-action', {
-        template: [
-            '<div>',
-                //'<button class="ui red button" v-on:click="itemAction(\'view-item\', rowData)"><i class="zoom icon"></i></button>',
-                //'<button class="ui blue button" v-on:click="itemAction(\'edit-item\', rowData)"><i class="edit icon"></i></button>',
-                //'<button class="ui green button" v-on:click="itemAction(\'delete-item\', rowData)"><i class="delete icon"></i></button>',
-                //'<button class="ui red button"><i class="zoom icon"></i></button>',
-                //'<button class="ui blue button"><i class="edit icon"></i></button>',
-                //'<button class="ui green button"><i class="delete icon"></i></button>',
-                //'<a href="userdetail.aspx?id={ID}" class="btn btn-primary btn-sm">查看</a>', 
-                '<a class="btn btn-primary btn-sm">查看</a>',
-                //'<a :href="'userdetail.aspx?id='+props.rowData.UserId" class="btn-xs btn-default btn">查看</a>',
-                '<a class="btn btn-primary btn-sm" v-on:click="startRow(props.rowData)">明細</a>',
-            '</div>'
-        ].join(''),
-        props: {
-            rowData: {
-                type: Object,
-                required: true
-            }
-        },
-        methods: {
-            itemAction: function(action, data) {
-                sweetAlert('custom-action: ' + action, data.name)
-            },
-            onClick: function(event) {
-                console.log('custom-action: on-click', event.target)
-            },
-            onDoubleClick: function(event) {
-                console.log('custom-action: on-dblclick', event.target)
-            }
-        }
-    })
-
     Vue.component('my-detail-row', {
         template: [
             '<div class="detail-row ui form" v-on:click="onClick($event)">'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>卡片名稱：</label>'+
-                    '<span>{{rowData.name}}</span>'+
+                    '<span>{{rowData.Name}}</span>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>系列名稱：</label>'+
-                    '<span>{{rowData.setId}}</span>'+
+                    '<span>{{rowData.SetInfo.SeriesId}} - {{rowData.SetInfo.Series}} - {{rowData.SetInfo.Name}}</span>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>主分類：</label>'+
-                    '<span>{{rowData.supertype}}</span>'+
+                    '<span>{{rowData.Supertype}}</span>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>次分類：</label>'+
-                    '<span v-for="(item, index) in rowData.subtypes">{{item}}</span>'+
+                    '<span v-for="(item, index) in rowData.Subtypes">{{item}} / </span>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>稀有度：</label>'+
-                    '<span>{{rowData.rarity}}</span>'+
+                    '<span>{{rowData.Rarity}}</span>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>血量：</label>'+
-                    '<span>{{rowData.hp}}</span>'+
+                    '<span>{{rowData.Hp}}</span>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>屬性：</label>'+
-                    '<div v-for="(item, index) in rowData.types">'+
-                        '{{index}} - {{item}}'+
+                    '<div v-for="(item, index) in rowData.Types">'+
+                        '{{item}}'+
                     '</div>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>進化自：</label>'+
-                    '<span>{{rowData.evolvesFrom}}</span>'+
+                    '<span>{{rowData.EvolvesFrom}}</span>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>進化至：</label>'+
-                    '<div v-for="(item, index) in rowData.evolvesTo">'+
-                        '{{index}} - {{item}}'+
-                    '</div>'+
+                    '<span v-for="(item, index) in rowData.EvolvesTo">'+
+                        '{{item}}'+
+                    '</span>'+
                 '</div>'+
-                '<div class="">'+
-                    '<label>規則：</label>'+
-                    '<div v-for="(item, index) in rowData.rules">'+
-                        '{{index}} - {{item}}'+
-                    '</div>'+
+                '<div class="my-1">'+
+                    '<label>訓練家卡效果：</label>'+
+                    '<span>{{rowData.Rules}}</span>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>特性：</label>'+
-                    '<div v-for="(item, index) in rowData.abilities">'+
+                    '<div v-for="(item, index) in rowData.Abilities">'+
                         '{{index}} - {{item.name}} - {{item.text}} - {{item.type}}'+
                     '</div>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>招式：</label>'+
-                    '<div v-for="(item, index) in rowData.attacks">'+
+                    '<div v-for="(item, index) in rowData.Attacks">'+
                         '{{index}} - {{item.name}} - {{item.text}} - {{item.damage}}'+
                     '</div>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>弱點：</label>'+
-                    '<div v-for="(item, index) in rowData.weaknesses">'+
+                    '<div v-for="(item, index) in rowData.Weaknesses">'+
                         '{{index}} - {{item.type}} - {{item.value}}'+
                     '</div>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>介紹：</label>'+
-                    '<span>{{rowData.flavorText}}</span>'+
+                    '<span>{{rowData.FlavorText}}</span>'+
                 '</div>'+
-                '<div class="">'+
+                '<div class="my-1">'+
                     '<label>最後更新時間：</label>'+
-                    '<span>{{rowData.updateTime}}</span>'+
+                    '<span>{{rowData.UpdateTime}}</span>'+
                 '</div>'+
             '</div>'
         ].join(''),
@@ -331,6 +305,9 @@
         },
         data: function () {
             return {
+
+
+
                 searchFor: '',
                 tableLoading: true,
                 fields: tableColumns,
@@ -367,6 +344,10 @@
                 console.log("TIME:", value)
                 return moment(value.replace("T", " ")).local().format('YYYY/MM/DD HH:mm:ss');
             },
+            formatImage: function (value) {
+                if (value == null) return '';
+                return `<img class="setLogo" src=${value} />`
+            },
             transform: function (data) {
                 var transformed = {}
                 transformed.pagination = {
@@ -378,7 +359,7 @@
                     to: data.to
                 }
 
-                transformed.mydata = data;
+                transformed.mydata = data.data;
                 return transformed;
             },
             setFilter: function () {
@@ -393,7 +374,7 @@
            
             onPaginationData: function (paginationData) {
                 if (paginationData.total <= 0) {
-                    this.open();
+                    this.searchZero();
                     this.$refs.pagination.setPaginationData(paginationData);
                 }
                 else {
@@ -448,15 +429,36 @@
 
                 //    });
             },
-            open() {
+            searchZero() {
                 this.$alert('請重新檢視篩選條件', '搜尋結果為0', {
                     confirmButtonText: '確定'
                 });
             },
-           onCellClicked (data, field, event) {
+            onCellClicked (data, field, event) {
                 console.log('cellClicked: ', field.name)
-                this.$refs.vuetable.toggleDetailRow(data.id)
-           }
+                this.$refs.vuetable.toggleDetailRow(data.Id)
+            },
+           //delSet: function (data) {
+           //     this.$confirm('確認是否刪除?', '注意', {
+           //         confirmButtonText: '確認',
+           //         cancelButtonText: '取消',
+           //         type: 'warning'
+           //     }).then(() => {
+           //         let url = "/api/Card/DeleteSet?id=" + data.Id;
+                    
+           //         console.log(url)
+           //         fetch(url, {
+           //             method: "DELETE",
+           //         }).then(function (data) {
+           //             appMain.$notify({ title: '成功', message: '成功', type: 'success' });
+           //             appMain.$refs.vuetable.refresh();
+           //         }).catch(function (data) {
+
+           //         });
+           //     }).catch(() => {
+
+           //     });
+           // },
         },
     });
 </script>

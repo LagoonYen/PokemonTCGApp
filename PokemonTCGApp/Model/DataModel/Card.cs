@@ -104,6 +104,12 @@ namespace PokemonTCGApp.Model.DataModel
         public List<Resistance>? Resistances { get; set; }
 
         /// <summary>
+        /// One or more resistances for a given card. A resistance has the following fields.
+        /// </summary>
+        [BsonElement("retreatCost")]  //撤退費用
+        public List<string>? RetreatCost { get; set; }
+
+        /// <summary>
         /// The set details embedded into the card. See the set object for more details.
         /// </summary>
         [BsonElement("setId")]  //系列
@@ -166,7 +172,7 @@ namespace PokemonTCGApp.Model.DataModel
 
     public class Resistance
     {
-        public string? Type { get; set; }
+        public List<string>? Type { get; set; }
         public string? Value { get; set; }
     }
 }

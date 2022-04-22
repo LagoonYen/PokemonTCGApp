@@ -29,7 +29,7 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<List<Card>> GetCards(RequestVueTable req)
+        public ActionResult<List<CardViewModel>> GetCards(RequestVueTable req)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace PokemonTCGApp.Controllers
 
                 var Id = req.@params.filterQuery["Id"] as string;
                 var result = _cardService.GetCards();
-                var cVueTableList = new VueTableList<Card>(result, req.@params.sort, req.@params.per_page, req.@params.page);
+                var cVueTableList = new VueTableList<CardViewModel>(result, req.@params.sort, req.@params.per_page, req.@params.page);
                 return Ok(cVueTableList);
             }
             catch (Exception ex)

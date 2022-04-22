@@ -97,11 +97,39 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public List<Card> GetCards()
+        public List<CardViewModel> GetCards()
         {
             try
             {
-                return _cardRepository.GetCards();
+                var result = _cardRepository.GetCards();
+
+
+                var cardViewModel = result.Select(x => new CardViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Supertype = x.Supertype,
+                    Subtypes = x.Subtypes,
+                    Abilities = x.Abilities,
+                    Attacks = x.Attacks,
+                    EvolvesFrom = x.EvolvesFrom,
+                    EvolvesTo = x.EvolvesTo,
+                    FlavorText = x.FlavorText,
+                    Hp = x.Hp,
+                    Number = x.Number,
+                    Rarity = x.Rarity,
+                    Types = x.Types,
+                    Weaknesses = x.Weaknesses,
+                    Resistances = x.Resistances,
+                    SetId = x.SetId,
+                    SetInfo = GetSet(x.SetId),
+                    CreateTime = x.CreateTime,
+                    UpdateAdmin = x.UpdateAdmin,
+                    UpdateTime = x.UpdateTime,
+                    TrainerEffect = x.TrainerEffect,
+                }).OrderBy(x =>x.SetId).OrderBy(x => x.Number).ToList();
+
+                return cardViewModel;
             }
             catch
             {

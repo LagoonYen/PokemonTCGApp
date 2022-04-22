@@ -24,9 +24,9 @@
             </h1>
         </section>
 
-         <section class="content">
+        <section class="content">
             <div class="row">
-                @*左半邊*@
+                @*上半部*@
                 <div class="col-12 col-lg-6">
                     <div class="box box-primary">
                         
@@ -119,6 +119,7 @@
 
                     </div>
                 </div>
+            
 
                 @*圖片上傳區*@
                 <div class="col-12 col-lg-6">
@@ -134,135 +135,360 @@
                     </div>
                 </div>
 
-                @*寶可夢卡資料輸入區*@
-                <div class="col-12 col-lg-6">
-                    <div class="box box-primary">
-                        
-                        <div class="box-header with-border">
-                            <h3 class="box-title">寶可夢卡資料輸入區</h3>
-                        </div>
-
-                        <div class="box-body">
-
-                            @*Did this*@
-                            <div class="form-group row">
-                                <label for="" class="col-sm-3 control-label">屬性</label>
-                                <div class="col-sm-9">
-                                    <el-select v-model="TypesEnum" multiple placeholder="請選擇" class="inputStyle" filterable>
-                                        <el-option
-                                            v-for="item in AllTypesEnum"
-                                            :key="item.Name"
-                                            :label="item.Name"
-                                            :value="item.Name">
-                                        </el-option>
-                                    </el-select>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="" class="col-sm-3 control-label">HP</label>
-                                <div class="col-sm-9">
-                                    <el-input-number v-model="Hp" :step="10" :max="500" step-strictly class="inputStyle"></el-input-number>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="" class="col-sm-3 control-label">進化自</label>
-                                <div class="col-sm-9">
-                                    <el-tooltip class="item" effect="dark" content="只會有單隻" placement="right">
-                                    <el-select v-model="EvolvesFrom "
-                                        filterable
-                                        allow-create
-                                        cleanable
-                                        class="inputStyle"
-                                        no-data-text="請輸入"
-                                        placeholder="請輸入"
-                                        clearable>
-                                    </el-select>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="" class="col-sm-3 control-label">進化至</label>
-                                <div class="col-sm-9">
-                                    <el-tooltip class="item" effect="dark" content="(可能複數，如：伊布)" placement="right">
-                                    <el-select v-model="EvolvesTo"
-                                        filterable
-                                        multiple
-                                        allow-create
-                                        class="inputStyle"
-                                        no-data-text="請輸入"
-                                        placeholder="請輸入">
-                                    </el-select>
-                                </div>
-                            </div>
-
-                             <div class="form-group row">
-                                <label for="" class="col-sm-3 control-label">習性介紹</label>
-                                <div class="col-sm-9">
-                                    <el-input 
-                                        type="text" 
-                                        placeholder="習性介紹，上限為25個字" 
-                                        v-model="FlavorText" 
-                                        maxlength="25"
-                                        show-word-limit>
-                                    </el-input>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                
-                @*訓練家卡資料輸入區*@
-                <div class="col-12 col-lg-6">
-                    <div class="box box-primary">
-                        
-                        <div class="box-header with-border">
-                            <h3 class="box-title">訓練家卡資料輸入區</h3>
-                        </div>
-
-                        <div class="box-body">
-
-                            <div class="form-group row">
-                                <label for="" class="col-sm-3 control-label">訓鍊家卡效果</label>
-                                <div class="col-sm-9">
-                                    <el-input
-                                        type="textarea"
-                                        :rows="8"
-                                        placeholder="請輸入文字敘述"
-                                        v-model="TrainEffect"
-                                        maxlength="200"
-                                        resize="none">
-                                    </el-input>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-
             </div>
 
+            <div class="row">
+                @*寶可夢卡資料輸入區*@
+                    <div v-if="Supertypes == 'Pokémon'" class="col-12 col-lg-6">
+                        <div class="box box-primary">
+                        
+                            <div class="box-header with-border">
+                                <h3 class="box-title">寶可夢卡資料輸入區</h3>
+                            </div>
 
-         </section>
+                            <div class="box-body">
+
+                                @*Did this*@
+                                <div class="form-group row">
+                                    <label for="" class="col-sm-3 control-label">屬性</label>
+                                    <div class="col-sm-9">
+                                        <el-select v-model="TypesEnum" multiple placeholder="請選擇" class="inputStyle" filterable>
+                                            <el-option
+                                                v-for="item in AllTypesEnum"
+                                                :key="item.Name"
+                                                :label="item.Name"
+                                                :value="item.Name">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="" class="col-sm-3 control-label">HP</label>
+                                    <div class="col-sm-9">
+                                        <el-input-number v-model="Hp" :step="10" :max="500" step-strictly class="inputStyle"></el-input-number>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="" class="col-sm-3 control-label">進化自</label>
+                                    <div class="col-sm-9">
+                                        <el-tooltip class="item" effect="dark" content="只會有單隻" placement="right">
+                                        <el-select v-model="EvolvesFrom "
+                                            filterable
+                                            allow-create
+                                            cleanable
+                                            class="inputStyle"
+                                            no-data-text="請輸入"
+                                            placeholder="請輸入"
+                                            clearable>
+                                        </el-select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="" class="col-sm-3 control-label">進化至</label>
+                                    <div class="col-sm-9">
+                                        <el-tooltip class="item" effect="dark" content="(可能複數，如：伊布)" placement="right">
+                                        <el-select v-model="EvolvesTo"
+                                            filterable
+                                            multiple
+                                            allow-create
+                                            class="inputStyle"
+                                            no-data-text="請輸入"
+                                            placeholder="請輸入">
+                                        </el-select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="" class="col-sm-3 control-label">習性介紹</label>
+                                    <div class="col-sm-9">
+                                        <el-input 
+                                            type="text" 
+                                            placeholder="習性介紹，上限為25個字" 
+                                            v-model="FlavorText" 
+                                            maxlength="25"
+                                            show-word-limit>
+                                        </el-input>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                    <div v-if="Supertypes == 'Pokémon'" class="col-12">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Pokemon卡詳細添加區</h3>
+                                <a class="btn btn-primary" title="新增特性" v-on:click="AddAbilities">
+                                    <i class="fa-plus fa"></i>特性
+                                </a>
+                                <a class="btn btn-primary" title="新增招式" v-on:click="AddAttacks">
+                                    <i class="fa-plus fa"></i>招式
+                                </a>
+                                <a class="btn btn-primary" title="新增弱點" v-on:click="AddWeaknesses">
+                                    <i class="fa-plus fa"></i>弱點
+                                </a>
+                                <a class="btn btn-primary" title="新增撤退" v-on:click="AddResistances">
+                                    <i class="fa-plus fa"></i>撤退
+                                </a>
+                            </div>
+                            <div class="box-body">
+                                @*特性*@
+                                <div class="box box-primary col-md-12 col-lg-6">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title col-12">特性</h3>
+                                    </div>
+                                    <div class="box-body">
+                                
+                                        <div v-if="item.AbilitiesStatus != 1" v-for="(item,index) in Abilities">
+                                            <div class="form-group row">
+                                                <div class="col-10">
+                                               
+                                                    <div class="form-group row">
+                                                        <label for="" class="col-sm-3 control-label">名稱</label>
+                                                        <div class="col-sm-9">
+                                                            <el-input 
+                                                                type="text" 
+                                                                placeholder="特性名稱，上限為10個字" 
+                                                                v-model="item.Name" 
+                                                                maxlength="10"
+                                                                show-word-limit>
+                                                            </el-input>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="" class="col-sm-3 control-label">文字敘述</label>
+                                                        <div class="col-sm-9">
+                                                            <el-input 
+                                                                type="text" 
+                                                                placeholder="文字敘述，上限為40個字" 
+                                                                v-model="item.Text" 
+                                                                maxlength="40"
+                                                                show-word-limit>
+                                                            </el-input>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-1">
+                                                    <el-button type="danger"
+                                                        style="height:92%"
+                                                        icon="el-icon-delete"
+                                                        v-on:click="RemoveAbilities(item,index)" >
+                                                    </el-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*招式*@
+                                <div class="box box-warning col-md-12 col-lg-6">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title col-12">招式</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div v-if="item.AttacksStatus != 1" v-for="(item,index) in Attacks">
+                                            <div class="form-group row">
+                                                <div class="col-10">
+                                               
+                                                    <div class="form-group row">
+                                                        <label for="" class="col-sm-3 control-label">名稱</label>
+                                                        <div class="col-sm-9">
+                                                            <el-input 
+                                                                type="text" 
+                                                                placeholder="招式名稱，上限為10個字" 
+                                                                v-model="item.Name" 
+                                                                maxlength="10"
+                                                                show-word-limit>
+                                                            </el-input>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="" class="col-sm-3 control-label">文字敘述</label>
+                                                        <div class="col-sm-9">
+                                                            <el-input 
+                                                                type="text" 
+                                                                placeholder="文字敘述，上限為30個字" 
+                                                                v-model="item.Text" 
+                                                                maxlength="40"
+                                                                show-word-limit>
+                                                            </el-input>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="" class="col-sm-3 control-label">傷害</label>
+                                                        <div class="col-sm-9">
+                                                            <el-input 
+                                                                type="text" 
+                                                                placeholder="傷害，上限為5個字，ex：100+, 20x" 
+                                                                v-model="item.Damage" 
+                                                                maxlength="5"
+                                                                show-word-limit>
+                                                            </el-input>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-1">
+                                                    <el-button type="danger"
+                                                        style="height:92%"
+                                                        icon="el-icon-delete"
+                                                        v-on:click="RemoveAttacks(item,index)" >
+                                                    </el-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*弱點*@
+                                <div class="box box-danger col-md-12 col-lg-6">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title col-12">弱點</h3>
+                                    </div>
+                                    <div class="box-body">
+                                
+                                    
+                                        <div v-if="item.WeaknessesStatus != 1" v-for="(item,index) in Weaknesses">
+                                            <div class="form-group row">
+                                                <div class="col-10">
+                                               
+                                                    <div class="form-group row">
+                                                        <label for="" class="col-sm-3 control-label">屬性</label>
+                                                        <div class="col-sm-9">
+                                                            <el-select v-model="item.Type" placeholder="請選擇" class="inputStyle" filterable>
+                                                                <el-option
+                                                                    v-for="item in AllTypesEnum"
+                                                                    :key="item.Name"
+                                                                    :label="item.Name"
+                                                                    :value="item.Name">
+                                                                </el-option>
+                                                            </el-select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="" class="col-sm-3 control-label">敘述</label>
+                                                        <div class="col-sm-9">
+                                                            <el-input 
+                                                                type="text" 
+                                                                placeholder="敘述，上限為5個字，ex：x2, x3" 
+                                                                v-model="item.Value" 
+                                                                maxlength="5"
+                                                                show-word-limit>
+                                                            </el-input>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-1">
+                                                    <el-button type="danger"
+                                                        style="height:92%"
+                                                        icon="el-icon-delete"
+                                                        v-on:click="RemoveWeaknesses(item,index)" >
+                                                    </el-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*抗性*@
+                                <div class="box box-success col-md-12 col-lg-6">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title col-12">抗性</h3>
+                                    </div>
+                                    <div class="box-body">
+                                
+                                    
+                                        <div v-if="item.ResistancesStatus != 1" v-for="(item,index) in Resistances">
+                                            <div class="form-group row">
+                                                <div class="col-10">
+                                               
+                                                    <div class="form-group row">
+                                                        <label for="" class="col-sm-3 control-label">屬性</label>
+                                                        <div class="col-sm-9">
+                                                            <el-select v-model="item.Type" placeholder="請選擇" class="inputStyle" filterable>
+                                                                <el-option
+                                                                    v-for="item in AllTypesEnum"
+                                                                    :key="item.Name"
+                                                                    :label="item.Name"
+                                                                    :value="item.Name">
+                                                                </el-option>
+                                                            </el-select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="" class="col-sm-3 control-label">敘述</label>
+                                                        <div class="col-sm-9">
+                                                            <el-input 
+                                                                type="text" 
+                                                                placeholder="敘述，上限為5個字，ex：-20, -30" 
+                                                                v-model="item.Value" 
+                                                                maxlength="5"
+                                                                show-word-limit>
+                                                            </el-input>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-1">
+                                                    <el-button type="danger"
+                                                        style="height:92%"
+                                                        icon="el-icon-delete"
+                                                        v-on:click="RemoveResistances(item,index)" >
+                                                    </el-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                @*訓練家卡資料輸入區*@
+                    <div v-if="Supertypes == 'Trainer'" class="col-12 col-lg-6">
+                        <div class="box box-primary">
+                        
+                            <div class="box-header with-border">
+                                <h3 class="box-title">訓練家卡資料輸入區</h3>
+                            </div>
+
+                            <div class="box-body">
+
+                                <div class="form-group row">
+                                    <label for="" class="col-sm-3 control-label">訓鍊家卡效果</label>
+                                    <div class="col-sm-9">
+                                        <el-input
+                                            type="textarea"
+                                            :rows="8"
+                                            placeholder="請輸入文字敘述"
+                                            v-model="TrainEffect"
+                                            maxlength="200"
+                                            resize="none">
+                                        </el-input>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+        </section>
 
 
         <section class="content">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"></h3>
-
                 </div>
-
-                
-
-
-
-
-
 
                 <div class="box-footer">
                     <button type="button" class="btn btn-primary " v-on:click="CreateCard">
@@ -296,8 +522,16 @@
                 Number:"",
                 TrainEffect:"",
                 FlavorText:"",
+                Abilities: [],
+                Attacks: [],
+                Weaknesses: [],
+                Resistances: [],
 
-
+                //判斷項目
+                AbilitiesStatus:0,
+                AttacksStatus:0,
+                WeaknessesStatus:0,
+                ResistancesStatus:0,
 
                 //預先取得數據
                 AllTypesEnum:[],
@@ -356,10 +590,50 @@
                     }) 
                 });
             },
-            
+            AddAbilities() {
+                var newItem = {
+                    "Name":"",
+                    "Text":"",
+                };
+                appMain.Abilities.push(newItem);
+            },
+            AddAttacks() {
+                var newItem = {
+                    "Name":"",
+                    "Text":"",
+                    "Damage":"",
+                };
+                appMain.Attacks.push(newItem);
+            },
+            AddWeaknesses() {
+                var newItem = {
+                    "Type":"",
+                    "Value":"",
+                };
+                appMain.Weaknesses.push(newItem);
+            },
+            AddResistances() {
+                var newItem = {
+                    "Type":"",
+                    "Value":"",
+                };
+                appMain.Resistances.push(newItem);
+            },
+            RemoveAbilities(item, index) {
+                appMain.Abilities.splice(index, 1);
+            },
+            RemoveAttacks(item, index) {
+                appMain.Attacks.splice(index, 1);
+            },
+            RemoveWeaknesses(item, index) {
+                appMain.Weaknesses.splice(index, 1);
+            },
+            RemoveResistances(item, index) {
+                appMain.Resistances.splice(index, 1);
+            },
             
                 
-             CreateCard() {
+            CreateCard() {
                 let url = "/api/Card/CreateCard";
                 let formData = {
                     'Id': appMain.id,
