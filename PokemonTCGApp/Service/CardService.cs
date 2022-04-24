@@ -97,7 +97,7 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public List<CardViewModel> GetCards()
+        public IEnumerable<CardViewModel> GetCards()
         {
             try
             {
@@ -127,7 +127,7 @@ namespace PokemonTCGApp.Service
                     UpdateAdmin = x.UpdateAdmin,
                     UpdateTime = x.UpdateTime,
                     TrainerEffect = x.TrainerEffect,
-                }).OrderBy(x =>x.SetId).OrderBy(x => x.Number).ToList();
+                }).OrderBy(x =>x.SetId).OrderBy(x => x.Number);
 
                 return cardViewModel;
             }
@@ -158,14 +158,14 @@ namespace PokemonTCGApp.Service
                     throw new Exception("請填寫基本系列資料");
                 }
 
-                Set setobject = new Set()
+                var setobject = new Set()
                 {
-                    Id = req.Id == "" ? null : req.Id,
+                    Id = req.Id == string.Empty ? null : req.Id,
                     Series = req.Series,
                     Name = req.Name,
                     SeriesId = req.SeriesId,
                     ReleaseTime = req.ReleaseTime,
-                    CreateTime = req.Id == "" ? DateTime.Now : req.CreateTime,
+                    CreateTime = req.Id == string.Empty ? DateTime.Now : req.CreateTime,
                     UpdateTime = DateTime.Now,
                     //To do
                     UpdateAdmin = "小焰"

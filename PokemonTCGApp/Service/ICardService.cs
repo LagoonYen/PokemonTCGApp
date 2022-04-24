@@ -6,7 +6,7 @@ namespace PokemonTCGApp.Service
 {
     public interface ICardService
     {
-        List<CardViewModel> GetCards();
+        IEnumerable<CardViewModel> GetCards();
         Card GetCard(string id);
         string CreateCard(RequestCreateCard req);
         void UpdateCard(string id, Card card);
