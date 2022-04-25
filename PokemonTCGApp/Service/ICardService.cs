@@ -8,7 +8,7 @@ namespace PokemonTCGApp.Service
     {
         List<CardViewModel> GetCards();
         Card GetCard(string id);
-        string CreateCard(RequestCreateCard req);
+        string UpsertCard(RequestCreateCard req);
         void UpdateCard(string id, Card card);
         void DeleteCard(string id);
 

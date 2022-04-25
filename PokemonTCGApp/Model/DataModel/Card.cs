@@ -131,7 +131,7 @@ namespace PokemonTCGApp.Model.DataModel
         /// The Image of the card.
         /// </summary>
         [BsonElement("image")]  //圖片
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
 
         [BsonElement("updateAdmin")] //更新的管理員
         public string? UpdateAdmin { get; set; }
@@ -141,6 +141,8 @@ namespace PokemonTCGApp.Model.DataModel
 
         [BsonElement("updatetime")] //更新編輯時間
         public DateTime UpdateTime { get; set; }
+
+        public string Imgbase64 { get; set; }
     }
 
     //public class AncientTrait
@@ -151,28 +153,26 @@ namespace PokemonTCGApp.Model.DataModel
 
     public class Ability
     {
-        public string? Name { get; set; }
-        public string? Text { get; set; }
+        public string Name { get; set; }
+        public string Text { get; set; }
     }
-
-    
 
     public class Attack
     {
-        public string? Name { get; set; }
-        public string? Text { get; set; }
-        public string? Damage { get; set; }
+        public string Name { get; set; }
+        public string Text { get; set; }
+        public string Damage { get; set; }
     }
 
     public class Weakness
     {
-        public string? Type { get; set; }
-        public string? Value { get; set; }
+        public string Type { get; set; }
+        public string Value { get; set; }
     }
 
     public class Resistance
     {
-        public List<string>? Type { get; set; }
-        public string? Value { get; set; }
+        public string Type { get; set; }
+        public string Value { get; set; }
     }
 }

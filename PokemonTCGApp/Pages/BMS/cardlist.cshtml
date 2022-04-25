@@ -6,7 +6,10 @@
 <script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js"></script>
 
 <style>
-    
+    .cardThumbnail{
+        max-width:150px;
+        max-height:150px;
+    }
 </style>
 <div class="content-wrapper" id="app">
 
@@ -93,7 +96,7 @@
                         @*:pagination-component="paginationComponent"*@
                         <template slot="actions" slot-scope="props">
                             <div class="table-button-container">
-                                <a v-on:click="editSet(props.rowData)" class="btn-xs btn-default btn">編輯</a>
+                                <a v-on:click="editCard(props.rowData)" class="btn-xs btn-default btn">編輯</a>
                                 <a v-on:click="delSet(props.rowData)" class="btn-xs btn-default btn">刪除</a>
                             </div>
                         </template>
@@ -153,7 +156,7 @@
             title: '縮圖',
             titleClass: 'center aligned',
             dataClass: 'center aligned',
-            //callback:'formatImage',
+            callback:'formatImage',
             width: '15%'
         },
         {
@@ -256,19 +259,25 @@
                 '<div class="my-1">'+
                     '<label>特性：</label>'+
                     '<div v-for="(item, index) in rowData.Abilities">'+
-                        '{{index}} - {{item.name}} - {{item.text}} - {{item.type}}'+
+                        '{{index}} - {{item.Name}} - {{item.Text}} - {{item.Type}}'+
                     '</div>'+
                 '</div>'+
                 '<div class="my-1">'+
                     '<label>招式：</label>'+
                     '<div v-for="(item, index) in rowData.Attacks">'+
-                        '{{index}} - {{item.name}} - {{item.text}} - {{item.damage}}'+
+                        '{{index}} - {{item.Name}} - {{item.Text}} - {{item.Damage}}'+
                     '</div>'+
                 '</div>'+
                 '<div class="my-1">'+
                     '<label>弱點：</label>'+
                     '<div v-for="(item, index) in rowData.Weaknesses">'+
-                        '{{index}} - {{item.type}} - {{item.value}}'+
+                        '{{index}} - {{item.Type}} - {{item.Value}}'+
+                    '</div>'+
+                '</div>'+
+                '<div class="my-1">'+
+                    '<label>抵抗：</label>'+
+                    '<div v-for="(item, index) in rowData.Resistances">'+
+                        '{{index}} - {{item.Type}} - {{item.Value}}'+
                     '</div>'+
                 '</div>'+
                 '<div class="my-1">'+
@@ -293,10 +302,6 @@
             }
         }
     })
-
-    Vue.config.debug = true
-
-    var E_SERVER_ERROR = 'Error communicating with the server'
 
     var appMain = new Vue({
         el: '#app',
@@ -346,7 +351,7 @@
             },
             formatImage: function (value) {
                 if (value == null) return '';
-                return `<img class="setLogo" src=${value} />`
+                return `<img class="cardThumbnail" src=${value} />`
             },
             transform: function (data) {
                 var transformed = {}
@@ -437,6 +442,11 @@
             onCellClicked (data, field, event) {
                 console.log('cellClicked: ', field.name)
                 this.$refs.vuetable.toggleDetailRow(data.Id)
+            },
+
+            editCard: function (data) {
+                console.log("editCard", data.Id)
+                location.href = "./cardcreate?id=" + data.Id
             },
            //delSet: function (data) {
            //     this.$confirm('確認是否刪除?', '注意', {

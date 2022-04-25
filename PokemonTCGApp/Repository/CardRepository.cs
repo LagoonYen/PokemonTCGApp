@@ -17,11 +17,19 @@ namespace PokemonTCGApp.Repository
             _setDatabase = database.GetCollection<Set>(settings.SetCollectionName);
         }
 
-        public Card CreateCard(Card card)
+        public Card UpsertCard(Card card)
         {
             try
             {
-                _cardDatabase.InsertOne(card);
+                var cardObj = _cardDatabase.Find(x => x.Id == card.Id).FirstOrDefault();
+                if (cardObj == null)
+                {
+                    _cardDatabase.InsertOne(card);
+                }
+                else
+                {
+                    _cardDatabase.ReplaceOne(x => x.Id == card.Id, card);
+                }
                 return card;
             }
             catch

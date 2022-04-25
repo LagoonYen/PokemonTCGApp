@@ -78,11 +78,11 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Card> CreateCard([FromBody]RequestCreateCard req)
+        public ActionResult<Card> UpsertCard([FromBody]RequestCreateCard req)
         {
             try
             {
-                var result = _cardService.CreateCard(req);
+                var result = _cardService.UpsertCard(req);
 
                 //return CreatedAtAction(nameof(GetCard), new { id = req.Id }, req);
                 return Ok(result);

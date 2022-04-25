@@ -17,7 +17,7 @@ namespace PokemonTCGApp.Service
             _cardRepository = cardRepository;
         }
 
-        public string CreateCard(RequestCreateCard req)
+        public string UpsertCard(RequestCreateCard req)
         {
             try
             {
@@ -26,9 +26,9 @@ namespace PokemonTCGApp.Service
                     throw new Exception("請填寫基本系列資料");
                 }
 
-                Card cardobject = new Card()
+                var cardobject = new Card()
                 {
-                    //Id = req.Id == "" ? null : req.Id,
+                    Id = req.Id == "" ? null : req.Id,
                     SetId = req.SetId,
                     Number = req.Number,
                     Name = req.Name,
@@ -40,30 +40,31 @@ namespace PokemonTCGApp.Service
                     EvolvesFrom = req.EvolvesFrom,
                     EvolvesTo = req.EvolvesTo,
                     FlavorText = req.FlavorText,
-                
-                    //CreateTime = req.Id == "" ? DateTime.Now : req.CreateTime,
-                    CreateTime = DateTime.Now,
+                    Abilities = req.Abilities,
+                    Attacks = req.Attacks,
+                    Weaknesses = req.Weaknesses,
+                    Resistances = req.Resistances,
+                    TrainerEffect = req.TrainerEffect,
+
+                    CreateTime = req.Id == "" ? DateTime.Now : req.CreateTime,
+                    //CreateTime = DateTime.Now,
                     UpdateTime = DateTime.Now,
                     //To do
                     UpdateAdmin = "小焰"
                 };
 
-                //if (req.File?.Length > 0)
-                //{
-                //    string image = JsonConvert.SerializeObject(req.File);
+                if (req.File?.Length > 0)
+                {
+                    string image = JsonConvert.SerializeObject(req.File);
 
-                //    string base64EncodedExternalImage = Convert.ToBase64String(Encoding.UTF8.GetBytes(image));
-                //    byte[] fileBytes = Convert.FromBase64String(base64EncodedExternalImage);
-                //    setobject.Image = fileBytes;
-                //    setobject = _cardRepository.UpsertSet(setobject);
+                    string base64EncodedExternalImage = Convert.ToBase64String(Encoding.UTF8.GetBytes(image));
+                    byte[] fileBytes = Convert.FromBase64String(base64EncodedExternalImage);
+                    cardobject.Image = fileBytes;
+                    cardobject = _cardRepository.UpsertCard(cardobject);
 
-                //    //if (setobject.Id?.Trim() != "")
-                //    //{
-                //    return "Upsert並上傳新圖片";
-                //    //}
-                //}
-
-                cardobject = _cardRepository.CreateCard(cardobject);
+                    return "Upsert並上傳新圖片";
+                }
+                cardobject = _cardRepository.UpsertCard(cardobject);
                 return "Upsert無上傳新圖片";
                 //_cardRepository.CreateCard(req);
             }
@@ -89,7 +90,13 @@ namespace PokemonTCGApp.Service
         {
             try
             {
-                return _cardRepository.GetCard(id);
+                var result = _cardRepository.GetCard(id);
+                if (result.Image != null)
+                {
+                    result.Image = GetImage(Convert.ToBase64String(result.Image));
+                    result.Imgbase64 = Encoding.UTF8.GetString(result.Image);
+                }
+                return result;
             }
             catch
             {
@@ -122,13 +129,22 @@ namespace PokemonTCGApp.Service
                     Weaknesses = x.Weaknesses,
                     Resistances = x.Resistances,
                     SetId = x.SetId,
-                    SetInfo = GetSet(x.SetId),
+                    SetInfo = x.SetId == null ? null : GetSet(x.SetId),
                     CreateTime = x.CreateTime,
                     UpdateAdmin = x.UpdateAdmin,
                     UpdateTime = x.UpdateTime,
                     TrainerEffect = x.TrainerEffect,
-                }).OrderBy(x =>x.SetId).OrderBy(x => x.Number).ToList();
-
+                    Image = x.Image,
+            }).OrderBy(x =>x.SetId).OrderBy(x => x.Number).ToList();
+                
+                foreach (var card in cardViewModel)
+                {
+                    if (card.Image != null)
+                    {
+                        card.Image = GetImage(Convert.ToBase64String(card.Image));
+                        card.Imgbase64 = Encoding.UTF8.GetString(card.Image);
+                    }
+                }
                 return cardViewModel;
             }
             catch
@@ -158,7 +174,7 @@ namespace PokemonTCGApp.Service
                     throw new Exception("請填寫基本系列資料");
                 }
 
-                Set setobject = new Set()
+                var setobject = new Set()
                 {
                     Id = req.Id == "" ? null : req.Id,
                     Series = req.Series,

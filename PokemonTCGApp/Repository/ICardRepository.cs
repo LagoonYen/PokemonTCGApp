@@ -6,7 +6,7 @@ namespace PokemonTCGApp.Repository
     {
         List<Card> GetCards();
         Card GetCard(string id);
-        Card CreateCard(Card card);
+        Card UpsertCard(Card card);
         void UpdateCard(string id, Card card);
         void DeleteCard(string id);
 

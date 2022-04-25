@@ -5,7 +5,7 @@ namespace PokemonTCGApp.Model
 {
     public static class EnumExtension
     {
-        public static string GetDescription<T>(this T value, Type type = null)
+        public static string GetDescription<T>(this T value, Type? type = null)
         {
             if (type is null)
             {

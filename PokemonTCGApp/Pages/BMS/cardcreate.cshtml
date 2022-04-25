@@ -14,7 +14,35 @@
     .inputStyle{
         width:100%;
     }
-</style>
+
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .el-upload{
+        display:block;
+        width: 315px;
+        height: 440px;
+        margin: 0 auto;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        color: #8c939d;
+         width: 315px;
+        height: 440px;
+        line-height: 440px;
+        /*margin: 0 auto;*/
+    }
+    .avatar {
+         width: 315px;
+        height: 440px;
+    }
+    </style>
 <div class="content-wrapper" id="app">
     <section class="content" style="min-height: 1140px;">
         
@@ -24,12 +52,12 @@
             </h1>
         </section>
 
+
         <section class="content">
             <div class="row">
                 @*上半部*@
-                <div class="col-12 col-lg-6">
+                <div class="col-12 col-xl-7">
                     <div class="box box-primary">
-                        
                         <div class="box-header with-border">
                             <h3 class="box-title">卡牌資料</h3>
                             @*<a v-on:click="#" calss="btn-xl btn-danger btn">刪除單卡</a>*@
@@ -75,7 +103,7 @@
                             <div class="form-group row">
                                 <label for="" class="col-sm-3 control-label">主分類</label>
                                 <div class="col-sm-9">
-                                    <el-select v-model="Supertypes" placeholder="請選擇" class="inputStyle" onchange="Open">
+                                    <el-select v-model="Supertype" placeholder="請選擇" class="inputStyle" onchange="Open">
                                         <el-option
                                             v-for="item in AllSupertypesEnum"
                                             :key="item.Name"
@@ -104,7 +132,7 @@
                             <div class="form-group row">
                                 <label for="" class="col-sm-3 control-label">稀有度等級</label>
                                 <div class="col-sm-9">
-                                    <el-select v-model="RaritiesEnum" placeholder="請選擇" class="inputStyle" filterable>
+                                    <el-select v-model="Rarity" placeholder="請選擇" class="inputStyle" filterable>
                                         <el-option
                                             v-for="item in AllRaritiesEnum"
                                             :key="item.Name"
@@ -116,30 +144,10 @@
                             </div>
                            
                         </div>
-
                     </div>
-                </div>
-            
 
-                @*圖片上傳區*@
-                <div class="col-12 col-lg-6">
-                    <div class="box box-primary">
-                        
-                        <div class="box-header with-border">
-                            <h3 class="box-title">圖片上傳區</h3>
-                        </div>
-
-                        <div class="box-body">
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="row">
-                @*寶可夢卡資料輸入區*@
-                    <div v-if="Supertypes == 'Pokémon'" class="col-12 col-lg-6">
+                    @*寶可夢卡資料輸入區*@
+                    <div v-if="Supertype == 'Pokémon'" class="">
                         <div class="box box-primary">
                         
                             <div class="box-header with-border">
@@ -152,7 +160,7 @@
                                 <div class="form-group row">
                                     <label for="" class="col-sm-3 control-label">屬性</label>
                                     <div class="col-sm-9">
-                                        <el-select v-model="TypesEnum" multiple placeholder="請選擇" class="inputStyle" filterable>
+                                        <el-select v-model="Types" multiple placeholder="請選擇" class="inputStyle" filterable>
                                             <el-option
                                                 v-for="item in AllTypesEnum"
                                                 :key="item.Name"
@@ -217,247 +225,14 @@
                             </div>
                         </div>
                     </div>
-                
-
-                    <div v-if="Supertypes == 'Pokémon'" class="col-12">
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Pokemon卡詳細添加區</h3>
-                                <a class="btn btn-primary" title="新增特性" v-on:click="AddAbilities">
-                                    <i class="fa-plus fa"></i>特性
-                                </a>
-                                <a class="btn btn-primary" title="新增招式" v-on:click="AddAttacks">
-                                    <i class="fa-plus fa"></i>招式
-                                </a>
-                                <a class="btn btn-primary" title="新增弱點" v-on:click="AddWeaknesses">
-                                    <i class="fa-plus fa"></i>弱點
-                                </a>
-                                <a class="btn btn-primary" title="新增撤退" v-on:click="AddResistances">
-                                    <i class="fa-plus fa"></i>撤退
-                                </a>
-                            </div>
-                            <div class="box-body">
-                                @*特性*@
-                                <div class="box box-primary col-md-12 col-lg-6">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title col-12">特性</h3>
-                                    </div>
-                                    <div class="box-body">
-                                
-                                        <div v-if="item.AbilitiesStatus != 1" v-for="(item,index) in Abilities">
-                                            <div class="form-group row">
-                                                <div class="col-10">
-                                               
-                                                    <div class="form-group row">
-                                                        <label for="" class="col-sm-3 control-label">名稱</label>
-                                                        <div class="col-sm-9">
-                                                            <el-input 
-                                                                type="text" 
-                                                                placeholder="特性名稱，上限為10個字" 
-                                                                v-model="item.Name" 
-                                                                maxlength="10"
-                                                                show-word-limit>
-                                                            </el-input>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <label for="" class="col-sm-3 control-label">文字敘述</label>
-                                                        <div class="col-sm-9">
-                                                            <el-input 
-                                                                type="text" 
-                                                                placeholder="文字敘述，上限為40個字" 
-                                                                v-model="item.Text" 
-                                                                maxlength="40"
-                                                                show-word-limit>
-                                                            </el-input>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-1">
-                                                    <el-button type="danger"
-                                                        style="height:92%"
-                                                        icon="el-icon-delete"
-                                                        v-on:click="RemoveAbilities(item,index)" >
-                                                    </el-button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                @*招式*@
-                                <div class="box box-warning col-md-12 col-lg-6">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title col-12">招式</h3>
-                                    </div>
-                                    <div class="box-body">
-                                        <div v-if="item.AttacksStatus != 1" v-for="(item,index) in Attacks">
-                                            <div class="form-group row">
-                                                <div class="col-10">
-                                               
-                                                    <div class="form-group row">
-                                                        <label for="" class="col-sm-3 control-label">名稱</label>
-                                                        <div class="col-sm-9">
-                                                            <el-input 
-                                                                type="text" 
-                                                                placeholder="招式名稱，上限為10個字" 
-                                                                v-model="item.Name" 
-                                                                maxlength="10"
-                                                                show-word-limit>
-                                                            </el-input>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <label for="" class="col-sm-3 control-label">文字敘述</label>
-                                                        <div class="col-sm-9">
-                                                            <el-input 
-                                                                type="text" 
-                                                                placeholder="文字敘述，上限為30個字" 
-                                                                v-model="item.Text" 
-                                                                maxlength="40"
-                                                                show-word-limit>
-                                                            </el-input>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <label for="" class="col-sm-3 control-label">傷害</label>
-                                                        <div class="col-sm-9">
-                                                            <el-input 
-                                                                type="text" 
-                                                                placeholder="傷害，上限為5個字，ex：100+, 20x" 
-                                                                v-model="item.Damage" 
-                                                                maxlength="5"
-                                                                show-word-limit>
-                                                            </el-input>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-1">
-                                                    <el-button type="danger"
-                                                        style="height:92%"
-                                                        icon="el-icon-delete"
-                                                        v-on:click="RemoveAttacks(item,index)" >
-                                                    </el-button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                @*弱點*@
-                                <div class="box box-danger col-md-12 col-lg-6">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title col-12">弱點</h3>
-                                    </div>
-                                    <div class="box-body">
-                                
-                                    
-                                        <div v-if="item.WeaknessesStatus != 1" v-for="(item,index) in Weaknesses">
-                                            <div class="form-group row">
-                                                <div class="col-10">
-                                               
-                                                    <div class="form-group row">
-                                                        <label for="" class="col-sm-3 control-label">屬性</label>
-                                                        <div class="col-sm-9">
-                                                            <el-select v-model="item.Type" placeholder="請選擇" class="inputStyle" filterable>
-                                                                <el-option
-                                                                    v-for="item in AllTypesEnum"
-                                                                    :key="item.Name"
-                                                                    :label="item.Name"
-                                                                    :value="item.Name">
-                                                                </el-option>
-                                                            </el-select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <label for="" class="col-sm-3 control-label">敘述</label>
-                                                        <div class="col-sm-9">
-                                                            <el-input 
-                                                                type="text" 
-                                                                placeholder="敘述，上限為5個字，ex：x2, x3" 
-                                                                v-model="item.Value" 
-                                                                maxlength="5"
-                                                                show-word-limit>
-                                                            </el-input>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-1">
-                                                    <el-button type="danger"
-                                                        style="height:92%"
-                                                        icon="el-icon-delete"
-                                                        v-on:click="RemoveWeaknesses(item,index)" >
-                                                    </el-button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                @*抗性*@
-                                <div class="box box-success col-md-12 col-lg-6">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title col-12">抗性</h3>
-                                    </div>
-                                    <div class="box-body">
-                                
-                                    
-                                        <div v-if="item.ResistancesStatus != 1" v-for="(item,index) in Resistances">
-                                            <div class="form-group row">
-                                                <div class="col-10">
-                                               
-                                                    <div class="form-group row">
-                                                        <label for="" class="col-sm-3 control-label">屬性</label>
-                                                        <div class="col-sm-9">
-                                                            <el-select v-model="item.Type" placeholder="請選擇" class="inputStyle" filterable>
-                                                                <el-option
-                                                                    v-for="item in AllTypesEnum"
-                                                                    :key="item.Name"
-                                                                    :label="item.Name"
-                                                                    :value="item.Name">
-                                                                </el-option>
-                                                            </el-select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <label for="" class="col-sm-3 control-label">敘述</label>
-                                                        <div class="col-sm-9">
-                                                            <el-input 
-                                                                type="text" 
-                                                                placeholder="敘述，上限為5個字，ex：-20, -30" 
-                                                                v-model="item.Value" 
-                                                                maxlength="5"
-                                                                show-word-limit>
-                                                            </el-input>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-1">
-                                                    <el-button type="danger"
-                                                        style="height:92%"
-                                                        icon="el-icon-delete"
-                                                        v-on:click="RemoveResistances(item,index)" >
-                                                    </el-button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
 
-
-
-                            </div>
-                        </div>
-                    </div>
-
-
-                @*訓練家卡資料輸入區*@
-                    <div v-if="Supertypes == 'Trainer'" class="col-12 col-lg-6">
+                    @*訓練家卡資料輸入區*@
+                    <div v-if="Supertype == 'Trainer'" class="">
                         <div class="box box-primary">
                         
                             <div class="box-header with-border">
-                                <h3 class="box-title">訓練家卡資料輸入區</h3>
+                                <h3 class="box-title">訓練家卡效果輸入區</h3>
                             </div>
 
                             <div class="box-body">
@@ -471,6 +246,7 @@
                                             placeholder="請輸入文字敘述"
                                             v-model="TrainEffect"
                                             maxlength="200"
+                                            show-word-limit
                                             resize="none">
                                         </el-input>
                                     </div>
@@ -480,6 +256,268 @@
                         </div>
                     </div>
                 </div>
+            
+
+                @*圖片上傳區*@
+                <div class="col-12 col-xl-5">
+                    <div class="box box-primary">
+                        
+                        <div class="box-header with-border">
+                            <h3 class="box-title">圖片上傳區</h3>
+                        </div>
+
+                        <div class="box-body">
+                            <el-upload
+                                ref="elupload"
+                                class="avatar-uploader"
+                                action="#"
+                                list-type="picture"
+                                :on-change="handleChange"
+                                :auto-upload="false"
+                                :show-file-list="false"
+                                >
+                                <img v-if="ImageURL" :src="ImageURL" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div v-if="Supertype == 'Pokémon'" class="col-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Pokemon卡詳細添加區</h3>
+                            <a class="btn btn-primary" title="新增特性" v-on:click="AddAbilities">
+                                <i class="fa-plus fa"></i>特性
+                            </a>
+                            <a class="btn btn-primary" title="新增招式" v-on:click="AddAttacks">
+                                <i class="fa-plus fa"></i>招式
+                            </a>
+                            <a class="btn btn-primary" title="新增弱點" v-on:click="AddWeaknesses">
+                                <i class="fa-plus fa"></i>弱點
+                            </a>
+                            <a class="btn btn-primary" title="新增撤退" v-on:click="AddResistances">
+                                <i class="fa-plus fa"></i>撤退
+                            </a>
+                        </div>
+                        <div class="box-body">
+                            @*特性*@
+                            <div class="box box-primary col-md-12 col-lg-6">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title col-12">特性</h3>
+                                </div>
+                                <div class="box-body">
+                                
+                                    <div v-if="item.AbilitiesStatus != 1" v-for="(item,index) in Abilities">
+                                        <div class="form-group row">
+                                            <div class="col-10">
+                                               
+                                                <div class="form-group row">
+                                                    <label for="" class="col-sm-3 control-label">名稱</label>
+                                                    <div class="col-sm-9">
+                                                        <el-input 
+                                                            type="text" 
+                                                            placeholder="特性名稱，上限為10個字" 
+                                                            v-model="item.Name" 
+                                                            maxlength="10"
+                                                            show-word-limit>
+                                                        </el-input>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="" class="col-sm-3 control-label">文字敘述</label>
+                                                    <div class="col-sm-9">
+                                                        <el-input 
+                                                            type="text" 
+                                                            placeholder="文字敘述，上限為40個字" 
+                                                            v-model="item.Text" 
+                                                            maxlength="40"
+                                                            show-word-limit>
+                                                        </el-input>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <el-button type="danger"
+                                                    style="height:92%"
+                                                    icon="el-icon-delete"
+                                                    v-on:click="RemoveAbilities(item,index)" >
+                                                </el-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*招式*@
+                            <div class="box box-warning col-md-12 col-lg-6">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title col-12">招式</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div v-if="item.AttacksStatus != 1" v-for="(item,index) in Attacks">
+                                        <div class="form-group row">
+                                            <div class="col-10">
+                                               
+                                                <div class="form-group row">
+                                                    <label for="" class="col-sm-3 control-label">名稱</label>
+                                                    <div class="col-sm-9">
+                                                        <el-input 
+                                                            type="text" 
+                                                            placeholder="招式名稱，上限為10個字" 
+                                                            v-model="item.Name" 
+                                                            maxlength="10"
+                                                            show-word-limit>
+                                                        </el-input>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="" class="col-sm-3 control-label">文字敘述</label>
+                                                    <div class="col-sm-9">
+                                                        <el-input 
+                                                            type="text" 
+                                                            placeholder="文字敘述，上限為30個字" 
+                                                            v-model="item.Text" 
+                                                            maxlength="40"
+                                                            show-word-limit>
+                                                        </el-input>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="" class="col-sm-3 control-label">傷害</label>
+                                                    <div class="col-sm-9">
+                                                        <el-input 
+                                                            type="text" 
+                                                            placeholder="傷害，上限為5個字，ex：100+, 20x" 
+                                                            v-model="item.Damage" 
+                                                            maxlength="5"
+                                                            show-word-limit>
+                                                        </el-input>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <el-button type="danger"
+                                                    style="height:92%"
+                                                    icon="el-icon-delete"
+                                                    v-on:click="RemoveAttacks(item,index)" >
+                                                </el-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*弱點*@
+                            <div class="box box-danger col-md-12 col-lg-6">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title col-12">弱點</h3>
+                                </div>
+                                <div class="box-body">
+                                
+                                    
+                                    <div v-if="item.WeaknessesStatus != 1" v-for="(item,index) in Weaknesses">
+                                        <div class="form-group row">
+                                            <div class="col-10">
+                                               
+                                                <div class="form-group row">
+                                                    <label for="" class="col-sm-3 control-label">屬性</label>
+                                                    <div class="col-sm-9">
+                                                        <el-select v-model="item.Type" placeholder="請選擇" class="inputStyle" filterable>
+                                                            <el-option
+                                                                v-for="item in AllTypesEnum"
+                                                                :key="item.Name"
+                                                                :label="item.Name"
+                                                                :value="item.Name">
+                                                            </el-option>
+                                                        </el-select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="" class="col-sm-3 control-label">敘述</label>
+                                                    <div class="col-sm-9">
+                                                        <el-input 
+                                                            type="text" 
+                                                            placeholder="敘述，上限為5個字，ex：x2, x3" 
+                                                            v-model="item.Value" 
+                                                            maxlength="5"
+                                                            show-word-limit>
+                                                        </el-input>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <el-button type="danger"
+                                                    style="height:92%"
+                                                    icon="el-icon-delete"
+                                                    v-on:click="RemoveWeaknesses(item,index)" >
+                                                </el-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*抗性*@
+                            <div class="box box-success col-md-12 col-lg-6">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title col-12">抗性</h3>
+                                </div>
+                                <div class="box-body">
+                                
+                                    
+                                    <div v-if="item.ResistancesStatus != 1" v-for="(item,index) in Resistances">
+                                        <div class="form-group row">
+                                            <div class="col-10">
+                                               
+                                                <div class="form-group row">
+                                                    <label for="" class="col-sm-3 control-label">屬性</label>
+                                                    <div class="col-sm-9">
+                                                        <el-select v-model="item.Type" placeholder="請選擇" class="inputStyle" filterable>
+                                                            <el-option
+                                                                v-for="item in AllTypesEnum"
+                                                                :key="item.Name"
+                                                                :label="item.Name"
+                                                                :value="item.Name">
+                                                            </el-option>
+                                                        </el-select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="" class="col-sm-3 control-label">敘述</label>
+                                                    <div class="col-sm-9">
+                                                        <el-input 
+                                                            type="text" 
+                                                            placeholder="敘述，上限為5個字，ex：-20, -30" 
+                                                            v-model="item.Value" 
+                                                            maxlength="5"
+                                                            show-word-limit>
+                                                        </el-input>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <el-button type="danger"
+                                                    style="height:92%"
+                                                    icon="el-icon-delete"
+                                                    v-on:click="RemoveResistances(item,index)" >
+                                                </el-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
               
         </section>
 
@@ -491,12 +529,10 @@
                 </div>
 
                 <div class="box-footer">
-                    <button type="button" class="btn btn-primary " v-on:click="CreateCard">
+                    <button type="button" class="btn btn-primary " v-on:click="UpsertCard">
                         新增卡片
                     </button>
-                    <button type="button" class="btn btn-warning " @*v-on:click="downloadFile"*@>
-                        下載
-                    </button>
+                    
                 </div>
             </div>
         </section>
@@ -504,6 +540,20 @@
 </div>
 
 <script>
+    function getUrlAllParams() {
+        var url = decodeURI(window.location.href)
+        var res = {}
+        var url_data = _.split(url, '?').length > 1 ? _.split(url, '?')[1] : null;
+        if (!url_data) return null
+        var params_arr = _.split(url_data, '&')
+        _.forEach(params_arr, function (item) {
+            var key = _.split(item, '=')[0]
+            var value = _.split(item, '=')[1]
+            res[key] = value
+        });
+        return res
+    }
+
     var appMain = new Vue({
         el: '#app',
         data:function () {
@@ -511,11 +561,11 @@
                 //From表單送出資料
                 Id :"",
                 Name:"",
-                Supertypes:"",
+                Supertype:"",
                 Subtypes:[],
-                RaritiesEnum:"",
-                TypesEnum:[],
-                Hp:"",
+                Rarity:"",
+                Types:[],
+                Hp:null,
                 EvolvesFrom:"",
                 EvolvesTo:[],
                 SetId:"",
@@ -526,6 +576,8 @@
                 Attacks: [],
                 Weaknesses: [],
                 Resistances: [],
+                ImageURL: null,
+                CreateTime:"",
 
                 //判斷項目
                 AbilitiesStatus:0,
@@ -541,6 +593,10 @@
                 AllSets:[],
             }
         },
+        beforeMount: function () {
+            
+        },
+        
         mounted: function () {
             $("#app").show();
             //var paras = getUrlAllParams();
@@ -560,6 +616,16 @@
             this.GetAllSets().then((data) => {
                 this.AllSets = data
             });
+
+            if(getUrlAllParams() != null){
+                var id = getUrlAllParams()["id"]
+
+                if(id != null){
+                    this.getCard(id);
+                }
+            }
+
+
         },
         methods: {
             GetEnums(enumType) {
@@ -631,26 +697,94 @@
             RemoveResistances(item, index) {
                 appMain.Resistances.splice(index, 1);
             },
+
+            //upload
+            handleChange(file, fileList) {
+
+                this.getBase64(file.raw).then(data => {
+                    appMain.ImageURL = data
+                })
+                if(fileList.length > 1){
+                    fileList.splice(0, 1)
+                }
+            },
+            getBase64(data){
+                return new Promise((resolve, reject) => {
+                    console.log("進base64")
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        resolve(e.target.result);
+                    };
+                    reader.readAsDataURL(data);
+                    reader.onerror = () => {
+                        reject(new Error("文件異常"));
+                    }
+                })
+            },
+
+
+            getCard(id){
+                let url = "/api/Card/GetCard?id=" + id;
+                fetch(url, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then((response) => {
+                    return response.json();
+                }).then((data) => {
+                    console.log(data)
+
+                    appMain.Id = data.Id;
+                    appMain.Name = data.Name;
+                    appMain.Supertype = data.Supertype;
+                    appMain.Subtypes = data.Subtypes;
+                    appMain.Rarity = data.Rarity;
+                    appMain.Types = data.Types;
+                    appMain.Hp = data.Hp;
+                    appMain.EvolvesFrom = data.EvolvesFrom;
+                    appMain.EvolvesTo = data.EvolvesTo;
+                    appMain.SetId = data.SetId;
+                    appMain.Number = data.Number;
+                    appMain.TrainEffect = data.TrainEffect;
+                    appMain.FlavorText = data.FlavorText;
+                    appMain.Abilities = data.Abilities;
+                    appMain.Attacks = data.Attacks;
+                    appMain.Weaknesses = data.Weaknesses;
+                    appMain.Resistances = data.Resistances;
+                    appMain.ImageURL = data.Imgbase64.slice(1,-1);
+                    appMain.CreateTime = new Date(data.CreateTime);
+                }).catch((err) => {
+                    console.log(err);
+                });
+            },
+            
             
                 
-            CreateCard() {
-                let url = "/api/Card/CreateCard";
+            UpsertCard() {
+                let url = "/api/Card/UpsertCard";
                 let formData = {
-                    'Id': appMain.id,
+                    'Id': appMain.Id,
                     'SetId':appMain.SetId,
                     'Name':appMain.Name,
-                    'Supertype':appMain.Supertypes,
+                    'Supertype':appMain.Supertype,
                     'Subtypes':appMain.Subtypes,
-                    'Rarity':appMain.RaritiesEnum,
-                    'Types':appMain.TypesEnum,
+                    'Rarity':appMain.Rarity,
+                    'Types':appMain.Types,
                     'Hp':appMain.Hp,
                     'EvolvesFrom':appMain.EvolvesFrom,
                     'EvolvesTo':appMain.EvolvesTo,
-                    'Set':appMain.Set,
                     'Number':appMain.Number,
                     'TrainEffect':appMain.TrainEffect,
                     'FlavorText':appMain.FlavorText,
-                    //'File':appMain.imageURL,
+                    'Abilities':appMain.Abilities,
+                    'Attacks':appMain.Attacks,
+                    'Weaknesses':appMain.Weaknesses,
+                    'Resistances':appMain.Resistances,
+                    'CreateTime':appMain.CreateTime != "" ?
+                        appMain.CreateTime : dayjs().format(),
+                    'File':appMain.ImageURL,
                 }
                 console.log("formData", formData)
 
@@ -662,13 +796,13 @@
                     body: JSON.stringify(formData)
                 }).then((response) => {
                     (response.status === 200) ? 
-                        appMain.$notify({ title: '成功', message : "新增成功", type: 'success' }) 
-                        :appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });
+                        appMain.$notify({ title: '成功', message : "新增成功", type: 'success' })
+                            :appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });
+
+                    if(response.status === 200){ location.href = './cardlist' }
                     return response;
-                }).then((data) => {
-                    
                 }).catch((err) => {
-                    appMain.$notify({ title: '失敗', message : "response.status : " + response.status, type: 'error' });
+                    appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });
                 });
             },
         
