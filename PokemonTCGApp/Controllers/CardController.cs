@@ -39,7 +39,7 @@ namespace PokemonTCGApp.Controllers
 
                 var Id = req.@params.filterQuery["Id"] as string;
                 var result = _cardService.GetCards();
-                var cVueTableList = new VueTableList<CardViewModel>(result, req.@params.sort, req.@params.per_page, req.@params.page);
+                var cVueTableList = new VueTableList<CardViewModel>(result.ToList(), req.@params.sort, req.@params.per_page, req.@params.page);
                 return Ok(cVueTableList);
             }
             catch (Exception ex)
