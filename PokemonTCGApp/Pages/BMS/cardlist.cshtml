@@ -1,5 +1,5 @@
 ﻿@page
-@model PokemonTCGApp.Pages.BMS.cardlistModel
+@model PokemonTCGApp.Pages.BMS.CardListModel
 @{
     Layout = "_Layout_BMS";
 }
@@ -52,7 +52,7 @@
 
             <div class="box-footer">
                 <button type="button" class="btn btn-primary " v-on:click="setFilter">搜尋</button>
-                <a asp-page="/BMS/cardcreate" type="button" class="btn btn-danger" >新增</a>
+                <a asp-page="/BMS/CardCreate" type="button" class="btn btn-danger" >新增</a>
             </div>
         </div>
 
@@ -432,7 +432,7 @@
 
             editCard: function (data) {
                 console.log("editCard", data.Id)
-                location.href = "./cardcreate?id=" + data.Id
+                location.href = "./CardCreate?id=" + data.Id
             },
            delCard: function (data) {
                 this.$confirm('確認是否刪除?', '注意', {

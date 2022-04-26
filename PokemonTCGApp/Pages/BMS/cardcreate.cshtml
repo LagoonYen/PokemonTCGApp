@@ -1,5 +1,5 @@
 ﻿@page
-@model PokemonTCGApp.Pages.BMS.cardcreateModel
+@model PokemonTCGApp.Pages.BMS.CardCreateModel
 @{
     Layout = "_Layout_BMS";
 }
@@ -819,7 +819,7 @@
                         appMain.$notify({ title: '成功', message : "新增成功", type: 'success' })
                             :appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });
 
-                    if(response.status === 200){ location.href = './cardlist' }
+                    if(response.status === 200){ location.href = './CardList' }
                     return response;
                 }).catch((err) => {
                     appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });

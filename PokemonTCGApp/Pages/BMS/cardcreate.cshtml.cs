@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace PokemonTCGApp.Pages.BMS
 {
-    public class cardcreateModel : PageModel
+    public class CardCreateModel : PageModel
     {
         public void OnGet()
         {

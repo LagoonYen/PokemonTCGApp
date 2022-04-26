@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace PokemonTCGApp.Pages.BMS
 {
-    public class setlistModel : PageModel
+    public class SetListModel : PageModel
     {
         public void OnGet()
         {
