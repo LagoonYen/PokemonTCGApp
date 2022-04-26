@@ -356,15 +356,15 @@
             transform: function (data) {
                 var transformed = {}
                 transformed.pagination = {
-                    total: data.total,
-                    per_page: data.per_page,
-                    current_page: data.current_page,
-                    last_page: data.last_page,
-                    from: data.from,
-                    to: data.to
+                    total: data.Total,
+                    per_page: data.Per_page,
+                    current_page: data.Current_page,
+                    last_page: data.Last_page,
+                    from: data.From,
+                    to: data.To
                 }
 
-                transformed.mydata = data.data;
+                transformed.mydata = data.Data;
                 return transformed;
             },
             setFilter: function () {

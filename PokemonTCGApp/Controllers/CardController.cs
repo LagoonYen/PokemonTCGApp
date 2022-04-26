@@ -5,6 +5,7 @@ using PokemonTCGApp.Model.DataModel;
 using PokemonTCGApp.Model.DTOModel;
 using PokemonTCGApp.Service;
 using System.Net;
+using static PokemonTCGApp.Model.EnumExtension;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,11 +36,14 @@ namespace PokemonTCGApp.Controllers
             {
                 if (req == null) { req = new RequestVueTable(); }
                 if (req.@params == null) { req.@params = new Params(); }
-                if (req.@params.filterQuery == null) { req.@params.filterQuery = new Dictionary<string, object>(); }
+                if (req.@params.FilterQuery == null) { req.@params.FilterQuery = new Dictionary<string, object>(); }
 
-                var Id = req.@params.filterQuery["Id"] as string;
+                var id = req.@params.FilterQuery["Id"] as string;
                 var result = _cardService.GetCards();
-                var cVueTableList = new VueTableList<CardViewModel>(result.ToList(), req.@params.sort, req.@params.per_page, req.@params.page);
+
+                if (!result.Any()) throw new Exception("查無卡片");
+
+                var cVueTableList = new VueTableList<CardViewModel>(result.ToList(), req.@params.Sort, req.@params.Per_page, req.@params.Page);
                 return Ok(cVueTableList);
             }
             catch (Exception ex)
@@ -70,7 +74,7 @@ namespace PokemonTCGApp.Controllers
         }
 
         /// <summary>
-        /// 新建卡片
+        /// 新建or更新卡片
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
@@ -78,7 +82,7 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Card> UpsertCard([FromBody]RequestCreateCard req)
+        public ActionResult<Card> UpsertCard([FromBody]RequestUpsertCard req)
         {
             try
             {
@@ -88,37 +92,6 @@ namespace PokemonTCGApp.Controllers
                 return Ok(result);
             }
             catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// 編輯卡片
-        /// </summary>
-        /// <param name="id">原卡片Id</param>
-        /// <param name="card">卡片資料</param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("[action]")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult UpdateCard(string id, [FromBody] Card card)
-        {
-            try
-            {
-                var existingCard = _cardService.GetCard(id);
-
-                if(existingCard == null)
-                {
-                    return NotFound($"Card with Id = {id} not found");
-                }
-
-                _cardService.UpdateCard(id, card);
-
-                return NoContent();
-            }
-            catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -190,16 +163,15 @@ namespace PokemonTCGApp.Controllers
             {
                 if (req == null) { req = new RequestVueTable(); }
                 if (req.@params == null) { req.@params = new Params(); }
-                if (req.@params.filterQuery == null) { req.@params.filterQuery = new Dictionary<string, object>(); }
+                if (req.@params.FilterQuery == null) { req.@params.FilterQuery = new Dictionary<string, object>(); }
 
-                var Id = req.@params.filterQuery["Id"] as string;
+                var Id = req.@params.FilterQuery["Id"] as string;
 
-                //To Do List<Set>? result
                 var result = _cardService.GetSets();
 
-                if (result.Count == 0) throw new Exception("查無系列");
-                
-                var cVueTableList = new VueTableList<Set>(result, req.@params.sort, req.@params.per_page, req.@params.page);
+                if (!result.Any()) throw new Exception("查無系列");
+
+                var cVueTableList = new VueTableList<SetViewModel>(result.ToList(), req.@params.Sort, req.@params.Per_page, req.@params.Page);
                 return Ok(cVueTableList);
             }
             catch (Exception ex)
@@ -217,7 +189,7 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Card> GetSet(string id)
+        public ActionResult<SetViewModel> GetSet(string id)
         {
             try
             {
@@ -237,7 +209,7 @@ namespace PokemonTCGApp.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Card> GetAllSets()
+        public ActionResult<SetViewModel> GetAllSets()
         {
             try
             {

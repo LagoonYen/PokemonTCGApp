@@ -6,20 +6,22 @@ namespace PokemonTCGApp.Service
 {
     public interface ICardService
     {
+        //Card
         IEnumerable<CardViewModel> GetCards();
-        Card GetCard(string id);
-        string UpsertCard(RequestCreateCard req);
-        void UpdateCard(string id, Card card);
+        CardViewModel GetCard(string id);
+        string UpsertCard(RequestUpsertCard req);
         void DeleteCard(string id);
 
-        List<Set> GetSets();
+        //Set
+        IEnumerable<SetViewModel> GetSets();
+        SetViewModel GetSet(string id);
         string UpsertSet(RequestUpsertSet req);
+        void DeleteSet(string id);
 
+        //Enumn
         List<SupertypesEnumViewModel> GetAllSupertypesEnum();
         List<SubtypesEnumViewModel> GetAllSubtypesEnum();
         List<RaritiesEnumViewModel> GetAllRaritiesEnum();
         List<TypesEnumViewModel> GetAllTypesEnum();
-        Set GetSet(string id);
-        void DeleteSet(string id);
     }
 }

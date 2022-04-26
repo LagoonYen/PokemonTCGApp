@@ -4,15 +4,16 @@ namespace PokemonTCGApp.Repository
 {
     public interface ICardRepository
     {
-        List<Card> GetCards();
+        //Card
+        IEnumerable<Card> GetCards();
         Card GetCard(string id);
         Card UpsertCard(Card card);
-        void UpdateCard(string id, Card card);
         void DeleteCard(string id);
 
-        Set UpsertSet(Set set);
+        //Set
         List<Set> GetSets();
         Set GetSet(string id);
+        Set UpsertSet(Set set);
         void DeleteSet(string id);
     }
 }

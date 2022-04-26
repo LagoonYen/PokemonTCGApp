@@ -11,7 +11,7 @@ namespace PokemonTCGApp.Model.DataModel
         public string Id { get; set; }
 
         /// <summary>
-        /// 
+        /// 系列編號
         /// </summary>
         [BsonElement("seriesId")] //系列ID
         public string SeriesId { get; set; }
@@ -25,13 +25,13 @@ namespace PokemonTCGApp.Model.DataModel
         /// <summary>
         /// The name of the set.
         /// </summary>
-        [BsonElement("name")] //星星誕生 / 預組
+        [BsonElement("name")] //次標題 星星誕生 / 預組
         public string Name { get; set; }
 
         /// <summary>
         /// Any images associated with the set, such as symbol and logo. This is a hash with the following fields:
         /// </summary>
-        [BsonElement("image")]  //圖片
+        [BsonElement("image")]  //儲存圖片
         public byte[]? Image { get; set; }
 
         [BsonElement("releasetime")]  //上市時間
@@ -45,7 +45,5 @@ namespace PokemonTCGApp.Model.DataModel
 
         [BsonElement("updatetime")] //更新編輯時間
         public DateTime UpdateTime { get; set; }
-
-        public string Imgbase64 { get; set; }
     }
 }

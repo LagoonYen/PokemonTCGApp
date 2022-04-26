@@ -17,6 +17,30 @@ namespace PokemonTCGApp.Repository
             _setDatabase = database.GetCollection<Set>(settings.SetCollectionName);
         }
 
+        public IEnumerable<Card> GetCards()
+        {
+            try
+            {
+                return _cardDatabase.Find(card => true).ToList();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public Card GetCard(string id)
+        {
+            try
+            {
+                return _cardDatabase.Find(card => card.Id == id).FirstOrDefault();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public Card UpsertCard(Card card)
         {
             try
@@ -50,11 +74,11 @@ namespace PokemonTCGApp.Repository
             }
         }
 
-        public Card GetCard(string id)
+        public List<Set> GetSets()
         {
             try
             {
-                return _cardDatabase.Find(card => card.Id == id).FirstOrDefault();
+                return _setDatabase.Find(set => true).ToList();
             }
             catch
             {
@@ -62,23 +86,11 @@ namespace PokemonTCGApp.Repository
             }
         }
 
-        public List<Card> GetCards()
+        public Set GetSet(string id)
         {
             try
             {
-                return _cardDatabase.Find(card => true).ToList();
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public void UpdateCard(string id, Card card)
-        {
-            try
-            {
-                _cardDatabase.ReplaceOne(card => card.Id == id, card);
+                return _setDatabase.Find(set => set.Id == id).FirstOrDefault();
             }
             catch
             {
@@ -100,30 +112,6 @@ namespace PokemonTCGApp.Repository
                     _setDatabase.ReplaceOne(x => x.Id == set.Id, set);
                 }
                 return set;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public List<Set> GetSets()
-        {
-            try
-            {
-                return _setDatabase.Find(set => true).ToList();
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public Set GetSet(string id)
-        {
-            try
-            {
-                return _setDatabase.Find(set => set.Id == id).FirstOrDefault();
             }
             catch
             {

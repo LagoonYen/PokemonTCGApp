@@ -17,7 +17,97 @@ namespace PokemonTCGApp.Service
             _cardRepository = cardRepository;
         }
 
-        public string UpsertCard(RequestCreateCard req)
+        public IEnumerable<CardViewModel> GetCards()
+        {
+            try
+            {
+                var result = _cardRepository.GetCards();
+
+                var cardViewModel = result.Select(x => new CardViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Supertype = x.Supertype,
+                    Subtypes = x.Subtypes,
+                    Abilities = x.Abilities,
+                    Attacks = x.Attacks,
+                    EvolvesFrom = x.EvolvesFrom,
+                    EvolvesTo = x.EvolvesTo,
+                    FlavorText = x.FlavorText,
+                    Hp = x.Hp,
+                    Number = x.Number,
+                    Rarity = x.Rarity,
+                    Types = x.Types,
+                    Weaknesses = x.Weaknesses,
+                    Resistances = x.Resistances,
+                    SetId = x.SetId,
+                    SetInfo = x.SetId == null ? null : GetSet(x.SetId),
+                    CreateTime = x.CreateTime,
+                    UpdateAdmin = x.UpdateAdmin,
+                    UpdateTime = x.UpdateTime,
+                    TrainerEffect = x.TrainerEffect,
+                    Image = x.Image,
+                }).OrderBy(x => x.SetId).OrderBy(x => x.Number).ToList(); ;
+
+                foreach (var card in cardViewModel)
+                {
+                    if (card.Image != null)
+                    {
+                        card.Image = GetImage(Convert.ToBase64String(card.Image));
+                        card.Imgbase64 = Encoding.UTF8.GetString(card.Image);
+                    }
+                }
+                return cardViewModel;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        
+        public CardViewModel GetCard(string id)
+        {
+            try
+            {
+                var result = _cardRepository.GetCard(id);
+                var cardViewModel = new CardViewModel
+                {
+                    Id = result.Id,
+                    Name = result.Name,
+                    Supertype = result.Supertype,
+                    Subtypes = result.Subtypes,
+                    Rarity = result.Rarity,
+                    Types = result.Types,
+                    Hp = result.Hp,
+                    EvolvesFrom = result.EvolvesFrom,
+                    EvolvesTo = result.EvolvesTo,
+                    TrainerEffect = result.TrainerEffect,
+                    Abilities = result.Abilities,
+                    Attacks = result.Attacks,
+                    Weaknesses = result.Weaknesses,
+                    Resistances = result.Resistances,
+                    SetId = result.SetId,
+                    Number = result.Number,
+                    FlavorText = result.FlavorText,
+                    CreateTime = result.CreateTime,
+                    UpdateAdmin = result.UpdateAdmin,
+                    UpdateTime = result.UpdateTime,
+                };
+
+                if (result.Image != null)
+                {
+                    cardViewModel.Image = GetImage(Convert.ToBase64String(result.Image));
+                    cardViewModel.Imgbase64 = Encoding.UTF8.GetString(result.Image);
+                }
+                return cardViewModel;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public string UpsertCard(RequestUpsertCard req)
         {
             try
             {
@@ -45,11 +135,8 @@ namespace PokemonTCGApp.Service
                     Weaknesses = req.Weaknesses,
                     Resistances = req.Resistances,
                     TrainerEffect = req.TrainerEffect,
-
                     CreateTime = req.Id == "" ? DateTime.Now : req.CreateTime,
-                    //CreateTime = DateTime.Now,
                     UpdateTime = DateTime.Now,
-                    //To do
                     UpdateAdmin = "小焰"
                 };
 
@@ -64,9 +151,9 @@ namespace PokemonTCGApp.Service
 
                     return "Upsert並上傳新圖片";
                 }
+
                 cardobject = _cardRepository.UpsertCard(cardobject);
                 return "Upsert無上傳新圖片";
-                //_cardRepository.CreateCard(req);
             }
             catch
             {
@@ -86,66 +173,33 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public Card GetCard(string id)
+        public IEnumerable<SetViewModel> GetSets()
         {
             try
             {
-                var result = _cardRepository.GetCard(id);
-                if (result.Image != null)
-                {
-                    result.Image = GetImage(Convert.ToBase64String(result.Image));
-                    result.Imgbase64 = Encoding.UTF8.GetString(result.Image);
-                }
-                return result;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public IEnumerable<CardViewModel> GetCards()
-        {
-            try
-            {
-                var result = _cardRepository.GetCards();
-
-
-                var cardViewModel = result.Select(x => new CardViewModel
+                var result = _cardRepository.GetSets();
+                var setViewModel = result.Select(x => new SetViewModel
                 {
                     Id = x.Id,
+                    SeriesId = x.SeriesId,
+                    Series = x.Series,
                     Name = x.Name,
-                    Supertype = x.Supertype,
-                    Subtypes = x.Subtypes,
-                    Abilities = x.Abilities,
-                    Attacks = x.Attacks,
-                    EvolvesFrom = x.EvolvesFrom,
-                    EvolvesTo = x.EvolvesTo,
-                    FlavorText = x.FlavorText,
-                    Hp = x.Hp,
-                    Number = x.Number,
-                    Rarity = x.Rarity,
-                    Types = x.Types,
-                    Weaknesses = x.Weaknesses,
-                    Resistances = x.Resistances,
-                    SetId = x.SetId,
-                    SetInfo = x.SetId == null ? null : GetSet(x.SetId),
+                    ReleaseTime = x.ReleaseTime,
                     CreateTime = x.CreateTime,
-                    UpdateAdmin = x.UpdateAdmin,
                     UpdateTime = x.UpdateTime,
-                    TrainerEffect = x.TrainerEffect,
+                    UpdateAdmin = x.UpdateAdmin,
                     Image = x.Image,
-            }).OrderBy(x =>x.SetId).OrderBy(x => x.Number).ToList();
-                
-                foreach (var card in cardViewModel)
+                }).OrderBy(x => x.ReleaseTime).OrderBy(x => x.SeriesId).ToList();
+
+                foreach (var set in setViewModel)
                 {
-                    if (card.Image != null)
+                    if (set.Image != null)
                     {
-                        card.Image = GetImage(Convert.ToBase64String(card.Image));
-                        card.Imgbase64 = Encoding.UTF8.GetString(card.Image);
+                        set.Image = GetImage(Convert.ToBase64String(set.Image));
+                        set.Imgbase64 = Encoding.UTF8.GetString(set.Image);
                     }
                 }
-                return cardViewModel;
+                return setViewModel;
             }
             catch
             {
@@ -153,11 +207,30 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public void UpdateCard(string id, Card card)
+        public SetViewModel GetSet(string id)
         {
             try
             {
-                _cardRepository.UpdateCard(id, card);
+                var result = _cardRepository.GetSet(id);
+                var setViewModel = new SetViewModel
+                {
+                    Id = result.Id,
+                    SeriesId = result.SeriesId,
+                    Series = result.Series,
+                    Name = result.Name,
+                    ReleaseTime = result.ReleaseTime,
+                    CreateTime = result.CreateTime,
+                    UpdateTime = result.UpdateTime,
+                    UpdateAdmin = result.UpdateAdmin,
+                    Image = result.Image,
+                };
+
+                if (result.Image != null)
+                {
+                    setViewModel.Image = GetImage(Convert.ToBase64String(result.Image));
+                    setViewModel.Imgbase64 = Encoding.UTF8.GetString(result.Image);
+                }
+                return setViewModel;
             }
             catch
             {
@@ -183,7 +256,6 @@ namespace PokemonTCGApp.Service
                     ReleaseTime = req.ReleaseTime,
                     CreateTime = req.Id == string.Empty ? DateTime.Now : req.CreateTime,
                     UpdateTime = DateTime.Now,
-                    //To do
                     UpdateAdmin = "小焰"
                 };
 
@@ -195,11 +267,7 @@ namespace PokemonTCGApp.Service
                     byte[] fileBytes = Convert.FromBase64String(base64EncodedExternalImage);
                     setobject.Image = fileBytes;
                     setobject = _cardRepository.UpsertSet(setobject);
-
-                    //if (setobject.Id?.Trim() != "")
-                    //{
-                        return "Upsert並上傳新圖片";
-                    //}
+                    return "Upsert並上傳新圖片";
                 }
 
                 setobject = _cardRepository.UpsertSet(setobject);
@@ -211,16 +279,11 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public byte[] GetImage(string sBase64String)
+        public void DeleteSet(string id)
         {
             try
             {
-                byte[] bytes = null;
-                if (!string.IsNullOrEmpty(sBase64String))
-                {
-                    bytes = Convert.FromBase64String(sBase64String);
-                }
-                return bytes;
+                _cardRepository.DeleteSet(id);
             }
             catch
             {
@@ -228,32 +291,16 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public List<Set> GetSets()
+        public byte[] GetImage(string sBase64String)
         {
             try
             {
-                var result = _cardRepository.GetSets();
-                foreach(var set in result)
+                byte[]? bytes = null;
+                if (!string.IsNullOrEmpty(sBase64String))
                 {
-                    if(set.Image != null)
-                    {
-                        set.Image = GetImage(Convert.ToBase64String(set.Image));
-                        set.Imgbase64 = Encoding.UTF8.GetString(set.Image);
-                    }
+                    bytes = Convert.FromBase64String(sBase64String);
                 }
-                //result = result(s =>
-                //{
-                //    Id = s.Id,
-                //    Name = s.Name,
-                //    //Image = GetImage(Convert.ToBase64String(s.Image)),
-                //    UpdateAdmin = s.UpdateAdmin,
-                //    UpdateTime = s.UpdateTime,
-                //    CreateTime = s.CreateTime,
-                //    ReleaseTime = s.ReleaseTime,
-                //    Series = s.Series,
-                //    SeriesId = s.SeriesId,
-                //});
-                return result.OrderBy(x => x.ReleaseTime).OrderBy(x => x.SeriesId).ToList();
+                return bytes;
             }
             catch
             {
@@ -267,7 +314,6 @@ namespace PokemonTCGApp.Service
             {
                 var result = Enum.GetValues<SupertypesEnum>().Select(x => new SupertypesEnumViewModel
                 {
-                    //Value = (int)x,
                     Name = x.ToString(),
                     Desc = x.GetDescription()
                 }).ToList();
@@ -290,7 +336,6 @@ namespace PokemonTCGApp.Service
             {
                 var result = Enum.GetValues<SubtypesEnum>().Select(x => new SubtypesEnumViewModel
                 {
-                    //Value = (int)x,
                     Name = x.ToString(),
                     Desc = x.GetDescription()
                 }).ToList();
@@ -313,7 +358,6 @@ namespace PokemonTCGApp.Service
             {
                 var result = Enum.GetValues<RaritiesEnum>().Select(x => new RaritiesEnumViewModel
                 {
-                    //Value = (int)x,
                     Name = x.ToString(),
                     Desc = x.GetDescription()
                 }).ToList();
@@ -336,7 +380,6 @@ namespace PokemonTCGApp.Service
             {
                 var result = Enum.GetValues<TypesEnum>().Select(x => new TypesEnumViewModel
                 {
-                    //Value = (int)x,
                     Name = x.ToString(),
                     Desc = x.GetDescription()
                 }).ToList();
@@ -346,30 +389,6 @@ namespace PokemonTCGApp.Service
                     throw new Exception("未取得正確稀有度列表");
                 }
                 return result;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public Set GetSet(string id)
-        {
-            try
-            {
-                return _cardRepository.GetSet(id);
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public void DeleteSet(string id)
-        {
-            try
-            {
-                _cardRepository.DeleteSet(id);
             }
             catch
             {

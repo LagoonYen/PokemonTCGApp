@@ -43,12 +43,6 @@ namespace PokemonTCGApp.Model.DataModel
         [BsonElement("types")] //屬性
         public List<string>? Types { get; set; }
 
-        ///// <summary>
-        ///// The level of the card. This only pertains to cards from older sets and those of supertype Pokémon.
-        ///// </summary>
-        //[BsonElement("level ")]
-        //public string? level { get; set; }
-
         /// <summary>
         /// The hit points of the card.
         /// </summary>
@@ -72,12 +66,6 @@ namespace PokemonTCGApp.Model.DataModel
         /// </summary>
         [BsonElement("trainerEffect")] //訓練家卡效果
         public string? TrainerEffect { get; set; }
-
-        /// <summary>
-        /// The ancient trait for a given card. An ancient trait has the following fields.
-        /// </summary>
-        //[BsonElement("ancienttraits")] //古代特性?
-        //public List<AncientTrait>? AncientTraits { get; set; }
 
         /// <summary>
         /// One or more abilities for a given card. An ability has the following fields.
@@ -142,14 +130,8 @@ namespace PokemonTCGApp.Model.DataModel
         [BsonElement("updatetime")] //更新編輯時間
         public DateTime UpdateTime { get; set; }
 
-        public string Imgbase64 { get; set; }
+        //public string Imgbase64 { get; set; }
     }
-
-    //public class AncientTrait
-    //{
-    //    public string? Name { get; set; }
-    //    public string? Text { get; set; }
-    //}
 
     public class Ability
     {
