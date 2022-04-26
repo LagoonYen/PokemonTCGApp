@@ -25,6 +25,11 @@ namespace PokemonTCGApp.Model.DTOModel
     {
     }
 
+    public class EnviromentsEnumViewModel : EnumViewModel
+    {
+
+    }
+
     public class CardViewModel : Card
     {
         public Set SetInfo { get; set; }

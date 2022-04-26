@@ -19,9 +19,11 @@ namespace PokemonTCGApp.Service
         void DeleteSet(string id);
 
         //Enumn
-        List<SupertypesEnumViewModel> GetAllSupertypesEnum();
-        List<SubtypesEnumViewModel> GetAllSubtypesEnum();
-        List<RaritiesEnumViewModel> GetAllRaritiesEnum();
-        List<TypesEnumViewModel> GetAllTypesEnum();
+        IEnumerable<SupertypesEnumViewModel> GetAllSupertypesEnum();
+        IEnumerable<SubtypesEnumViewModel> GetAllSubtypesEnum();
+        IEnumerable<RaritiesEnumViewModel> GetAllRaritiesEnum();
+        IEnumerable<TypesEnumViewModel> GetAllTypesEnum();
+
+        IEnumerable<EnviromentsEnumViewModel> GetAllEnviromentsEnum();
     }
 }

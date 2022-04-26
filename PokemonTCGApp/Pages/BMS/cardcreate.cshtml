@@ -128,13 +128,26 @@
                                 </div>
                             </div>
 
-                            @*Did this*@
                             <div class="form-group row">
                                 <label for="" class="col-sm-3 control-label">稀有度等級</label>
                                 <div class="col-sm-9">
                                     <el-select v-model="Rarity" placeholder="請選擇" class="inputStyle" filterable>
                                         <el-option
                                             v-for="item in AllRaritiesEnum"
+                                            :key="item.Name"
+                                            :label="item.Name"
+                                            :value="item.Name">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </div>
+
+                             <div class="form-group row">
+                                <label for="" class="col-sm-3 control-label">環境選擇</label>
+                                <div class="col-sm-9">
+                                    <el-select v-model="Enviroment" placeholder="請選擇" class="inputStyle" filterable>
+                                        <el-option
+                                            v-for="item in AllEnviromentsEnum"
                                             :key="item.Name"
                                             :label="item.Name"
                                             :value="item.Name">
@@ -564,6 +577,7 @@
                 Supertype:"",
                 Subtypes:[],
                 Rarity:"",
+                Enviroment:"",
                 Types:[],
                 Hp:null,
                 EvolvesFrom:"",
@@ -591,6 +605,7 @@
                 AllSubtypesEnum:[],
                 AllSupertypesEnum:[],
                 AllSets:[],
+                AllEnviromentsEnum:[]
             }
         },
         beforeMount: function () {
@@ -612,6 +627,9 @@
             });
             this.GetEnums("GetAllSupertypesEnum").then((data) => {
                 this.AllSupertypesEnum = data;
+            });
+            this.GetEnums("GetAllEnviromentsEnum").then((data) => {
+                this.AllEnviromentsEnum = data;
             });
             this.GetAllSets().then((data) => {
                 this.AllSets = data
@@ -737,6 +755,7 @@
                     console.log(data)
 
                     appMain.Id = data.Id;
+                    appMain.Enviroment = data.Enviroment;
                     appMain.Name = data.Name;
                     appMain.Supertype = data.Supertype;
                     appMain.Subtypes = data.Subtypes;
@@ -771,6 +790,7 @@
                     'Supertype':appMain.Supertype,
                     'Subtypes':appMain.Subtypes,
                     'Rarity':appMain.Rarity,
+                    'Enviroment':appMain.Enviroment,
                     'Types':appMain.Types,
                     'Hp':appMain.Hp,
                     'EvolvesFrom':appMain.EvolvesFrom,

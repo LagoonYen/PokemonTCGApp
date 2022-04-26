@@ -28,7 +28,6 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            @*style="min-height: 1140px;*@
             <div class="box-body">
                 <div class="form-horizontal">
 
@@ -53,7 +52,6 @@
 
             <div class="box-footer">
                 <button type="button" class="btn btn-primary " v-on:click="setFilter">搜尋</button>
-                @*<button type="button" class="btn btn-warning" v-on:click="downloadFile">下載</button>*@
                 <a asp-page="/BMS/cardcreate" type="button" class="btn btn-danger" >新增</a>
             </div>
         </div>
@@ -93,11 +91,10 @@
                         detail-row-component="my-detail-row"
                         >
 
-                        @*:pagination-component="paginationComponent"*@
                         <template slot="actions" slot-scope="props">
                             <div class="table-button-container">
                                 <a v-on:click="editCard(props.rowData)" class="btn-xs btn-default btn">編輯</a>
-                                <a v-on:click="delSet(props.rowData)" class="btn-xs btn-default btn">刪除</a>
+                                <a v-on:click="delCard(props.rowData)" class="btn-xs btn-default btn">刪除</a>
                             </div>
                         </template>
 
@@ -130,18 +127,6 @@
     }
 
     var tableColumns = [
-        // 完整Columns
-        //{
-        //name: 'gender',
-        //sortField: 'gender',
-        //title: "gender",
-        //titleClass: 'center aligned',
-        //dataClass: 'center aligned',
-        //width: '200px',
-        //visible: true
-        //callback:function()
-        //},
-        //checkBox 50px supertype
         {
             name: 'Id',
             sortField: 'Id',
@@ -149,6 +134,8 @@
             titleClass: 'center aligned',
             dataClass: 'center aligned',
             width: '20%'
+            //visible: true
+            //callback:function()
         },
         {
             name: 'Imgbase64',
@@ -231,6 +218,10 @@
                 '<div class="my-1">'+
                     '<label>稀有度：</label>'+
                     '<span>{{rowData.Rarity}}</span>'+
+                '</div>'+
+                '<div class="my-1">'+
+                    '<label>環境：</label>'+
+                    '<span>{{rowData.Enviroment}}</span>'+
                 '</div>'+
                 '<div class="my-1">'+
                     '<label>血量：</label>'+
@@ -331,13 +322,8 @@
         },
         mounted: function () {
             $("#app").show();
-            //var paras = getUrlAllParams();
         },
         methods: {
-            //Callback functions
-            //allCap: function(value) {
-            //    return value.toUpperCase()
-            //},
             showLoader: function () {
                 this.$loading();
             },
@@ -448,27 +434,27 @@
                 console.log("editCard", data.Id)
                 location.href = "./cardcreate?id=" + data.Id
             },
-           //delSet: function (data) {
-           //     this.$confirm('確認是否刪除?', '注意', {
-           //         confirmButtonText: '確認',
-           //         cancelButtonText: '取消',
-           //         type: 'warning'
-           //     }).then(() => {
-           //         let url = "/api/Card/DeleteSet?id=" + data.Id;
-                    
-           //         console.log(url)
-           //         fetch(url, {
-           //             method: "DELETE",
-           //         }).then(function (data) {
-           //             appMain.$notify({ title: '成功', message: '成功', type: 'success' });
-           //             appMain.$refs.vuetable.refresh();
-           //         }).catch(function (data) {
+           delCard: function (data) {
+                this.$confirm('確認是否刪除?', '注意', {
+                    confirmButtonText: '確認',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let url = "/api/Card/DeleteCard?id=" + data.Id;
+                    fetch(url, {
+                        method: "DELETE",
+                    }).then(function (response) {
+                        if(response.status === 202){ 
+                            appMain.$notify({ title: '成功', message: '成功', type: 'success' });
+                            appMain.$refs.vuetable.refresh(); 
+                        }
+                    }).catch(function (data) {
+                        appMain.$notify({ title: '失敗', message: '失敗', type: 'success' });
+                    });
+                }).catch(() => {
 
-           //         });
-           //     }).catch(() => {
-
-           //     });
-           // },
+                });
+            },
         },
     });
 </script>

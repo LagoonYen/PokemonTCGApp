@@ -29,23 +29,24 @@ namespace PokemonTCGApp.Service
                     Name = x.Name,
                     Supertype = x.Supertype,
                     Subtypes = x.Subtypes,
-                    Abilities = x.Abilities,
-                    Attacks = x.Attacks,
+                    Rarity = x.Rarity,
+                    Enviroment = x.Enviroment,
+                    Types = x.Types,
                     EvolvesFrom = x.EvolvesFrom,
                     EvolvesTo = x.EvolvesTo,
                     FlavorText = x.FlavorText,
                     Hp = x.Hp,
-                    Number = x.Number,
-                    Rarity = x.Rarity,
-                    Types = x.Types,
+                    TrainerEffect = x.TrainerEffect,
+                    Abilities = x.Abilities,
+                    Attacks = x.Attacks,
                     Weaknesses = x.Weaknesses,
                     Resistances = x.Resistances,
                     SetId = x.SetId,
                     SetInfo = x.SetId == null ? null : GetSet(x.SetId),
+                    Number = x.Number,
                     CreateTime = x.CreateTime,
                     UpdateAdmin = x.UpdateAdmin,
                     UpdateTime = x.UpdateTime,
-                    TrainerEffect = x.TrainerEffect,
                     Image = x.Image,
                 }).OrderBy(x => x.SetId).OrderBy(x => x.Number).ToList(); ;
 
@@ -77,6 +78,7 @@ namespace PokemonTCGApp.Service
                     Supertype = result.Supertype,
                     Subtypes = result.Subtypes,
                     Rarity = result.Rarity,
+                    Enviroment = result.Enviroment,
                     Types = result.Types,
                     Hp = result.Hp,
                     EvolvesFrom = result.EvolvesFrom,
@@ -125,6 +127,7 @@ namespace PokemonTCGApp.Service
                     Supertype = req.Supertype,
                     Subtypes = req.Subtypes,
                     Rarity = req.Rarity,
+                    Enviroment = req.Enviroment,
                     Types = req.Types,
                     Hp = req.Hp,
                     EvolvesFrom = req.EvolvesFrom,
@@ -308,7 +311,7 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public List<SupertypesEnumViewModel> GetAllSupertypesEnum()
+        public IEnumerable<SupertypesEnumViewModel> GetAllSupertypesEnum()
         {
             try
             {
@@ -330,7 +333,7 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public List<SubtypesEnumViewModel> GetAllSubtypesEnum()
+        public IEnumerable<SubtypesEnumViewModel> GetAllSubtypesEnum()
         {
             try
             {
@@ -352,7 +355,7 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public List<RaritiesEnumViewModel> GetAllRaritiesEnum()
+        public IEnumerable<RaritiesEnumViewModel> GetAllRaritiesEnum()
         {
             try
             {
@@ -374,7 +377,7 @@ namespace PokemonTCGApp.Service
             }
         }
 
-        public List<TypesEnumViewModel> GetAllTypesEnum()
+        public IEnumerable<TypesEnumViewModel> GetAllTypesEnum()
         {
             try
             {
@@ -387,6 +390,28 @@ namespace PokemonTCGApp.Service
                 if (result.Count == 0)
                 {
                     throw new Exception("未取得正確稀有度列表");
+                }
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public IEnumerable<EnviromentsEnumViewModel> GetAllEnviromentsEnum()
+        {
+            try
+            {
+                var result = Enum.GetValues<EnviromentEnum>().Select(x => new EnviromentsEnumViewModel
+                {
+                    Name = x.ToString(),
+                    Desc = x.GetDescription()
+                }).ToList();
+
+                if (result.Count == 0)
+                {
+                    throw new Exception("未取得正確環境列表");
                 }
                 return result;
             }

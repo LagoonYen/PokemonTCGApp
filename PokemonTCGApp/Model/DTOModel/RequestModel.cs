@@ -62,6 +62,9 @@ namespace PokemonTCGApp.Model.DTOModel
         [Required]
         public string Rarity { get; set; }
 
+        [Required]
+        public string Enviroment { get; set; }
+
         public List<string>? Types { get; set; }
 
         public int? Hp { get; set; } = null;

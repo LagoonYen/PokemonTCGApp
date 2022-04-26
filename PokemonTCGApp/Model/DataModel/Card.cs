@@ -38,6 +38,12 @@ namespace PokemonTCGApp.Model.DataModel
         public string? Rarity { get; set; }
 
         /// <summary>
+        /// 卡片環境
+        /// </summary>
+        [BsonElement("Enviroment")]
+        public string Enviroment { get; set; }
+
+        /// <summary>
         /// The energy types for a card, such as Fire, Water, Grass, etc.
         /// </summary>
         [BsonElement("types")] //屬性

@@ -41,8 +41,6 @@ namespace PokemonTCGApp.Controllers
                 var id = req.@params.FilterQuery["Id"] as string;
                 var result = _cardService.GetCards();
 
-                if (!result.Any()) throw new Exception("查無卡片");
-
                 var cVueTableList = new VueTableList<CardViewModel>(result.ToList(), req.@params.Sort, req.@params.Per_page, req.@params.Page);
                 return Ok(cVueTableList);
             }
@@ -87,7 +85,6 @@ namespace PokemonTCGApp.Controllers
             try
             {
                 var result = _cardService.UpsertCard(req);
-
                 //return CreatedAtAction(nameof(GetCard), new { id = req.Id }, req);
                 return Ok(result);
             }
@@ -168,8 +165,6 @@ namespace PokemonTCGApp.Controllers
                 var Id = req.@params.FilterQuery["Id"] as string;
 
                 var result = _cardService.GetSets();
-
-                if (!result.Any()) throw new Exception("查無系列");
 
                 var cVueTableList = new VueTableList<SetViewModel>(result.ToList(), req.@params.Sort, req.@params.Per_page, req.@params.Page);
                 return Ok(cVueTableList);
@@ -329,6 +324,27 @@ namespace PokemonTCGApp.Controllers
             try
             {
                 var result = _cardService.GetAllTypesEnum();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 取得卡牌寶可夢環境
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<List<EnviromentsEnumViewModel>> GetAllEnviromentsEnum()
+        {
+            try
+            {
+                var result = _cardService.GetAllEnviromentsEnum();
                 return Ok(result);
             }
             catch (Exception ex)
