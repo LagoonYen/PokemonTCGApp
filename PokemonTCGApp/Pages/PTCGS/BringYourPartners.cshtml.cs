@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace PokemonTCGApp.Pages
+namespace PokemonTCGApp.Pages.PTCGS
 {
-    public class BuildURSetModel : PageModel
+    public class BringYourPartnersModel : PageModel
     {
         public void OnGet()
         {

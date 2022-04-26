@@ -1,0 +1,245 @@
+﻿@page
+@model PokemonTCGApp.Pages.PTCGS.BringYourPartnersModel
+@{
+    Layout = "_Layout";
+}
+<style>
+    .height800px{
+        height:800px;
+    }
+    .height600px{
+        height:560px;
+    }
+    .bgpink{
+        background-color:pink;
+    }
+    .bggreen{
+        background-color:greenyellow;
+    }
+    .bgblue{
+        background-color:aliceblue;
+    }
+</style>
+
+@*<div class="content" id="app">*@
+    <section class="content" id="app">
+        <div class="row">
+
+            @*左半區*@
+            <div class="col-12 col-xl-7 bgpink">
+                @*指令區*@
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-newspaper-o"></i> 指令台 </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="form-group row">
+                                
+                            <div class="col-6 col-xl-3">
+                                <el-select v-model="SetId" multiple placeholder="系列選擇" class="inputStyle" filterable>
+                                    <el-option
+                                        v-for="item in AllSets"
+                                        :key="item.Id"
+                                        :label="`${item.SeriesId} - ${item.Name}`"
+                                        :value="item.Id">
+                                    </el-option>
+                                </el-select>
+                            </div>
+
+                            <div class="col-12">
+                                <el-tooltip class="item" effect="dark" content="搜尋範圍：卡牌名稱、技能名稱、技能介紹，可用#串聯" placement="right">
+                                <el-input
+                                    type="text"
+                                    placeholder="搜尋關鍵字" 
+                                    v-model="Name"
+                                    >
+                                </el-input>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button type="button" class="btn btn-primary " v-on:click="SearchCards">
+                        @*<button type="button" class="btn btn-primary">*@
+                            搜尋
+                        </button>
+                    </div>
+
+                </div>
+
+                @*操作區*@
+                <div>
+                    <div class="col-12 bgblue height600px">
+                        <img v-for="item in searchCards"  :src="item.Imgbase64" v-on:click="drawer = true" type="primary"/>
+                        @*<el-button v-on:click="drawer = true" type="primary">
+                            點開圖片
+                        </el-button>*@
+
+                    </div>
+                </div>
+            </div>
+
+             
+
+            @*右半區*@
+            <div class="col-12 col-xl-5 bggreen height800px">
+
+            </div>
+        </div>
+
+        <el-drawer
+            title="卡牌資訊"
+            :visible.sync="drawer"
+            :direction="direction"
+            >
+            <span>這邊展示圖片</span>
+        </el-drawer>
+    </section>
+@*</div>*@
+
+<script>
+    var appMain = new Vue({
+        el: '#app',
+        data:function () {
+            return {
+                drawer: false,
+                direction:"ltr",
+
+                //From表單送出資料
+                Id :"",
+                Name:"",
+                Supertype:"",
+                Subtypes:[],
+                Rarity:"",
+                Enviroment:"",
+                Types:[],
+                Hp:null,
+                EvolvesFrom:"",
+                EvolvesTo:[],
+                SetId:"",
+                Number:"",
+                TrainEffect:"",
+                FlavorText:"",
+                Abilities: [],
+                Attacks: [],
+                Weaknesses: [],
+                Resistances: [],
+                ImageURL: null,
+                CreateTime:"",
+
+                //預先取得數據
+                AllTypesEnum:[],
+                AllRaritiesEnum:[],
+                AllSubtypesEnum:[],
+                AllSupertypesEnum:[],
+                AllSets:[],
+                AllEnviromentsEnum:[],
+
+
+                searchFor: '',
+                tableLoading: true,
+                fields: tableColumns,
+                perPage: 10,
+                moreParams: {
+                    filterQuery: { Id : "" },
+                    Keyword: ''
+                },
+                CleanerData: {
+                    "Id": null,
+                },
+                formLabelWidth: '160px',
+
+                searchCards:[],
+            }
+        },
+        beforeMount: function () {
+            
+        },
+        
+        mounted: function () {
+            $("#app").show();
+
+            this.GetEnums("GetAllTypesEnum").then((data) => {
+                this.AllTypesEnum = data;
+            });
+            this.GetEnums("GetAllRaritiesEnum").then((data) => {
+                this.AllRaritiesEnum = data;
+            });
+            this.GetEnums("GetAllSubtypesEnum").then((data) => {
+                this.AllSubtypesEnum = data;
+            });
+            this.GetEnums("GetAllSupertypesEnum").then((data) => {
+                this.AllSupertypesEnum = data;
+            });
+            this.GetEnums("GetAllEnviromentsEnum").then((data) => {
+                this.AllEnviromentsEnum = data;
+            });
+            this.GetAllSets().then((data) => {
+                this.AllSets = data.reverse()
+            });
+
+        },
+        methods: {
+            GetEnums(enumType) {
+                let api = "/api/Card/" + enumType
+                return fetch(api, {
+                    method : "GET",
+                })
+                .then((response) => { 
+                    return response.json().then((data) => {
+                        console.log(data);
+                        return data;
+                    }).catch((err) => {
+                        console.log(err);
+                    }) 
+                });
+            },
+            GetAllSets(){
+                let api = "/api/Card/GetAllSets"
+                return fetch(api, {
+                    method : "GET",
+                })
+                .then((response) => { 
+                    return response.json().then((data) => {
+                        console.log(data);
+                        return data;
+                    }).catch((err) => {
+                        console.log(err);
+                    }) 
+                });
+            },
+
+
+            SearchCards(){
+                let api = "/api/Frontend/SearchCards";
+                let params = {
+                    
+                }
+                
+
+                fetch(api, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    //data: JSON.stringify(data),
+                }).then((response) => { 
+                        response.json().then((data) => {
+                        console.log("data", data)
+                        appMain.searchCards = data;
+                    }).catch((err) => {
+                        console.log(err);
+                    }) 
+                });
+            }
+            
+        }
+     })
+</script>

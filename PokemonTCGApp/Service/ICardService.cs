@@ -23,7 +23,8 @@ namespace PokemonTCGApp.Service
         IEnumerable<SubtypesEnumViewModel> GetAllSubtypesEnum();
         IEnumerable<RaritiesEnumViewModel> GetAllRaritiesEnum();
         IEnumerable<TypesEnumViewModel> GetAllTypesEnum();
-
         IEnumerable<EnviromentsEnumViewModel> GetAllEnviromentsEnum();
+
+        byte[] GetImage(string sBase64String);
     }
 }

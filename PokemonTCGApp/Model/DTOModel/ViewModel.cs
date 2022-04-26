@@ -40,4 +40,13 @@ namespace PokemonTCGApp.Model.DTOModel
     {
         public string Imgbase64 { get; set; }
     }
+
+    public class SearchCardsViewModel
+    {
+        public string Id { get; set; }
+        public string SetId { get; set; }
+        public int Number { get; set; }
+        public byte[] Image { get; set; }
+        public string Imgbase64 { get; set; }
+    }
 }

@@ -302,8 +302,6 @@
         data: function () {
             return {
 
-
-
                 searchFor: '',
                 tableLoading: true,
                 fields: tableColumns,
@@ -429,12 +427,11 @@
                 console.log('cellClicked: ', field.name)
                 this.$refs.vuetable.toggleDetailRow(data.Id)
             },
-
             editCard: function (data) {
                 console.log("editCard", data.Id)
                 location.href = "./CardCreate?id=" + data.Id
             },
-           delCard: function (data) {
+            delCard: function (data) {
                 this.$confirm('確認是否刪除?', '注意', {
                     confirmButtonText: '確認',
                     cancelButtonText: '取消',

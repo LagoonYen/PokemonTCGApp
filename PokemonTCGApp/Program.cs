@@ -25,6 +25,8 @@ builder.Services.AddSingleton<IMongoClient>(s =>
 
 //Service Repository Setting
 builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<IFrontendService, FrontendService>();
+
 builder.Services.AddScoped<ICardRepository, CardRepository>();
 
 //Image Upload Setting
@@ -64,6 +66,11 @@ builder.Services.AddSwaggerGen(x =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     x.IncludeXmlComments(xmlPath);
 });
+
+//builder.Services.AddSignalR(options =>
+//{
+//    options.MaximumParallelInvocationsPerClient = 5;
+//});
 
 
 
