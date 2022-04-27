@@ -32,11 +32,41 @@ namespace PokemonTCGApp.Service
                 {
                     if (card.Image != null)
                     {
-                        card.Image = _cardService.GetImage(Convert.ToBase64String(card.Image));
-                        card.Imgbase64 = Encoding.UTF8.GetString(card.Image);
+                        card.Image = GetImage(Convert.ToBase64String(card.Image));
+                        card.Imgbase64 = EncodeImg(card.Image);
                     }
                 }
                 return searchCardsViewModel;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public byte[] GetImage(string sBase64String)
+        {
+            try
+            {
+                byte[]? bytes = null;
+                if (!string.IsNullOrEmpty(sBase64String))
+                {
+                    bytes = Convert.FromBase64String(sBase64String);
+                }
+                return bytes;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public string EncodeImg(byte[] img)
+        {
+            try
+            {
+                char[] charsToTrim = { '"' };
+                return Encoding.UTF8.GetString(img).Trim(charsToTrim);
             }
             catch
             {

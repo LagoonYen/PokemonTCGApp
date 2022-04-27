@@ -7,7 +7,7 @@
     .height800px{
         height:800px;
     }
-    .height600px{
+    .height560px{
         height:560px;
     }
     .bgpink{
@@ -19,14 +19,25 @@
     .bgblue{
         background-color:aliceblue;
     }
+    .cardshow{
+        height:176px;
+        width:126px;
+    }
+    .cardShowStyle{
+        height:auto;
+        width:auto;
+        max-height:60%;
+        max-width:60%;
+        display: block;
+        margin:auto;
+    }
 </style>
 
-@*<div class="content" id="app">*@
     <section class="content" id="app">
         <div class="row">
 
             @*左半區*@
-            <div class="col-12 col-xl-7 bgpink">
+            <div class="col-12 col-xl-8 bgpink">
                 @*指令區*@
                 <div class="box box-primary">
                     <div class="box-header with-border">
@@ -40,7 +51,7 @@
                         <div class="form-group row">
                                 
                             <div class="col-6 col-xl-3">
-                                <el-select v-model="SetId" multiple placeholder="系列選擇" class="inputStyle" filterable>
+                                <el-select v-model="SetId" placeholder="系列選擇"  class="inputStyle" filterable>
                                     <el-option
                                         v-for="item in AllSets"
                                         :key="item.Id"
@@ -50,7 +61,7 @@
                                 </el-select>
                             </div>
 
-                            <div class="col-12">
+                            <div class="col-12 mt-1">
                                 <el-tooltip class="item" effect="dark" content="搜尋範圍：卡牌名稱、技能名稱、技能介紹，可用#串聯" placement="right">
                                 <el-input
                                     type="text"
@@ -74,14 +85,21 @@
 
                 </div>
 
-                @*操作區*@
+                @*搜尋顯示區*@
                 <div>
-                    <div class="col-12 bgblue height600px">
-                        <img v-for="item in searchCards"  :src="item.Imgbase64" v-on:click="drawer = true" type="primary"/>
-                        @*<el-button v-on:click="drawer = true" type="primary">
-                            點開圖片
-                        </el-button>*@
+                    <div class="col-12 bgblue height560px">
+                        @*<div v-for="item in searchCards">
+                            <img :src="item.Imgbase64" class="cardshow" v-on:click="ShowCard(item)"/>
+                        </div>*@
 
+                        <el-row>
+                            @*<el-col :span="8" v-for="(item, index) in searchCards" :key="o" :offset="index > 0 ? 2 : 0">*@
+                            <el-col v-for="(item, index) in searchCards" class="cardshow">
+                                <el-card :body-style="{ padding: '0px' }">
+                                    <img :src="item.Imgbase64" class="cardshow" v-on:click="ShowCard(item)">
+                                </el-card>
+                            </el-col>
+                        </el-row>
                     </div>
                 </div>
             </div>
@@ -89,7 +107,7 @@
              
 
             @*右半區*@
-            <div class="col-12 col-xl-5 bggreen height800px">
+            <div class="col-12 col-xl-4 bggreen height800px">
 
             </div>
         </div>
@@ -99,7 +117,15 @@
             :visible.sync="drawer"
             :direction="direction"
             >
-            <span>這邊展示圖片</span>
+            <img :src="pickedData.pickedImgbase64" class="cardShowStyle"/>
+            <div class="my-1 row">
+                <el-button type="primary" class="col-6 mx-0">增加</el-button>
+                <el-button type="success" class="col-6 mx-0">移出</el-button>
+            </div>
+            <div class="my-1">
+                <el-button type="success" class="col-12 mx-0">搜索進化鍊</el-button>
+            </div>
+            
         </el-drawer>
     </section>
 @*</div>*@
@@ -109,10 +135,18 @@
         el: '#app',
         data:function () {
             return {
+                //左邊操作面板
                 drawer: false,
                 direction:"ltr",
+                pickedData:{
+                    pickedImgbase64:"",
+                    pickedId:"",
+                },
+                
 
                 //From表單送出資料
+                Partners:[],
+
                 Id :"",
                 Name:"",
                 Supertype:"",
@@ -142,10 +176,8 @@
                 AllSets:[],
                 AllEnviromentsEnum:[],
 
-
                 searchFor: '',
                 tableLoading: true,
-                fields: tableColumns,
                 perPage: 10,
                 moreParams: {
                     filterQuery: { Id : "" },
@@ -191,8 +223,7 @@
                 let api = "/api/Card/" + enumType
                 return fetch(api, {
                     method : "GET",
-                })
-                .then((response) => { 
+                }).then((response) => { 
                     return response.json().then((data) => {
                         console.log(data);
                         return data;
@@ -219,17 +250,14 @@
 
             SearchCards(){
                 let api = "/api/Frontend/SearchCards";
-                let params = {
-                    
-                }
-                
-
+                let data = appMain.moreParams.filterQuery;
+                console.log("data", data)
                 fetch(api, {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    //data: JSON.stringify(data),
+                    //data:JSON.stringify(data),
                 }).then((response) => { 
                         response.json().then((data) => {
                         console.log("data", data)
@@ -238,6 +266,11 @@
                         console.log(err);
                     }) 
                 });
+            },
+            ShowCard(card){
+                appMain.drawer = true;
+                appMain.pickedData.pickedImgbase64 = card.Imgbase64;
+                appMain.pickedData.pickedId = card.Id;
             }
             
         }

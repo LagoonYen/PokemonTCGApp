@@ -239,6 +239,9 @@ namespace PokemonTCGApp.Model
         水系,
     }
 
+    /// <summary>
+    /// 卡牌環境
+    /// </summary>
     public enum EnviromentEnum
     {
         [Description("A")]

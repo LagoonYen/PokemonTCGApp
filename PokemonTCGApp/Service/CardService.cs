@@ -17,7 +17,7 @@ namespace PokemonTCGApp.Service
             _cardRepository = cardRepository;
         }
 
-        public IEnumerable<CardViewModel> GetCards()
+        public IEnumerable<CardViewModel> GetCards() 
         {
             try
             {
@@ -55,7 +55,7 @@ namespace PokemonTCGApp.Service
                     if (card.Image != null)
                     {
                         card.Image = GetImage(Convert.ToBase64String(card.Image));
-                        card.Imgbase64 = Encoding.UTF8.GetString(card.Image);
+                        card.Imgbase64 = EncodeImg(card.Image);
                     }
                 }
                 return cardViewModel;
@@ -99,7 +99,7 @@ namespace PokemonTCGApp.Service
                 if (result.Image != null)
                 {
                     cardViewModel.Image = GetImage(Convert.ToBase64String(result.Image));
-                    cardViewModel.Imgbase64 = Encoding.UTF8.GetString(result.Image);
+                    cardViewModel.Imgbase64 = EncodeImg(result.Image);
                 }
                 return cardViewModel;
             }
@@ -192,14 +192,14 @@ namespace PokemonTCGApp.Service
                     UpdateTime = x.UpdateTime,
                     UpdateAdmin = x.UpdateAdmin,
                     Image = x.Image,
-                }).OrderBy(x => x.ReleaseTime).OrderBy(x => x.SeriesId).ToList();
+                }).OrderBy(x => x.ReleaseTime).ThenBy(x =>x.Name).Reverse().ToList();
 
                 foreach (var set in setViewModel)
                 {
                     if (set.Image != null)
                     {
                         set.Image = GetImage(Convert.ToBase64String(set.Image));
-                        set.Imgbase64 = Encoding.UTF8.GetString(set.Image);
+                        set.Imgbase64 = EncodeImg(set.Image);
                     }
                 }
                 return setViewModel;
@@ -304,6 +304,19 @@ namespace PokemonTCGApp.Service
                     bytes = Convert.FromBase64String(sBase64String);
                 }
                 return bytes;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public string EncodeImg(byte[] img)
+        {
+            try
+            {
+                char[] charsToTrim = { '"' };
+                return Encoding.UTF8.GetString(img).Trim(charsToTrim);
             }
             catch
             {

@@ -16,3 +16,21 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/*el-upload*/
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+}
+
+
+.setLogo {
+    max-width: 150px;
+    max-height: 150px;
+}

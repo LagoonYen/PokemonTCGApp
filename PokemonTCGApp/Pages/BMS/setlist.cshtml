@@ -5,23 +5,32 @@
 }
 <script src="https://rawgit.com/ratiw/vuetable-2/develop/dist/vuetable-2.js"></script>
 
+
 <style>
-    .elUploadShow .el-upload--picture-card{
-        width:150px;
-        height:150px;
-        line-height:150px;
+    .el-upload{
+        display:block;
+        max-width: 400px;
+        max-height: 150px;
+        margin: 0 auto;
     }
-    .elUploadHide .el-upload--picture-card{
-        display:none;
+    
+    .avatar-uploader-icon{
+        color: #8c939d;
+        max-width: 400px;
+        max-height: 150px;
+        line-height: 150px;
     }
-
-    .setLogo{
-        max-width:150px;
-        max-height:150px;
+    .avatar{
+        max-width: 400px;
+        max-height: 150px;
     }
-
+    
     input.el-upload__input {
         display: none;
+    }
+
+    .inputStyle{
+        width:100%;
     }
 </style>
 
@@ -48,23 +57,30 @@
                     @*左半邊*@
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="lbl-seriesId" class="col-md-2 control-label">系列ID</label>
+                            <label class="col-md-2 control-label">系列ID</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" id="lbl-seriesId" placeholder="系列ID" v-model="seriesId" />
+                                <input type="text" class="form-control" placeholder="系列ID" v-model="setData.seriesId" />
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label for="lbl-series" class="col-md-2 control-label">主標題名稱</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" id="lbl-series" placeholder="主標題名稱" v-model="series" />
+                                <el-select v-model="setData.series" placeholder="主標題名稱" class="inputStyle" filterable>
+                                    <el-option
+                                        v-for="item in AllSeries"
+                                        :key="item"
+                                        :label="item"
+                                        :value="item">
+                                    </el-option>
+                                </el-select>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="lbl-name" class="col-md-2 control-label">副標題名稱</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" id="lbl-name" placeholder="副標題名稱" v-model="name"/>
+                                <input type="text" class="form-control" id="lbl-name" placeholder="副標題名稱" v-model="setData.name"/>
                             </div>
                         </div>
 
@@ -73,7 +89,7 @@
                             <div class="col-md-5">
                                 <div class="input-group">
                                     <el-date-picker 
-                                        v-model="releasetime"
+                                        v-model="setData.releasetime"
                                         value-format="yyyy-MM-dd HH:mm:ss"
                                         type="date"
                                         placeholder="上市日期"
@@ -90,6 +106,19 @@
                             @*上傳圖片*@
                             <el-upload
                                 ref="elupload"
+                                class="avatar-uploader"
+                                action="#"
+                                list-type="picture"
+                                :on-change="handleChange"
+                                :auto-upload="false"
+                                :show-file-list="false"
+                                >
+                                <img v-if="setData.imageURL" :src="setData.imageURL" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        
+                            @*<el-upload
+                                ref="elupload"
                                 action="#"
                                 :class="{elUploadShow:showUpload, elUploadHide:hideUpload}"
                                 list-type="picture-card"
@@ -98,7 +127,6 @@
                                 :file-list="fileList"
                                 :before-upload="beforeAvatarUpload"
                                 >
-                                @*縮圖放大*@
                                 <i slot="default" class="el-icon-plus"></i>
                                 <div slot="file" slot-scope="{file}">
                                     <img
@@ -120,14 +148,10 @@
                                 </div>
                             </el-upload>
                             <el-dialog :visible.sync="dialogVisible">
-                                <img style="width:100%" :src="dialogImageUrl" alt="">
-                            </el-dialog>
-                              
-
+                                <img style="width:100%" :src="dialogimageURL" alt="">
+                            </el-dialog>*@
                         </div>
                     </div>
-
-
                     @*搜索條件*@
 
                 </div>
@@ -321,21 +345,23 @@
                 disabled: false,
                 fileList:[],
 
-                //formData相關係數
-                formData : new FormData(),
-                id:"",
-                seriesId:"",
-                name:"",
-                series:"",
-                releasetime : new Date(),
-                createTime:"",
-                imageURL:"",
+                //編輯中Data
+                setData:{
+                    'id':"",
+                    'seriesId':"",
+                    'name':"",
+                    'series':"",
+                    'releasetime' : new Date(),
+                    'createTime':"",
+                    'imageURL':null,
+                },
+                
 
                 searchFor: '',
                 tableLoading: true,
                 fields: tableColumns,
                 apiUrl: "/api/Card/GetSets",
-                perPage: 10,
+                perPage: 20,
                 moreParams: {
                     filterQuery: { Id : "" },
                     Keyword: ''
@@ -344,6 +370,10 @@
                     "Id": null,
                 },
                 formLabelWidth: '160px',
+
+                AllSeries:[
+                    "太陽&月亮","劍&盾","朱&紫"
+                ]
             }
         },
         mounted: function () {
@@ -353,40 +383,18 @@
         methods: {
             //el-upload部分
             handleChange(file, fileList) {
-                //修改el-upload style
-                this.hideUpload = fileList.length >= this.limitCountImg
-
-                this.getBase64(file.raw).then(data => {
-                    appMain.imageURL = data
+                this.getBase64(file.raw)
+                .then(data => {
+                    appMain.setData.imageURL = data
                 })
-            },
-            handleRemove(file) {
-                let fileList = this.$refs.elupload.uploadFiles;
-                let index = fileList.findIndex( fileItem => {
-                    return fileItem.uid === file.uid
-                })
-                fileList.splice(index, 1)
-
-                this.hideUpload = fileList.length >= this.limitCountImg
-                this.imageURL = null
-            },
-            handlePictureCardPreview(file) {
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
-            },
-            beforeAvatarUpload (file) {
-                const isJPG = file.type === 'image/jpeg'
-                const isLt2M = file.size / 1024 / 1024 < 2
-                if (!isJPG) {
-                    this.$message.error('格式錯誤!')
+                if(fileList.length > 1){
+                    fileList.splice(0, 1)
                 }
-                if (!isLt2M) {
-                    this.$message.error('圖片不能大於 2MB!')
-                }
-                return isJPG && isLt2M
             },
             getBase64(data){
                 return new Promise((resolve, reject) => {
+                    console.log("進base64")
+
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         resolve(e.target.result);
@@ -498,14 +506,14 @@
             UpsertSet() {
                 let url = "/api/Card/UpsertSet";
                 let formData = {
-                    'Id': appMain.id,
-                    'SeriesId':appMain.seriesId,
-                    'Name':appMain.name,
-                    'Series':appMain.series,
-                    'CreateTime':appMain.createTime != "" ? 
-                        appMain.createTime : dayjs().format(),
-                    'ReleaseTime': moment(appMain.releasetime).format(),
-                    'File':appMain.imageURL,
+                    'Id': appMain.setData.id,
+                    'SeriesId':appMain.setData.seriesId,
+                    'Name':appMain.setData.name,
+                    'Series':appMain.setData.series,
+                    'CreateTime':appMain.setData.createTime != "" ? 
+                        appMain.setData.createTime : dayjs().format(),
+                    'ReleaseTime': moment(appMain.setData.releasetime).format(),
+                    'File':appMain.setData.imageURL,
                 }
 
                 fetch(url, {
@@ -516,9 +524,8 @@
                     body: JSON.stringify(formData)
                 }).then((response) => {
                     (response.status === 200) ? 
-                        appMain.$notify({ title: '成功', message : "新增成功", type: 'success' }) 
+                        appMain.$notify({ title: '成功', message : "Upsert成功", type: 'success' }) 
                         :appMain.$notify({ title: '失敗', message : "缺少必要項目", type: 'error' });
-                    
                     return response;
                 }).then((data) => {
                     appMain.cleanData();
@@ -528,12 +535,12 @@
                 });
             },
             cleanData(){
-                appMain.id = "";
-                appMain.seriesId = "";
-                appMain.name = "";
-                appMain.series = "";
-                appMain.releasetime = new Date();
-                appMain.createTime = "";
+                appMain.setData.id = "";
+                appMain.setData.seriesId = "";
+                appMain.setData.name = "";
+                appMain.setData.series = "";
+                appMain.setData.releasetime = new Date();
+                appMain.setData.createTime = "";
 
                 let fileList = this.$refs.elupload.uploadFiles;
                 if(fileList.length > 0){
@@ -541,10 +548,10 @@
                 }
 
                 this.hideUpload = fileList.length >= this.limitCountImg
-                this.imageURL = null
+                this.setData.imageURL = null
             }, 
 
-            //vuetable 操作
+            //vuetable操作
             searchZero() {
                 this.$alert('請重新檢視篩選條件', '搜尋結果為0', {
                     confirmButtonText: '確定'
@@ -555,14 +562,13 @@
                 this.$refs.vuetable.toggleDetailRow(data.Id)
             },
             editSet: function (data) {
-                appMain.id = data.Id;
-                appMain.seriesId = data.SeriesId;
-                appMain.name = data.Name;
-                appMain.series = data.Series;
-                appMain.releasetime = new Date(data.ReleaseTime);
-                appMain.createTime = new Date(data.CreateTime);
-                //appMain.imageURL = data.Imgbase64;
-                //appMain.fileList.push(data.Imgbase64);
+                appMain.setData.id = data.Id;
+                appMain.setData.seriesId = data.SeriesId;
+                appMain.setData.name = data.Name;
+                appMain.setData.series = data.Series;
+                appMain.setData.releasetime = new Date(data.ReleaseTime);
+                appMain.setData.createTime = new Date(data.CreateTime);
+                appMain.setData.imageURL = data.Imgbase64;
             },
             delSet: function (data) {
                 this.$confirm('確認是否刪除?', '注意', {
@@ -571,8 +577,6 @@
                     type: 'warning'
                 }).then(() => {
                     let url = "/api/Card/DeleteSet?id=" + data.Id;
-                    
-                    console.log(url)
                     fetch(url, {
                         method: "DELETE",
                     }).then(function (data) {
